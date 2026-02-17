@@ -1,0 +1,26 @@
+{
+  "name": "gad",
+  "version": "1.0.0",
+  "description": "**GAD Corner** is the official digital hub for Gender and Development (GAD) initiatives for the Municipality of Montalban (Rodriguez), Rizal. This platform serves as a centralized archive for policies, reports, and community projects aimed at promoting gender equality, inclusivity, and citizen empowerment.",
+  "main": "tailwind.config.js",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tailwindcss -i ./static/input.css -o ./static/output.css --minify",
+    "watch": "tailwindcss -i ./static/input.css -o ./static/output.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amitred11/GAD.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Amitred11/GAD/issues"
+  },
+  "homepage": "https://github.com/Amitred11/GAD#readme"
+}

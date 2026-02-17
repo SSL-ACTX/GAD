@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .nav-transition { 
+        @apply transition-all duration-300; 
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); 
+    }
+
+    .dropdown-shadow { 
+        @apply shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)]; 
+    }
+}
+
+html { 
+    scroll-behavior: smooth; 
+}

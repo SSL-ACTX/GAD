@@ -5,7 +5,8 @@
 <div class="min-h-screen py-16 bg-white">
     <div class="max-w-4xl mx-auto px-6">
         <nav class="mb-8">
-            <a href="{{ url_for('index') }}" class="text-primary-green text-sm hover:underline"><i class="fas fa-arrow-left mr-2"></i>Back to Home</a>
+            <!-- FIXED: Added 'main.' prefix -->
+            <a href="{{ url_for('main.index') }}" class="text-primary-green text-sm hover:underline"><i class="fas fa-arrow-left mr-2"></i>Back to Home</a>
         </nav>
         
         <header class="border-b pb-8 mb-12">

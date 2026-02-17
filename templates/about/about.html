@@ -6,7 +6,8 @@
 <div class="max-w-6xl mx-auto px-[10%] py-12">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <a href="{{ url_for('index') }}" class="text-primary-green hover:underline">Home</a>
+        <!-- FIXED: main.index -->
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
         <span class="font-semibold text-gray-700">About Us</span>
     </nav>
@@ -25,7 +26,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <!-- Vision and Mission Card -->
-        <a href="{{ url_for('vision_mission') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
+        <!-- FIXED: main.vision_mission -->
+        <a href="{{ url_for('main.vision_mission') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
             <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-primary-green mb-6 group-hover:bg-primary-green group-hover:text-white transition-all">
                 <i class="fas fa-bullseye text-2xl"></i>
             </div>
@@ -34,7 +36,8 @@
         </a>
 
         <!-- Org Structure Card -->
-        <a href="{{ url_for('org_structure') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
+        <!-- FIXED: main.org_structure -->
+        <a href="{{ url_for('main.org_structure') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
             <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-primary-green mb-6 group-hover:bg-primary-green group-hover:text-white transition-all">
                 <i class="fas fa-sitemap text-2xl"></i>
             </div>
@@ -43,7 +46,8 @@
         </a>
 
         <!-- GAD Committee Card -->
-        <a href="{{ url_for('gad_committee') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
+        <!-- FIXED: main.gad_committee -->
+        <a href="{{ url_for('main.gad_committee') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
             <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-primary-green mb-6 group-hover:bg-primary-green group-hover:text-white transition-all">
                 <i class="fas fa-users-cog text-2xl"></i>
             </div>
@@ -52,7 +56,8 @@
         </a>
 
         <!-- Contact Card -->
-        <a href="{{ url_for('contact') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
+        <!-- FIXED: main.contact -->
+        <a href="{{ url_for('main.contact') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
             <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-primary-green mb-6 group-hover:bg-primary-green group-hover:text-white transition-all">
                 <i class="fas fa-headset text-2xl"></i>
             </div>

@@ -5,7 +5,8 @@
 <div class="max-w-6xl mx-auto px-[10%] py-12">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <a href="{{ url_for('index') }}" class="text-primary-green hover:underline">Home</a>
+        <!-- FIXED: Added 'main.' prefix -->
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
         <span class="font-semibold text-gray-700">Projects</span>
     </nav>
@@ -19,7 +20,8 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Latest Projects Card -->
-        <a href="{{ url_for('project_year', year='2025') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
+        <!-- FIXED: Added 'projects.' prefix -->
+        <a href="{{ url_for('projects.project_year', year='2025') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
             <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-primary-green mb-6 group-hover:bg-primary-green group-hover:text-white transition-all">
                 <i class="fas fa-rocket text-2xl"></i>
             </div>
@@ -28,7 +30,8 @@
         </a>
 
         <!-- Archive Card -->
-        <a href="{{ url_for('projects_archive') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
+        <!-- FIXED: Added 'projects.' prefix -->
+        <a href="{{ url_for('projects.projects_archive') }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-md transition-all">
             <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center text-primary-green mb-6 group-hover:bg-primary-green group-hover:text-white transition-all">
                 <i class="fas fa-folder-open text-2xl"></i>
             </div>

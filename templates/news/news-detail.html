@@ -6,9 +6,11 @@
 <div class="max-w-4xl mx-auto px-[10%] py-12">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <a href="{{ url_for('index') }}" class="text-primary-green hover:underline">Home</a>
+        <!-- FIXED: Added 'main.' prefix -->
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
-        <a href="{{ url_for('news_hub') }}" class="text-primary-green hover:underline">News</a>
+        <!-- FIXED: Added 'main.' prefix -->
+        <a href="{{ url_for('main.news_hub') }}" class="text-primary-green hover:underline">News</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
         <span class="font-semibold text-gray-700">Article View</span>
     </nav>
@@ -65,7 +67,8 @@
 
     <!-- Footer of Article -->
     <div class="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
-        <a href="{{ url_for('news_hub') }}" class="text-primary-green font-bold flex items-center gap-2 hover:underline">
+        <!-- FIXED: Added 'main.' prefix -->
+        <a href="{{ url_for('main.news_hub') }}" class="text-primary-green font-bold flex items-center gap-2 hover:underline">
             <i class="fas fa-chevron-left text-xs"></i> Back to News Feed
         </a>
         

@@ -6,11 +6,11 @@
     
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <a href="{{ url_for('index') }}" class="text-primary-green hover:underline">Home</a>
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
-        <a href="{{ url_for('policies', category='policies') }}" class="hover:text-primary-green">Policies and Reports</a>
+        <a href="{{ url_for('policies.policies_hub', category='hub') }}" class="hover:text-primary-green">Policies and Reports</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
-        <span class="font-semibold text-gray-700">Accomplishment Reports</span>
+        <span class="font-semibold text-gray-700">Resolutions</span>
     </nav>
 
         <div class="mb-10">

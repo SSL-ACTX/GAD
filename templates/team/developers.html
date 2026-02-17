@@ -3,90 +3,100 @@
 {% block title %}Developers Team - GAD Corner{% endblock %}
 
 {% block content %}
-<section class="py-20 px-[5%] lg:px-[10%] bg-gray-50 min-h-screen">
+<section class="py-12 md:py-20 px-[5%] lg:px-[10%] bg-gray-50 min-h-screen">
     <div class="max-w-7xl mx-auto">
         
         <!-- Header Section -->
-        <div class="mb-20 text-center md:text-left">
-            <h1 class="text-5xl font-black text-gray-900 tracking-tighter uppercase italic">
+        <div class="mb-12 md:mb-20 text-center md:text-left">
+            <nav class="flex text-[10px] md:text-sm text-gray-400 mb-8 items-center justify-center md:justify-start gap-2 uppercase tracking-widest">
+                <!-- FIXED: Changed 'index' to 'main.index' -->
+                <a href="{{ url_for('main.index') }}" class="hover:text-primary-green transition-colors">Home</a>
+                <i class="fas fa-chevron-right text-[8px]"></i>
+                <span class="text-gray-800 font-bold">The Team</span>
+            </nav>
+
+            <h1 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
                 The <span class="text-primary-green">Core</span> Team
             </h1>
-            <div class="w-20 h-2 bg-primary-green mt-2 mb-6 rounded-full"></div>
-            <p class="text-gray-500 max-w-2xl text-lg font-medium leading-relaxed">
+            <div class="w-20 h-2 bg-primary-green mt-4 mb-6 rounded-full mx-auto md:mx-0"></div>
+            <p class="text-gray-500 max-w-2xl text-sm md:text-lg font-medium leading-relaxed mx-auto md:mx-0">
                 Meet the architects behind the GAD Corner digital ecosystem. A collaborative effort of the IT Division to promote gender-inclusive governance through modern technology.
             </p>
         </div>
 
         <!-- THE DEVELOPERS GRID -->
-        <!-- Each developer has their own file in the 'includes' folder -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-32">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 mb-24 md:mb-32">
             
-            <!-- Your Card (Leoncio) -->
+            <!-- Card 1: Leoncio -->
             {% include 'team/includes/dev-leoncio.html' %}
 
-            <!-- Add more team members here -->
-            {% include 'team/includes/dev-placeholder.html' %}
+            <!-- Card 2: Altair (Adrian) -->
+            {% include 'team/includes/dev-altair.html' %}
 
         </div>
 
-        <!-- COMPREHENSIVE TECH STACK SECTION -->
-        <div class="bg-white rounded-[3rem] p-12 shadow-sm border border-gray-100">
-            <div class="text-center mb-16">
-                <h3 class="text-xs font-black text-gray-400 uppercase tracking-[0.5em] mb-4">Development Environment</h3>
-                <h2 class="text-3xl font-bold text-gray-800">Technology Stack</h2>
+        <!-- TECH STACK SECTION -->
+        <div class="bg-white rounded-[2rem] md:rounded-[3rem] p-8 md:p-16 shadow-sm border border-gray-100">
+            <div class="text-center mb-12 md:mb-16">
+                <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] mb-4">Development Environment</h3>
+                <h2 class="text-2xl md:text-4xl font-bold text-gray-800">Technology Stack</h2>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-12">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
                 <!-- Frontend -->
-                <div class="space-y-6">
-                    <h4 class="text-primary-green font-black text-sm uppercase tracking-widest border-b border-green-100 pb-2">Frontend</h4>
-                    <ul class="space-y-4">
-                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-html5 text-orange-500 text-xl"></i> HTML5 Semantic</li>
-                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-css3-alt text-blue-500 text-xl"></i> Tailwind CSS 3.0</li>
-                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-js text-yellow-400 text-xl"></i> JavaScript ES6+</li>
+                <div class="space-y-4 md:space-y-6">
+                    <h4 class="text-primary-green font-black text-[10px] md:text-xs uppercase tracking-widest border-b border-green-100 pb-2">Frontend</h4>
+                    <ul class="space-y-3 md:space-y-4 text-xs md:text-sm">
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-html5 text-orange-500 text-lg"></i> HTML5 Semantic</li>
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-css3-alt text-blue-500 text-lg"></i> Tailwind CSS 3.0</li>
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-js text-yellow-400 text-lg"></i> JavaScript ES6+</li>
                     </ul>
                 </div>
 
                 <!-- Backend -->
-                <div class="space-y-6">
-                    <h4 class="text-primary-green font-black text-sm uppercase tracking-widest border-b border-green-100 pb-2">Backend</h4>
-                    <ul class="space-y-4">
-    
+                <div class="space-y-4 md:space-y-6">
+                    <h4 class="text-primary-green font-black text-[10px] md:text-xs uppercase tracking-widest border-b border-green-100 pb-2">Backend</h4>
+                    <ul class="space-y-3 md:space-y-4 text-xs md:text-sm">
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-python text-blue-600 text-lg"></i> Python 3.14</li>
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fas fa-flask text-gray-800 text-lg"></i> Flask Framework</li>
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fas fa-leaf text-green-600 text-lg"></i> Jinja2 Templating</li>
                     </ul>
                 </div>
 
-                <!-- Database & Tools -->
-                <div class="space-y-6">
-                    <h4 class="text-primary-green font-black text-sm uppercase tracking-widest border-b border-green-100 pb-2">Infrastructure</h4>
-                    <ul class="space-y-4">
-    
+                <!-- Infrastructure -->
+                <div class="space-y-4 md:space-y-6">
+                    <h4 class="text-primary-green font-black text-[10px] md:text-xs uppercase tracking-widest border-b border-green-100 pb-2">Infrastructure</h4>
+                    <ul class="space-y-3 md:space-y-4 text-xs md:text-sm">
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-github text-gray-900 text-lg"></i> GitHub Version Control</li>
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fas fa-terminal text-gray-700 text-lg"></i> PowerShell / CLI</li>
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fas fa-microchip text-blue-400 text-lg"></i> Local Dev Server</li>
                     </ul>
                 </div>
 
                 <!-- Design -->
-                <div class="space-y-6">
-                    <h4 class="text-primary-green font-black text-sm uppercase tracking-widest border-b border-green-100 pb-2">Design Tools</h4>
-                    <ul class="space-y-4">
-                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-figma text-purple-500 text-xl"></i> Figma (UI/UX)</li>
-                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fas fa-font text-gray-800 text-xl"></i> Google Fonts</li>
-                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fas fa-icons text-blue-400 text-xl"></i> FontAwesome 6</li>
+                <div class="space-y-4 md:space-y-6">
+                    <h4 class="text-primary-green font-black text-[10px] md:text-xs uppercase tracking-widest border-b border-green-100 pb-2">Design Tools</h4>
+                    <ul class="space-y-3 md:space-y-4 text-xs md:text-sm">
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fab fa-figma text-purple-500 text-lg"></i> Figma (UI/UX)</li>
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fas fa-font text-gray-800 text-lg"></i> Google Fonts</li>
+                        <li class="flex items-center gap-3 text-gray-600 font-medium"><i class="fas fa-icons text-blue-400 text-lg"></i> FontAwesome 6</li>
                     </ul>
                 </div>
             </div>
         </div>
 
         <!-- Project Status Banner -->
-        <div class="mt-12 bg-gray-900 rounded-3xl p-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-6">
-                <div class="w-12 h-12 bg-primary-green rounded-full flex items-center justify-center text-white animate-pulse">
+        <div class="mt-8 md:mt-12 bg-gray-900 rounded-2xl md:rounded-3xl p-6 md:p-10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-6 text-center md:text-left">
+                <div class="hidden md:flex w-12 h-12 bg-primary-green rounded-full items-center justify-center text-white animate-pulse">
                     <i class="fas fa-rocket"></i>
                 </div>
                 <div>
-                    <p class="text-white font-bold">System Status: <span class="text-green-400">Stable v2.0</span></p>
-                    <p class="text-gray-400 text-sm italic">Last deployment: Today</p>
+                    <p class="text-white font-bold text-sm md:text-base">System Status: <span class="text-green-400">Stable v2.0</span></p>
+                    <p class="text-gray-500 text-xs italic">Developed for the Municipality of Montalban</p>
                 </div>
             </div>
-            <a href="mailto:gad@montalban.gov.ph" class="px-8 py-3 bg-primary-green text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-green-700 transition-all">
+            <a href="mailto:gad@montalban.gov.ph" class="w-full md:w-auto text-center px-8 py-4 bg-primary-green text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-green-700 transition-all">
                 Report a Bug
             </a>
         </div>

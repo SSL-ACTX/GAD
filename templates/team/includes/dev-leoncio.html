@@ -6,85 +6,51 @@
     }
     .card-leoncio .aurora-glow {
         position: absolute;
-        width: 250px;
-        height: 250px;
+        width: 200px;
+        height: 200px;
         background: #4ade80;
-        filter: blur(90px);
+        filter: blur(80px);
         border-radius: 50%;
         opacity: 0.2;
         top: -50px;
         left: -50px;
     }
-    .card-leoncio .card-pattern {
-        position: absolute;
-        inset: 0;
-        background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-        background-size: 20px 20px;
-        opacity: 0.5;
-    }
 </style>
 
-<div class="card-leoncio rounded-[2.5rem] p-10 shadow-2xl group min-h-[500px] flex flex-col justify-between border border-white/10">
+<div class="card-leoncio rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl group min-h-[450px] md:min-h-[500px] flex flex-col justify-between border border-white/10">
     <div class="aurora-glow"></div>
-    <div class="card-pattern"></div>
     
     <div class="relative z-10">
         <div class="flex justify-between items-start">
-            <div class="relative">
-                <div class="absolute -inset-2 bg-white/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="w-28 h-28 rounded-3xl overflow-hidden border-2 border-white/30 relative z-10 transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-3">
-                    <img src="/static/assets/team/leoncio.jpg" alt="Leoncio" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Leoncio+Amadore&background=fff&color=006837'">
-                </div>
+            <div class="w-20 h-20 md:w-28 md:h-28 rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/30 transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-3">
+                <img src="{{ url_for('static', filename='assets/team/leoncio.jpg') }}" alt="Leoncio" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Leoncio+Amadore&background=fff&color=006837'">
             </div>
             <div class="text-right">
-                <span class="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Lead Architect</span>
-                <i class="fas fa-wand-magic-sparkles text-white/20 text-4xl block mt-2"></i>
+                <span class="text-[8px] md:text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Lead Architect</span>
+                <i class="fas fa-wand-magic-sparkles text-white/20 text-2xl md:text-4xl block mt-2"></i>
             </div>
         </div>
 
-        <div class="mt-8">
-            <h2 class="text-4xl font-black text-white leading-none tracking-tighter">LEONCIO D.<br>AMADORE III</h2>
-            
-            <div class="inline-flex items-center gap-2 mt-4 px-3 py-1 bg-white/10 rounded-full border border-white/10">
-                <span class="w-2 h-2 bg-green-400 rounded-full animate-ping"></span>
-                <p class="text-green-300 font-bold uppercase tracking-widest text-[10px]">UI/UX Frontend Developer</p>
-            </div>
-
-            <div class="mt-6 max-w-[280px]">
-                <p class="text-green-100/70 text-xs leading-relaxed font-medium italic">
-                    "Crafting digital experiences that bridge the gap between complex governance data and intuitive user-centric design."
-                </p>
-                <div class="w-8 h-[1px] bg-white/20 mt-4"></div>
-            </div>
+        <div class="mt-6 md:mt-8">
+            <h2 class="text-2xl md:text-4xl font-black text-white leading-none tracking-tighter">LEONCIO D.<br>AMADORE III</h2>
+            <p class="text-green-300 font-bold uppercase tracking-widest text-[9px] md:text-[10px] mt-4">Lead Designer & Frontend</p>
+            <p class="text-green-100/70 text-[10px] md:text-xs mt-4 leading-relaxed font-medium italic max-w-[280px]">
+                "Crafting digital experiences that bridge the gap between complex governance data and intuitive user-centric design."
+            </p>
         </div>
     </div>
 
-    <div class="relative z-10 mt-8">
-        <div class="mb-6">
-            <p class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">Core Focus</p>
-            <div class="flex flex-wrap gap-2">
-                <span class="text-[10px] text-white/60">Accessibility</span>
-                <span class="text-white/20">•</span>
-                <span class="text-[10px] text-white/60">Responsive Systems</span>
-                <span class="text-white/20">•</span>
-                <span class="text-[10px] text-white/60">Visual Identity</span>
-            </div>
+    <div class="relative z-10 mt-8 flex items-end justify-between">
+        <div class="flex gap-3">
+            <a href="#" class="w-10 h-10 md:w-12 md:h-12 bg-white/10 hover:bg-white text-white hover:text-primary-green rounded-xl md:rounded-2xl flex items-center justify-center transition-all">
+                <i class="fab fa-github text-lg"></i>
+            </a>
+            <a href="#" class="w-10 h-10 md:w-12 md:h-12 bg-white/10 hover:bg-white text-white hover:text-primary-green rounded-xl md:rounded-2xl flex items-center justify-center transition-all">
+                <i class="fab fa-linkedin-in text-lg"></i>
+            </a>
         </div>
-
-        <div class="flex items-end justify-between">
-            <div class="flex gap-3">
-                <a href="https://github.com/your-username" class="w-12 h-12 bg-white/10 hover:bg-white text-white hover:text-primary-green rounded-2xl flex items-center justify-center transition-all duration-300">
-                    <i class="fab fa-github text-xl"></i>
-                </a>
-                <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white text-white hover:text-primary-green rounded-2xl flex items-center justify-center transition-all duration-300">
-                    <i class="fab fa-linkedin-in text-xl"></i>
-                </a>
-            </div>
-            
-            <div class="text-right">
-                <p class="text-[10px] font-mono text-white/30 uppercase tracking-widest leading-none">Aesthetic v2.0</p>
-                <p class="text-[8px] font-mono text-white/10 uppercase tracking-tighter mt-1">EST. 2024</p>
-            </div>
+        <div class="text-right">
+            <p class="text-[8px] font-mono text-white/30 uppercase tracking-widest leading-none">Aesthetic v2.0</p>
         </div>
     </div>
 </div>

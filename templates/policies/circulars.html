@@ -6,11 +6,11 @@
     
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <a href="{{ url_for('index') }}" class="text-primary-green hover:underline">Home</a>
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
-        <a href="{{ url_for('policies', category='policies') }}" class="hover:text-primary-green">Policies and Reports</a>
+        <a href="{{ url_for('policies.policies_hub', category='hub') }}" class="hover:text-primary-green">Policies and Reports</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
-        <span class="font-semibold text-gray-700">Accomplishment Reports</span>
+        <span class="font-semibold text-gray-700">Circulars</span>
     </nav>
 
 
@@ -25,7 +25,7 @@
             </p>
         </div>
         
-        <!-- Stats Summary (Visual Only) -->
+        <!-- Stats Summary -->
         <div class="flex gap-4 ml-6 md:ml-0">
             <div class="bg-green-50 px-4 py-2 rounded-lg border border-green-100">
                 <span class="block text-xs text-gray-500 uppercase font-bold">Total Files</span>
@@ -170,7 +170,7 @@
         </div>
         <div>
             <h4 class="text-sm font-bold text-blue-800">Need help finding a policy?</h4>
-            <p class="text-xs text-blue-700">If you cannot find a specific circular, please contact the GAD Secretariat office or email us at <a href="mailto:support@example.com" class="underline">gad@agency.gov.ph</a></p>
+            <p class="text-xs text-blue-700">If you cannot find a specific circular, please contact the GAD Secretariat office or email us at <a href="mailto:gad@montalban.gov.ph" class="underline">gad@montalban.gov.ph</a></p>
         </div>
     </div>
 </div>

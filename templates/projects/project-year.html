@@ -7,9 +7,11 @@
     
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <a href="{{ url_for('index') }}" class="text-primary-green hover:underline">Home</a>
+        <!-- FIXED: Added 'main.' prefix -->
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
-        <a href="{{ url_for('projects_hub') }}" class="text-primary-green hover:underline">Projects</a>
+        <!-- FIXED: Added 'projects.' prefix -->
+        <a href="{{ url_for('projects.projects_hub') }}" class="text-primary-green hover:underline">Projects</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
         <span class="font-semibold text-gray-700">Year {{ year }}</span>
     </nav>
@@ -23,8 +25,8 @@
             <p class="text-gray-500 mt-2 ml-6 text-sm italic">Gender-responsive programs and initiatives implemented in the year {{ year }}.</p>
         </div>
         
-        <!-- The "More..." / Archive Link -->
-        <a href="#" class="inline-flex items-center px-5 py-2 text-primary-green border border-primary-green rounded-lg text-sm font-bold hover:bg-primary-green hover:text-white transition-all nav-transition">
+        <!-- FIXED: Link to archive using 'projects.' prefix -->
+        <a href="{{ url_for('projects.projects_archive') }}" class="inline-flex items-center px-5 py-2 text-primary-green border border-primary-green rounded-lg text-sm font-bold hover:bg-primary-green hover:text-white transition-all nav-transition">
             View All Archives <i class="fas fa-archive ml-2 text-xs"></i>
         </a>
     </div>
@@ -34,11 +36,9 @@
         
         <!-- Project Card 1 -->
         <div class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300">
-            <!-- Image Placeholder -->
             <div class="h-56 bg-gray-200 flex flex-col items-center justify-center text-gray-400 font-bold relative overflow-hidden">
                 <i class="fas fa-image text-4xl mb-2 opacity-20"></i>
                 <span class="text-xs uppercase tracking-widest opacity-30">Project Image Placeholder</span>
-                <!-- Year Badge -->
                 <div class="absolute top-4 right-4 bg-primary-green text-white text-[10px] font-bold px-3 py-1 rounded-full">
                     {{ year }}
                 </div>
@@ -90,10 +90,11 @@
 
     </div>
 
-    <!-- The requested "More..." Style link at the bottom -->
+    <!-- More Archive Link -->
     <div class="mt-16 flex justify-center">
         <div class="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden min-w-[250px]">
-            <a href="#" class="block px-6 py-4 text-center text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:text-primary-green nav-transition group">
+            <!-- FIXED: Added 'projects.' prefix -->
+            <a href="{{ url_for('projects.projects_archive') }}" class="block px-6 py-4 text-center text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:text-primary-green nav-transition group">
                 Looking for older projects? <span class="text-primary-green group-hover:underline">View More Archive...</span>
             </a>
         </div>

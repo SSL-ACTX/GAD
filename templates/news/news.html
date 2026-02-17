@@ -6,7 +6,8 @@
 <div class="max-w-6xl mx-auto px-[10%] py-12">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <a href="{{ url_for('index') }}" class="text-primary-green hover:underline">Home</a>
+        <!-- FIXED: main.index -->
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
         <span class="font-semibold text-gray-700">News & Updates</span>
     </nav>
@@ -22,7 +23,7 @@
     <!-- News Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         
-        <!-- News Card 1 (Repeat this block for more news) -->
+        <!-- News Card 1 -->
         <article class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all flex flex-col">
             <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400 relative">
                 <i class="fas fa-image text-4xl opacity-20"></i>
@@ -33,13 +34,15 @@
             <div class="p-6 flex-grow flex flex-col">
                 <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">February 16, 2024</span>
                 <h3 class="text-lg font-bold text-gray-800 mb-3 hover:text-primary-green transition-colors">
-                    <a href="{{ url_for('news_detail') }}">GAD Strategic Planning for FY 2024 Successfully Concluded</a>
+                    <!-- FIXED: main.news_detail -->
+                    <a href="{{ url_for('main.news_detail') }}">GAD Strategic Planning for FY 2024 Successfully Concluded</a>
                 </h3>
                 <p class="text-gray-600 text-sm line-clamp-3 mb-6">
                     The Gender and Development office recently completed its three-day strategic planning workshop aimed at strengthening gender mainstreaming...
                 </p>
                 <div class="mt-auto">
-                    <a href="{{ url_for('news_detail') }}" class="text-primary-green font-bold text-xs uppercase flex items-center gap-2 hover:gap-3 transition-all">
+                    <!-- FIXED: main.news_detail -->
+                    <a href="{{ url_for('main.news_detail') }}" class="text-primary-green font-bold text-xs uppercase flex items-center gap-2 hover:gap-3 transition-all">
                         Read Full Story <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -72,7 +75,7 @@
 
     </div>
 
-    <!-- Pagination (Placeholder) -->
+    <!-- Pagination -->
     <div class="mt-16 flex justify-center gap-2">
         <button class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white transition-all">1</button>
         <button class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white transition-all">2</button>

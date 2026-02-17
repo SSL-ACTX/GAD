@@ -5,9 +5,11 @@
 <div class="max-w-6xl mx-auto px-[10%] py-12">
     <!-- Breadcrumbs -->
     <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <a href="{{ url_for('index') }}" class="text-primary-green hover:underline">Home</a>
+        <!-- FIXED: main.index -->
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
-        <a href="{{ url_for('projects_hub') }}" class="text-primary-green hover:underline">Projects</a>
+        <!-- FIXED: projects.projects_hub -->
+        <a href="{{ url_for('projects.projects_hub') }}" class="text-primary-green hover:underline">Projects</a>
         <i class="fas fa-chevron-right text-[10px]"></i>
         <span class="font-semibold text-gray-700">Archives</span>
     </nav>
@@ -16,18 +18,20 @@
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
         {% for yr in ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018'] %}
-        <a href="{{ url_for('project_year', year=yr) }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:border-primary-green hover:shadow-md transition-all">
+        <!-- FIXED: projects.project_year -->
+        <a href="{{ url_for('projects.project_year', year=yr) }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:border-primary-green hover:shadow-md transition-all">
             <span class="block text-2xl font-black text-gray-300 group-hover:text-primary-green transition-colors mb-1">{{ yr }}</span>
             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-gray-600">Explore Projects</span>
         </a>
         {% endfor %}
     </div>
 
-    <!-- More... Style Link -->
+    <!-- Contact Link -->
     <div class="mt-12 flex justify-center">
         <div class="bg-gray-50 rounded-2xl border border-gray-100 p-6 w-full text-center">
             <p class="text-gray-500 text-sm italic">Looking for physical documents of projects prior to 2018?</p>
-            <a href="{{ url_for('contact') }}" class="text-primary-green font-bold hover:underline">Contact the GAD Office</a>
+            <!-- FIXED: main.contact -->
+            <a href="{{ url_for('main.contact') }}" class="text-primary-green font-bold hover:underline">Contact the GAD Office</a>
         </div>
     </div>
 </div>

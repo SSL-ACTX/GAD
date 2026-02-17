@@ -98,8 +98,8 @@ npm run watch
 
 This platform was engineered and designed by the Montalban IT Development Team.
 
-**Lead Architect & UI/UX Frontend:** Leoncio D. Amadore III  
-**Backend Specialist:** Adrian Vine A. Cruz
+**Lead Architect & UI/UX Frontend:** [Leoncio D. Amadore III](https://github.com/Amitred11)  
+**Backend Specialist:** [Adrian Vine A. Cruz](https://github.com/AlT4lR)
 
 ---
 

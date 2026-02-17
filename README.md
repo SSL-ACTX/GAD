@@ -7,11 +7,11 @@
 ## 🚀 Features
 
 - **Modular Architecture:** Utilizes Flask Blueprints for a scalable and organized backend.
-- **Document Management:** Dedicated modules for Circulars, Office Orders, Memoranda, and Resolutions.
+- **Live Search & Suggestions:** Real-time autocomplete API providing instant access to municipal resources and documents.
+- **Production Security:** Integrated security headers (CSP, HSTS) and protection against XSS and Clickjacking.
+- **Anti-Scraper Protection:** Advanced rate-limiting and automated bot-blocking middleware to protect government data.
 - **Dynamic Projects Archive:** Year-by-year breakdown of GAD-related community programs.
-- **Developer Spotlight:** A unique, modular developer showcase highlighting the technical architects.
 - **Citizen-Centric Design:** High-performance, responsive UI optimized for accessibility using Tailwind CSS.
-- **Modern Search & Filter:** Intuitive tools to find legislative documents quickly.
 
 ---
 
@@ -19,18 +19,19 @@
 
 ### **Backend**
 - **Python 3.x / Flask:** Core logic using a modular Blueprint pattern.
+- **Flask-Talisman:** Production-grade security headers and HTTPS enforcement.
+- **Flask-Limiter:** Rate-limiting logic for anti-scraping and brute-force protection.
 - **Jinja2:** Component-based templating system with inheritance.
-- **Werkzeug:** Reliable routing and WSGI utility.
 
 ### **Frontend**
 - **Tailwind CSS 3.4+:** Utility-first CSS framework for custom UI/UX.
-- **JavaScript (ES6+):** Interactive navigation and mobile-responsive logic.
+- **JavaScript (ES6+):** Async Fetch API for live search and mobile-responsive logic.
 - **FontAwesome 6:** Comprehensive iconography for visual hierarchy.
-- **Google Fonts (Poppins):** Clean, professional typography.
 
-### **Build Tools**
-- **npm / Node.js:** Manages Tailwind CSS compilation and minification.
-- **Pip:** Python package management.
+### **Build & Environment**
+- **Node.js / npm:** Tailwind CSS compilation and minification pipeline.
+- **python-dotenv:** Secure environment variable management.
+- **Waitress:** Production-grade WSGI HTTP server.
 
 ---
 
@@ -39,7 +40,7 @@
 ```text
 GAD                               
 ├─ routes                         # Flask Blueprints (Modular Logic)
-│  ├─ main.py                     # Home, About, News
+│  ├─ main.py                     # Home, About, News, Search API
 │  ├─ policies.py                 # Document Hub, Reports
 │  ├─ projects.py                 # Year-based Archives
 │  └─ legal.py                    # Privacy, Terms, Dev Team
@@ -47,50 +48,61 @@ GAD
 │  ├─ assets                      # Images & Brand Logos
 │  ├─ input.css                   # Tailwind source
 │  ├─ output.css                  # Compiled minified CSS
-│  └─ script.js                   # UI Interactions
+│  └─ script.js                   # Live Search & UI logic
 ├─ templates                      # Jinja2 HTML Templates
 │  ├─ about/                      # About, Vision, Committee
-│  ├─ legal/                      # Legal documents
 │  ├─ news/                       # News Feed & Articles
 │  ├─ policies/                   # Legislative documents
 │  ├─ projects/                   # Project Year archives
-│  ├─ team/                       # Developer Showcase
-│  ├─ base.html                   # Master Template
+│  ├─ search-results.html         # Dynamic search UI
+│  ├─ base.html                   # Master Template (Security Integrated)
 │  └─ index.html                  # Landing Page
-├─ app.py                         # Application Entry Point
-├─ package.json                   # Build Scripts & Dependencies
-├─ requirements.txt               # Python Dependencies
-└─ tailwind.config.js             # Tailwind Configuration
+├─ app.py                         # Secure Entry Point (Middleware enabled)
+├─ package.json                   # Build Scripts
+├─ requirements.txt               # Refined Production Dependencies
+└─ .env.example                   # Template for environment secrets
 ```
 
 ---
 
 ## ⚙️ Local Development Setup
 
-### 1. Backend Setup
-```bash
-# Clone the repository
-git clone https://github.com/Amitred11/GAD.git
+### 1. Environment Configuration
+Create a `.env` file in the root directory:
+```text
+SECRET_KEY=your_random_secret_string
+DEBUG=True
+```
 
-# Install Python dependencies
+### 2. Backend Setup
+```bash
+# Install refined dependencies
 pip install -r requirements.txt
 
 # Run the application
 python app.py
 ```
 
-### 2. Frontend (Tailwind) Setup
-Ensure you have [Node.js](https://nodejs.org/) installed.
+### 3. Frontend (Tailwind) Setup
 ```bash
 # Install Node dependencies
 npm install
 
-# Compile Tailwind CSS
+# Compile & Minify CSS
 npm run build
 
-# Or use the watcher during development
+# Use watcher for active development
 npm run watch
 ```
+
+---
+
+## 🛡️ Security Implementation
+
+- **Rate Limiting:** Default limits set to 50 requests per hour per IP to prevent aggressive scraping.
+- **Content Security Policy (CSP):** Strict policy governing script and style sources to mitigate XSS risks.
+- **Bot Mitigation:** Automated blocking of common scraper User-Agents (Requests, Selenium, Scrapy, etc.).
+- **Data Privacy:** Full compliance with the **Data Privacy Act of 2012 (RA 10173)**.
 
 ---
 
@@ -99,7 +111,7 @@ npm run watch
 This platform was engineered and designed by the Montalban IT Development Team.
 
 **Lead Architect & UI/UX Frontend:** [Leoncio D. Amadore III](https://github.com/Amitred11)  
-**Backend Specialist:** [Adrian Vine A. Cruz](https://github.com/AlT4lR)
+**Backend & Security Specialist:** [Adrian Vine A. Cruz](https://github.com/AlT4lR)
 
 ---
 

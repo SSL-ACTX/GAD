@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /auth/
+Disallow: /login
+
+# Prevent aggressive scrapers
+Crawl-delay: 10

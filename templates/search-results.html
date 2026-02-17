@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - GAD Corner{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-[10%] py-12">
+    <!-- Breadcrumbs -->
+    <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
+        <i class="fas fa-chevron-right text-[10px]"></i>
+        <span class="font-semibold text-gray-700">Search Results</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="mb-10">
+        <h2 class="text-3xl font-bold text-gray-800 border-l-8 border-primary-green pl-4 uppercase">
+            Search <span class="text-primary-green">Results</span>
+        </h2>
+        <p class="text-gray-500 mt-2 ml-6">Showing results for: <span class="font-bold text-gray-800 italic">"{{ query }}"</span></p>
+    </div>
+
+    <!-- Results List -->
+    {% if results %}
+        <div class="space-y-4">
+            {% for result in results %}
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green transition-all group">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <!-- Category Badge -->
+                            <span class="text-[10px] font-black uppercase tracking-widest text-primary-green bg-green-50 px-2 py-1 rounded mb-2 inline-block">
+                                {{ result.category }}
+                            </span>
+                            <!-- Result Title -->
+                            <h3 class="text-xl font-bold text-gray-800 group-hover:text-primary-green transition-colors">
+                                {{ result.title }}
+                            </h3>
+                        </div>
+                        
+                        <!-- Dynamic Link Routing Logic -->
+                        {% if result.year %}
+                            <a href="{{ url_for(result.url, year=result.year) }}" class="bg-primary-green text-white p-3 rounded-xl hover:bg-primary-hover shadow-lg mt-2">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        {% elif result.cat_val %}
+                            <a href="{{ url_for(result.url, category=result.cat_val) }}" class="bg-primary-green text-white p-3 rounded-xl hover:bg-primary-hover shadow-lg mt-2">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for(result.url) }}" class="bg-primary-green text-white p-3 rounded-xl hover:bg-primary-hover shadow-lg mt-2">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State (No Results) -->
+        <div class="text-center py-20 bg-white rounded-[2rem] border-2 border-dashed border-gray-100">
+            <i class="fas fa-search text-5xl text-gray-200 mb-4"></i>
+            <p class="text-gray-400 font-medium">No resources found matching your search.</p>
+            <a href="{{ url_for('main.index') }}" class="text-primary-green font-bold hover:underline mt-4 inline-block">Try going back home</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

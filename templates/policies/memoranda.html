@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Memoranda - GAD Corner{% endblock %}
+{% from "policies/components/table_controls.html" import render_controls with context %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto px-[10%] py-12">
@@ -13,127 +14,105 @@
         <span class="font-semibold text-gray-700">Memoranda</span>
     </nav>
 
-
-        <!-- Page Header -->
-        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-                <h2 class="text-3xl font-extrabold text-gray-800 border-l-8 border-primary-green pl-4 uppercase tracking-tight">
-                    Office <span class="text-primary-green">Memoranda</span>
-                </h2>
-                <p class="mt-2 text-gray-600 ml-6 max-w-2xl">
-                    Internal directives, training calls, and announcements regarding GAD mainstreaming and institutional activities.
-                </p>
-            </div>
-            
-            <!-- Quick Stats Summary -->
-            <div class="hidden lg:flex gap-4">
-                <div class="bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
-                    <span class="block text-[10px] font-bold text-gray-400 uppercase">Recent (30d)</span>
-                    <span class="text-lg font-bold text-primary-green">04</span>
-                </div>
-            </div>
+    <!-- Page Header -->
+    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h2 class="text-3xl font-extrabold text-gray-800 border-l-8 border-primary-green pl-4 uppercase tracking-tight">
+                Office <span class="text-primary-green">Memoranda</span>
+            </h2>
+            <p class="mt-2 text-gray-600 ml-6 max-w-2xl">
+                Internal directives, training calls, and announcements regarding GAD mainstreaming and institutional activities.
+            </p>
         </div>
-
-        <!-- Search and Filter Bar -->
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-4">
-            <div class="relative flex-grow">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                    <i class="fas fa-search"></i>
-                </span>
-                <input type="text" placeholder="Search by subject or keyword..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all outline-none text-sm">
-            </div>
-            <div class="flex gap-2">
-                <select class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 text-sm focus:ring-2 focus:ring-primary-green/20 outline-none">
-                    <option>All Years</option>
-                    <option>2024</option>
-                    <option>2023</option>
-                </select>
-                <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-                    <i class="fas fa-filter mr-1"></i> Sort
-                </button>
-            </div>
-        </div>
-
-        <!-- Table Container -->
-        <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-primary-green text-white">
-                        <tr>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Date Published</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Subject / Title</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Ref No.</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <!-- Memo Row 1 -->
-                        <tr class="hover:bg-green-50/40 transition-colors group">
-                            <td class="px-6 py-5 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="w-2 h-2 rounded-full bg-primary-green mr-3 animate-pulse"></div>
-                                    <span class="text-sm font-bold text-gray-700 uppercase">Feb 14, 2024</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5">
-                                <div class="text-gray-800 font-bold group-hover:text-primary-green transition-colors">Memorandum on Mandatory GAD Training for All Dept Heads</div>
-                                <div class="flex gap-2 mt-1">
-                                    <span class="text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded font-bold uppercase">Urgent</span>
-                                    <span class="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-bold uppercase tracking-tight">Internal</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-5 text-sm text-gray-500 font-mono">MEMO-2024-005</td>
-                            <td class="px-6 py-5 text-center">
-                                <a href="#" class="inline-flex items-center gap-2 px-5 py-2 bg-primary-green/10 text-primary-green font-black text-xs rounded-lg hover:bg-primary-green hover:text-white transition-all shadow-sm">
-                                    <i class="far fa-eye"></i> VIEW
-                                </a>
-                            </td>
-                        </tr>
-
-                        <!-- Memo Row 2 -->
-                        <tr class="hover:bg-green-50/40 transition-colors group">
-                            <td class="px-6 py-5 whitespace-nowrap text-sm font-bold text-gray-400 uppercase">
-                                <div class="flex items-center">
-                                    <div class="w-2 h-2 rounded-full bg-gray-200 mr-3"></div>
-                                    Jan 30, 2024
-                                </div>
-                            </td>
-                            <td class="px-6 py-5">
-                                <div class="text-gray-800 font-bold group-hover:text-primary-green transition-colors">Submission of Gender Disaggregated Data (GDD)</div>
-                                <div class="text-xs text-gray-400 mt-1 italic">Quarterly reporting requirements for all units.</div>
-                            </td>
-                            <td class="px-6 py-5 text-sm text-gray-500 font-mono">MEMO-2024-002</td>
-                            <td class="px-6 py-5 text-center">
-                                <a href="#" class="inline-flex items-center gap-2 px-5 py-2 bg-primary-green/10 text-primary-green font-black text-xs rounded-lg hover:bg-primary-green hover:text-white transition-all shadow-sm">
-                                    <i class="far fa-eye"></i> VIEW
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination / Footer -->
-            <div class="bg-gray-50/50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                <span class="text-xs font-bold text-gray-400 uppercase">Showing 2 Memos</span>
-                <div class="flex gap-1">
-                    <button class="w-8 h-8 flex items-center justify-center rounded bg-white border border-gray-200 text-gray-400 cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded bg-primary-green text-white text-xs font-bold">1</button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded bg-white border border-gray-200 text-gray-600 hover:border-primary-green hover:text-primary-green transition-colors"><i class="fas fa-chevron-right text-xs"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Help Notice -->
-        <div class="mt-8 flex items-center p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-xl">
-            <div class="flex-shrink-0">
-                <i class="fas fa-info-circle text-blue-400 text-xl"></i>
-            </div>
-            <div class="ml-4">
-                <p class="text-sm text-blue-700 font-medium">
-                    Looking for older memoranda? Visit the <a href="#" class="font-bold underline hover:text-blue-800">Archive Section</a> for documents from 2020-2022.
-                </p>
+        
+        <div class="hidden lg:flex gap-4">
+            <div class="bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
+                <span class="block text-[10px] font-bold text-gray-400 uppercase">Recent (30d)</span>
+                <span class="text-lg font-bold text-primary-green">04</span>
             </div>
         </div>
     </div>
+
+    <!-- Search and Filter Bar -->
+    {{ render_controls(
+        search_id="memoSearch", 
+        filter_id="memoYearFilter", 
+        placeholder="Search by subject or Ref No...",
+        start_year=2002,
+        current_year=now.year
+    ) }}
+
+    <!-- Table Container -->
+    <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-primary-green text-white">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Date Published</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Subject / Title</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest">Ref No.</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="memoTableBody" class="divide-y divide-gray-100">
+                    <!-- Memo Row 1: Added class and data-attributes -->
+                    <tr class="memo-row hover:bg-green-50/40 transition-colors group" data-year="2024" data-content="Memorandum on Mandatory GAD Training for All Dept Heads MEMO-2024-005">
+                        <td class="px-6 py-5 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full bg-primary-green mr-3"></div>
+                                <span class="text-sm font-bold text-gray-700 uppercase">Feb 14, 2024</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="text-gray-800 font-bold group-hover:text-primary-green transition-colors">Memorandum on Mandatory GAD Training for All Dept Heads</div>
+                            <div class="flex gap-2 mt-1">
+                                <span class="text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded font-bold uppercase">Urgent</span>
+                                <span class="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-bold uppercase tracking-tight">Internal</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 text-sm text-gray-500 font-mono">MEMO-2024-005</td>
+                        <td class="px-6 py-5 text-center">
+                            <a href="#" class="inline-flex items-center gap-2 px-5 py-2 bg-primary-green/10 text-primary-green font-black text-xs rounded-lg hover:bg-primary-green hover:text-white transition-all shadow-sm">
+                                <i class="far fa-eye"></i> VIEW
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Memo Row 2: Added class and data-attributes -->
+                    <tr class="memo-row hover:bg-green-50/40 transition-colors group" data-year="2024" data-content="Submission of Gender Disaggregated Data (GDD) MEMO-2024-002">
+                        <td class="px-6 py-5 whitespace-nowrap text-sm font-bold text-gray-400 uppercase">
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full bg-gray-200 mr-3"></div>
+                                Jan 30, 2024
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="text-gray-800 font-bold group-hover:text-primary-green transition-colors">Submission of Gender Disaggregated Data (GDD)</div>
+                            <div class="text-xs text-gray-400 mt-1 italic">Quarterly reporting requirements for all units.</div>
+                        </td>
+                        <td class="px-6 py-5 text-sm text-gray-500 font-mono">MEMO-2024-002</td>
+                        <td class="px-6 py-5 text-center">
+                            <a href="#" class="inline-flex items-center gap-2 px-5 py-2 bg-primary-green/10 text-primary-green font-black text-xs rounded-lg hover:bg-primary-green hover:text-white transition-all shadow-sm">
+                                <i class="far fa-eye"></i> VIEW
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination / Footer: Added IDs -->
+        <div class="bg-gray-50/50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-400 uppercase">
+                Showing <span id="memoCount" class="text-gray-700">0</span> Memos
+            </span>
+            <div class="flex gap-1" id="memoPagination">
+                <!-- Buttons generated by JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load Script -->
+<script src="{{ url_for('static', filename='js/table-logic.js') }}"></script>
 {% endblock %}

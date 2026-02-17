@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Resolutions - GAD Corner{% endblock %}
+{% from "policies/components/table_controls.html" import render_controls with context %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto px-[10%] py-12">
@@ -13,12 +14,12 @@
         <span class="font-semibold text-gray-700">Resolutions</span>
     </nav>
 
-        <div class="mb-10">
-            <h2 class="text-3xl font-extrabold text-gray-800 border-l-8 border-primary-green pl-4 uppercase tracking-tight">Legislative <span class="text-primary-green">Resolutions</span></h2>
-            <p class="mt-2 text-gray-600 ml-6 max-w-3xl">Formal expressions of the opinion or will of the GAD Council, including adoption of plans, budgets, and localized policies.</p>
-        </div>
+    <div class="mb-10">
+        <h2 class="text-3xl font-extrabold text-gray-800 border-l-8 border-primary-green pl-4 uppercase tracking-tight">Legislative <span class="text-primary-green">Resolutions</span></h2>
+        <p class="mt-2 text-gray-600 ml-6 max-w-3xl">Formal expressions of the opinion or will of the GAD Council, including adoption of plans, budgets, and localized policies.</p>
+    </div>
 
-        <!-- Stats Cards -->
+<!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
                 <div class="w-12 h-12 bg-green-100 text-primary-green rounded-full flex items-center justify-center text-xl">
@@ -49,45 +50,58 @@
             </div>
         </div>
 
-        <!-- Table Container -->
-        <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-primary-green text-white text-xs uppercase font-bold tracking-widest">
-                        <tr>
-                            <th class="px-6 py-4">Resolution No.</th>
-                            <th class="px-6 py-4">Approved Date</th>
-                            <th class="px-6 py-4">Subject & Purpose</th>
-                            <th class="px-6 py-4 text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <tr class="hover:bg-gray-50/80 transition-all group">
-                            <td class="px-6 py-6 font-black text-gray-700">Reso No. 2023-45</td>
-                            <td class="px-6 py-6 text-sm text-gray-500 whitespace-nowrap">
-                                <i class="far fa-calendar-alt mr-2 text-primary-green"></i> Oct 12, 2023
-                            </td>
-                            <td class="px-6 py-6">
-                                <div class="text-gray-800 font-bold mb-1">Adoption of the 2024 GAD Plan and Budget</div>
-                                <span class="inline-block px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded uppercase">Budgetary</span>
-                            </td>
-                            <td class="px-6 py-6 text-center">
-                                <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white border border-gray-200 text-primary-green rounded-full hover:bg-primary-green hover:text-white hover:shadow-lg transition-all duration-300">
-                                    <i class="fas fa-file-pdf text-lg"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Empty State / Load More UI -->
-            <div class="bg-gray-50 p-4 text-center">
-                <button class="text-sm font-bold text-primary-green hover:text-green-700 transition-colors uppercase tracking-widest">
-                    <i class="fas fa-chevron-down mr-2"></i> View Archives
-                </button>
+    {{ render_controls(
+        search_id="resolutionSearch", 
+        filter_id="resolutionYearFilter", 
+        placeholder="Search Resolution No. or Purpose...",
+        start_year=2002,
+        current_year=now.year
+    ) }}
+
+    <!-- Table Container -->
+    <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-primary-green text-white text-xs uppercase font-bold tracking-widest">
+                    <tr>
+                        <th class="px-6 py-4">Resolution No.</th>
+                        <th class="px-6 py-4">Approved Date</th>
+                        <th class="px-6 py-4">Subject & Purpose</th>
+                        <th class="px-6 py-4 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="resolutionTableBody" class="divide-y divide-gray-100">
+                    <!-- Row 1: Added resolution-row and data attributes -->
+                    <tr class="resolution-row hover:bg-gray-50/80 transition-all group" data-year="2023" data-content="Reso No. 2023-45 Adoption of the 2024 GAD Plan and Budget">
+                        <td class="px-6 py-6 font-black text-gray-700">Reso No. 2023-45</td>
+                        <td class="px-6 py-6 text-sm text-gray-500 whitespace-nowrap">
+                            <i class="far fa-calendar-alt mr-2 text-primary-green"></i> Oct 12, 2023
+                        </td>
+                        <td class="px-6 py-6">
+                            <div class="text-gray-800 font-bold mb-1">Adoption of the 2024 GAD Plan and Budget</div>
+                            <span class="inline-block px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded uppercase">Budgetary</span>
+                        </td>
+                        <td class="px-6 py-6 text-center">
+                            <a href="#" class="inline-flex items-center justify-center w-10 h-10 bg-white border border-gray-200 text-primary-green rounded-full hover:bg-primary-green hover:text-white hover:shadow-lg transition-all duration-300">
+                                <i class="fas fa-file-pdf text-lg"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination Footer: NEWLY ADDED -->
+        <div class="bg-gray-50/50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-400 uppercase">
+                Showing <span id="resolutionShowingCount" class="text-gray-700">0</span> results
+            </span>
+            <div class="flex gap-1" id="resolutionPagination">
+                <!-- Buttons handled by JS -->
             </div>
         </div>
     </div>
+</div>
 
+<script src="{{ url_for('static', filename='js/table-logic.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,25 @@
+{% macro render_controls(search_id, filter_id, placeholder="Search...", start_year=2020, current_year=2026) %}
+<div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-4">
+    <!-- Search Input -->
+    <div class="relative flex-grow">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+            <i class="fas fa-search"></i>
+        </span>
+        <input type="text" id="{{ search_id }}" placeholder="{{ placeholder }}" 
+               class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all outline-none text-sm">
+    </div>
+
+    <!-- Year Filter -->
+    <div class="flex gap-2">
+        <select id="{{ filter_id }}" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 text-sm focus:ring-2 focus:ring-primary-green/20 outline-none">
+            <option value="all">All Years</option>
+            
+            {% set current_year = now.year | int %}
+            
+            {% for year in range(current_year | int, start_year | int - 1, -1) %}
+            <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+{% endmacro %}

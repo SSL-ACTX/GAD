@@ -17,7 +17,7 @@
     <h2 class="text-2xl font-bold text-gray-800 border-l-8 border-primary-green pl-4 uppercase mb-10">Project Archives</h2>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {% for yr in ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018'] %}
+        {% for yr in ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015'] %}
         <!-- FIXED: projects.project_year -->
         <a href="{{ url_for('projects.project_year', year=yr) }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:border-primary-green hover:shadow-md transition-all">
             <span class="block text-2xl font-black text-gray-300 group-hover:text-primary-green transition-colors mb-1">{{ yr }}</span>

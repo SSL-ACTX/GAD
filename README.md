@@ -6,10 +6,11 @@
 
 ## 🚀 Features
 
+- **Modular Architecture:** Utilizes Flask Blueprints for a scalable and organized backend.
 - **Document Management:** Dedicated modules for Circulars, Office Orders, Memoranda, and Resolutions.
 - **Dynamic Projects Archive:** Year-by-year breakdown of GAD-related community programs.
-- **Developer Spotlight:** A unique, modular developer showcase highlighting the technical architects behind the system.
-- **Citizen-Centric Design:** High-performance, responsive UI optimized for accessibility and ease of navigation.
+- **Developer Spotlight:** A unique, modular developer showcase highlighting the technical architects.
+- **Citizen-Centric Design:** High-performance, responsive UI optimized for accessibility using Tailwind CSS.
 - **Modern Search & Filter:** Intuitive tools to find legislative documents quickly.
 
 ---
@@ -17,15 +18,19 @@
 ## 🛠️ Technical Stack
 
 ### **Backend**
-- **Python / Flask:** Core logic and routing.
-- **Jinja2:** Highly modular templating system with component-based includes.
-- **Flask-SQLAlchemy:** (Planned/Optional) Database management for document metadata.
+- **Python 3.x / Flask:** Core logic using a modular Blueprint pattern.
+- **Jinja2:** Component-based templating system with inheritance.
+- **Werkzeug:** Reliable routing and WSGI utility.
 
 ### **Frontend**
-- **Tailwind CSS:** Modern utility-first CSS framework for custom UI/UX design.
-- **JavaScript (ES6+):** Interactive elements and navigation logic.
+- **Tailwind CSS 3.4+:** Utility-first CSS framework for custom UI/UX.
+- **JavaScript (ES6+):** Interactive navigation and mobile-responsive logic.
 - **FontAwesome 6:** Comprehensive iconography for visual hierarchy.
-- **Google Fonts (Poppins):** Clean, professional typography for readability.
+- **Google Fonts (Poppins):** Clean, professional typography.
+
+### **Build Tools**
+- **npm / Node.js:** Manages Tailwind CSS compilation and minification.
+- **Pip:** Python package management.
 
 ---
 
@@ -33,46 +38,58 @@
 
 ```text
 GAD                               
-├─ static                         
-│  ├─ assets                      
-│  │  ├─ team                     
-│  │  │  └─ leoncio.jpg           
-│  │  ├─ GAD-logo.png             
-│  │  └─ montalban-logo.png       
-│  └─ script.js                   
-├─ templates                      
-│  ├─ about                       
-│  │  ├─ about.html               
-│  │  ├─ contact.html             
-│  │  ├─ gad-committee.html       
-│  │  ├─ org-structure.html       
-│  │  └─ vision-mission.html      
-│  ├─ legal                       
-│  │  ├─ privacy-policy.html      
-│  │  └─ terms-conditions.html    
-│  ├─ news                        
-│  │  ├─ news-detail.html         
-│  │  └─ news.html                
-│  ├─ policies                    
-│  │  ├─ circulars.html           
-│  │  ├─ memoranda.html           
-│  │  ├─ office-orders.html       
-│  │  ├─ policies.html            
-│  │  ├─ reports.html             
-│  │  └─ resolution.html          
-│  ├─ projects                    
-│  │  ├─ archive.html             
-│  │  ├─ project-year.html        
-│  │  └─ projects.html            
-│  ├─ team                        
-│  │  ├─ includes                 
-│  │  │  ├─ dev-leoncio.html      
-│  │  │  └─ dev-placeholder.html  
-│  │  └─ developers.html          
-│  ├─ base.html                   
-│  └─ index.html                  
-├─ app.py                         
-└─ README.md                      
+├─ routes                         # Flask Blueprints (Modular Logic)
+│  ├─ main.py                     # Home, About, News
+│  ├─ policies.py                 # Document Hub, Reports
+│  ├─ projects.py                 # Year-based Archives
+│  └─ legal.py                    # Privacy, Terms, Dev Team
+├─ static                         # Static Assets
+│  ├─ assets                      # Images & Brand Logos
+│  ├─ input.css                   # Tailwind source
+│  ├─ output.css                  # Compiled minified CSS
+│  └─ script.js                   # UI Interactions
+├─ templates                      # Jinja2 HTML Templates
+│  ├─ about/                      # About, Vision, Committee
+│  ├─ legal/                      # Legal documents
+│  ├─ news/                       # News Feed & Articles
+│  ├─ policies/                   # Legislative documents
+│  ├─ projects/                   # Project Year archives
+│  ├─ team/                       # Developer Showcase
+│  ├─ base.html                   # Master Template
+│  └─ index.html                  # Landing Page
+├─ app.py                         # Application Entry Point
+├─ package.json                   # Build Scripts & Dependencies
+├─ requirements.txt               # Python Dependencies
+└─ tailwind.config.js             # Tailwind Configuration
+```
+
+---
+
+## ⚙️ Local Development Setup
+
+### 1. Backend Setup
+```bash
+# Clone the repository
+git clone https://github.com/Amitred11/GAD.git
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Run the application
+python app.py
+```
+
+### 2. Frontend (Tailwind) Setup
+Ensure you have [Node.js](https://nodejs.org/) installed.
+```bash
+# Install Node dependencies
+npm install
+
+# Compile Tailwind CSS
+npm run build
+
+# Or use the watcher during development
+npm run watch
 ```
 
 ---
@@ -81,27 +98,22 @@ GAD
 
 This platform was engineered and designed by the Montalban IT Development Team.
 
-**Lead Architect & UI/UX Frontend:** Leoncio D. Amadore III  
-**Role:** System Architecture, Frontend Development, Aesthetic Design.
+**Lead Architect & UI/UX Frontend:** [Leoncio D. Amadore III](https://github.com/Amitred11)  
+**Backend Specialist:** [Adrian Vine A. Cruz](https://github.com/AlT4lR)
 
 ---
 
-## 📄 License & Terms of Use
+## 📄 License & Proprietary Notice
 
-### **Proprietary Notice**
 **Copyright © 2026 Municipality of Montalban. All rights reserved.**
 
-This software and all associated files (the "Software") are **proprietary**. Unauthorized use, copying, modification, merger, publication, distribution, sublicensing, or sale of this Software or any of its parts is **strictly prohibited** without express written permission from the Municipality of Montalban and the lead developer.
-
-### **Assets & Content**
-All official logos (Municipality of Montalban and GAD Logos), legislative documents, and government-specific content are the exclusive property of the **Municipality of Montalban**. These assets may not be reproduced or distributed for any purpose without official consent from the Local Government Unit (LGU).
+This software and all associated files are **proprietary**. Unauthorized use, copying, modification, or distribution of this Software is strictly prohibited without express written permission from the Municipality of Montalban.
 
 ---
 
 ## 📧 Contact & Support
 
-For technical inquiries, permission requests, or system-related concerns, please reach out to:
-
+For technical inquiries or system-related concerns:
 - **Email:** gad@montalban.gov.ph
 - **Location:** GAD Office, 2nd Floor Municipal Hall, Rodriguez, Rizal.
 

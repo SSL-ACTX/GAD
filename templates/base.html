@@ -5,30 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GAD Corner - Bagong Montalban{% endblock %}</title>
     
-    <!-- External Fonts & Icons -->
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Emergency Tailwind CDN -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: {
-                            green: '#006837',
-                            hover: '#004d29',
-                        },
-                        text: {
-                            dark: '#1a1a1a',
-                            light: '#666666',
-                        },
+                        primary: { green: '#006837', hover: '#004d29' },
+                        text: { dark: '#1a1a1a', light: '#666666' },
                         bgLight: '#f4f7f5',
                     },
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
                 }
             }
         }
@@ -39,10 +31,10 @@
         .dropdown-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
         html { scroll-behavior: smooth; }
         
+        /* Desktop Navigation Hover Logic */
         @media (min-width: 1024px) {
-            .group:hover > .dropdown-menu {
-                display: block !important;
-            }
+            .group:hover > .dropdown-menu { display: block !important; }
+            .group\/flyout:hover > .dropdown-menu { display: block !important; }
         }
     </style>
     
@@ -52,13 +44,28 @@
 
     <!-- Top Accessibility Bar -->
     <div class="hidden md:flex bg-primary-green px-[5%] lg:px-[10%] py-3 justify-end items-center border-b border-white/10 gap-6">
-        <div class="relative flex items-center group">
-            <input type="text" 
-                   placeholder="Search resources..." 
-                   class="pl-4 pr-10 py-2 bg-white/10 border border-white/20 rounded-full text-sm text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/20 w-64 nav-transition">
-            <i class="fas fa-search absolute right-4 text-white/60 text-xs group-focus-within:text-white group-focus-within:scale-110 transition-all"></i>
+        
+        <!-- SINGLE SEARCH BAR WITH SUGGESTION LOGIC -->
+        <div class="relative">
+            <form action="{{ url_for('main.search') }}" method="GET" class="relative flex items-center group" autocomplete="off">
+                <input type="text" 
+                       id="search-input"
+                       name="q"
+                       placeholder="Search resources..." 
+                       class="pl-4 pr-10 py-2 bg-white/10 border border-white/20 rounded-full text-sm text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/20 w-64 nav-transition">
+                
+                <button type="submit" class="absolute right-4 text-white/60 text-xs group-focus-within:text-white group-focus-within:scale-110 transition-all">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <!-- Suggestion Dropdown (The Ghost Box) -->
+            <div id="suggestion-box" 
+                 class="absolute top-full left-0 mt-2 w-full bg-[#1a1a1a] text-white rounded-xl shadow-2xl hidden z-[2000] border border-white/10 overflow-hidden">
+            </div>
         </div>
 
+        <!-- Accessibility Icons -->
         <div class="flex gap-4 text-white/80 border-l pl-6 border-white/20">
             <i class="fas fa-universal-access cursor-pointer hover:text-white nav-transition" title="Accessibility"></i>
             <i class="fas fa-font cursor-pointer hover:text-white nav-transition" title="Text Size"></i>
@@ -93,24 +100,22 @@
             </div>
 
             <ul id="nav-menu" class="hidden lg:flex flex-col lg:flex-row list-none pb-6 lg:pb-0 divide-y divide-white/5 lg:divide-y-0">
-                <!-- MODIFIED: main.index -->
                 <li><a href="{{ url_for('main.index') }}" class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition">Home</a></li>
                 
-                <!-- About Us Dropdown -->
+                <!-- About Us -->
                 <li class="relative group">
                     <button class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
                         About Us <i class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
                     <ul class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-64 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
-                        <!-- MODIFIED: All main. endpoints -->
-                        <li><a href="{{ url_for('main.vision_mission') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50 nav-transition">Vision and Mission</a></li>
-                        <li><a href="{{ url_for('main.org_structure') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50 nav-transition">Organization Structure</a></li>
-                        <li><a href="{{ url_for('main.gad_committee') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50 nav-transition">GAD Committee</a></li>
-                        <li><a href="{{ url_for('main.contact') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green nav-transition">Contact Us</a></li>
+                        <li><a href="{{ url_for('main.vision_mission') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">Vision and Mission</a></li>
+                        <li><a href="{{ url_for('main.org_structure') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">Organization Structure</a></li>
+                        <li><a href="{{ url_for('main.gad_committee') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">GAD Committee</a></li>
+                        <li><a href="{{ url_for('main.contact') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green">Contact Us</a></li>
                     </ul>
                 </li>
 
-                <!-- Policies and Reports Dropdown -->
+                <!-- Policies and Reports -->
                 <li class="relative group">
                     <button class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
                         Policies and Reports <i class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
@@ -118,9 +123,10 @@
                     <ul class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-64 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
                         <li class="relative group/flyout">
                             <button class="w-full flex justify-between items-center px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50 dropdown-toggle-sub">
-                                Policies <i class="fas fa-chevron-down lg:-rotate-90 text-[10px]"></i>
+                                Policies <i class="fas fa-chevron-right hidden lg:block text-[10px] opacity-50"></i>
+                                <i class="fas fa-chevron-down block lg:hidden text-[10px] opacity-50"></i>
                             </button>
-                            <ul class="dropdown-menu lg:absolute lg:left-full lg:top-0 w-full lg:w-52 bg-gray-50 lg:bg-white lg:dropdown-shadow lg:border-l-4 border-primary-green hidden">
+                            <ul class="dropdown-menu lg:absolute lg:left-full lg:top-0 w-full lg:w-64 bg-gray-50 lg:bg-white lg:dropdown-shadow lg:border-l-4 border-primary-green hidden">
                                 <li><a href="{{ url_for('policies.policies_hub', category='circulars') }}" class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Circulars</a></li>
                                 <li><a href="{{ url_for('policies.policies_hub', category='resolutions') }}" class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Resolutions</a></li>
                                 <li><a href="{{ url_for('policies.policies_hub', category='memoranda') }}" class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Memoranda</a></li>
@@ -131,15 +137,15 @@
                     </ul>
                 </li>
 
-                <!-- Projects Dropdown -->
+                <!-- Projects -->
                 <li class="relative group">
                     <button class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
                         Projects <i class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
                     <ul class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-52 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
-                        <li><a href="{{ url_for('projects.project_year', year='2025') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">Year 2025</a></li>
-                        <li><a href="{{ url_for('projects.project_year', year='2024') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">Year 2024</a></li>
-                        <li><a href="{{ url_for('projects.projects_archive') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green">More...</a></li>
+                        <li><a href="{{ url_for('projects.project_year', year='2025') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year 2025</a></li>
+                        <li><a href="{{ url_for('projects.project_year', year='2024') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year 2024</a></li>
+                        <li><a href="{{ url_for('projects.projects_archive') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">More...</a></li>
                     </ul>
                 </li>
             </ul>
@@ -150,45 +156,28 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-gray-400 border-t-4 border-primary-green relative overflow-hidden">
         <div class="px-[5%] lg:px-[10%] pt-16 pb-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
                 <div class="lg:col-span-5 space-y-6">
                     <h2 class="text-white text-2xl font-bold">GAD<span class="text-primary-green">.</span> MONTALBAN</h2>
-                    <p class="text-sm border-l-2 border-primary-green/30 pl-4">The official digital hub for Gender and Development initiatives of the Municipality of Montalban, Rizal. Dedicated to promoting equality, inclusivity, and empowerment for every citizen.</p>
+                    <p class="text-sm border-l-2 border-primary-green/30 pl-4">Official digital hub for Gender and Development initiatives of Montalban, Rizal.</p>
                 </div>
-
                 <div class="lg:col-span-2 lg:col-start-7">
                     <h4 class="text-white font-semibold uppercase text-xs mb-6">Legal</h4>
                     <ul class="space-y-3 text-sm">
-                        <!-- MODIFIED: All legal. endpoints -->
-                        <li><a href="{{ url_for('legal.privacy_policy') }}" class="hover:text-white transition-all">Privacy Policy</a></li>
-                        <li><a href="{{ url_for('legal.terms_conditions') }}" class="hover:text-white transition-all">Terms of Use</a></li>
+                        <li><a href="{{ url_for('legal.privacy_policy') }}" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="{{ url_for('legal.terms_conditions') }}" class="hover:text-white">Terms of Use</a></li>
                     </ul>
                 </div>
-
                 <div class="lg:col-span-3 lg:col-start-10">
                     <h4 class="text-white font-semibold uppercase text-xs mb-6">Contact</h4>
-                    <p class="text-sm flex gap-3"><i class="fas fa-envelope text-primary-green mt-1"></i> gad@montalban.gov.ph</p>
-                    <p class="text-xs mt-4">GAD Office, 2nd Floor Municipal Hall, Rodriguez (Montalban), Rizal</p>
+                    <p class="text-sm">gad@montalban.gov.ph</p>
                 </div>
             </div>
         </div>
-
-        <!-- Bottom Bar -->
-        <div class="border-t border-gray-800 bg-gray-900/50">
-            <div class="px-[5%] lg:px-[10%] py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-                <p class="text-[10px] uppercase tracking-widest text-gray-600">
-                    &copy; 2026 Municipality of Montalban. All rights reserved.
-                </p>
-                
-                <!-- MODIFIED: legal.developers -->
-                <a href="{{ url_for('legal.developers') }}" class="group flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-                    <span class="text-[10px] uppercase tracking-wider">System by</span>
-                    <span class="text-[10px] font-bold text-gray-300 bg-gray-800 px-2 py-1 rounded border border-gray-700 group-hover:border-primary-green group-hover:text-white transition-all">IT DEV TEAM</span>
-                </a>
-            </div>
+        <div class="border-t border-gray-800 bg-gray-900/50 py-6 text-center">
+            <p class="text-[10px] uppercase">&copy; 2026 Municipality of Montalban. All rights reserved.</p>
         </div>
     </footer>
 

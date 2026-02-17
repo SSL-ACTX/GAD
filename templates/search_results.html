@@ -1,38 +1,56 @@
 {% extends "base.html" %}
-
-{% block title %}Search Results - {{ query }}{% endblock %}
+{% block title %}Search Results - GAD Corner{% endblock %}
 
 {% block content %}
-<section class="py-12 px-[5%] lg:px-[10%] min-h-[60vh]">
-    <!-- Back Button -->
-    <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-primary-green hover:text-primary-hover mb-8 font-semibold transition-all group">
-        <i class="fas fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
-        Go Back
-    </a>
+<div class="max-w-4xl mx-auto px-[10%] py-12">
+    <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
+        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
+        <i class="fas fa-chevron-right text-[10px]"></i>
+        <span class="font-semibold text-gray-700">Search Results</span>
+    </nav>
 
-    <h1 class="text-3xl font-bold text-primary-green mb-6">Search Results</h1>
-    <p class="mb-8 text-gray-600">Showing results for: <span class="font-semibold text-black italic">"{{ query }}"</span></p>
+    <div class="mb-10">
+        <h2 class="text-3xl font-bold text-gray-800 border-l-8 border-primary-green pl-4 uppercase">
+            Search <span class="text-primary-green">Results</span>
+        </h2>
+        <p class="text-gray-500 mt-2 ml-6">Found for: <span class="font-bold text-gray-900 italic">"{{ query }}"</span></p>
+    </div>
 
     {% if results %}
-        <div class="grid gap-6">
+        <div class="space-y-4">
             {% for result in results %}
-            <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-primary-green hover:shadow-md transition-shadow">
-                <h3 class="text-xl font-bold text-gray-800">{{ result.title }}</h3>
-                <p class="text-gray-600 mt-2">{{ result.description }}</p>
-                <a href="{{ result.url }}" class="text-primary-green font-medium mt-4 inline-block hover:underline">
-                    View Resource <i class="fas fa-arrow-right ml-1 text-xs"></i>
-                </a>
-            </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green transition-all group">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="text-[9px] font-black uppercase tracking-widest text-primary-green bg-green-50 px-2 py-1 rounded-md mb-2 inline-block">
+                                {{ result.category }}
+                            </span>
+                            <h3 class="text-lg font-bold text-gray-800">{{ result.title }}</h3>
+                        </div>
+                        
+                        {# Logic to handle different URL formats #}
+                        {% set target_url = "" %}
+                        {% if result.year %}
+                            {% set target_url = url_for(result.url, year=result.year) %}
+                        {% elif result.cat_val %}
+                            {% set target_url = url_for(result.url, category=result.cat_val) %}
+                        {% else %}
+                            {% set target_url = url_for(result.url) %}
+                        {% endif %}
+
+                        <a href="{{ target_url }}" class="w-10 h-10 bg-primary-green text-white rounded-full flex items-center justify-center hover:bg-primary-hover shadow-lg transition-transform group-hover:scale-110">
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
             {% endfor %}
         </div>
     {% else %}
-        <div class="bg-white p-12 text-center rounded-xl shadow-sm border border-gray-100">
-            <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-search text-3xl text-gray-300"></i>
-            </div>
-            <h2 class="text-2xl font-semibold text-gray-700">No results found</h2>
-            <p class="text-gray-500 mt-2">We couldn't find anything matching "{{ query }}".</p>
+        <div class="text-center py-20 bg-white rounded-[3rem] border-2 border-dashed border-gray-100">
+            <i class="fas fa-search text-5xl text-gray-100 mb-4"></i>
+            <p class="text-gray-400 font-medium">We couldn't find anything matching that query.</p>
+            <a href="{{ url_for('main.index') }}" class="text-primary-green font-bold hover:underline mt-4 inline-block">Return Home</a>
         </div>
     {% endif %}
-</section>
+</div>
 {% endblock %}

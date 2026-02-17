@@ -29,27 +29,13 @@
     <style type="text/css">
         .nav-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .dropdown-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        html { scroll-behavior: smooth; transition: font-size 0.2s ease; }
+        html { scroll-behavior: smooth; }
         
         /* Desktop Navigation Hover Logic */
         @media (min-width: 1024px) {
             .group:hover > .dropdown-menu { display: block !important; }
             .group\/flyout:hover > .dropdown-menu { display: block !important; }
         }
-
-        /* Accessibility Modes */
-        .a11y-contrast { 
-            filter: contrast(150%) brightness(110%);
-            background-color: #fff !important;
-            color: #000 !important;
-        }
-        .a11y-grayscale { filter: grayscale(100%); }
-        .a11y-underline-links a { text-decoration: underline !important; font-weight: bold; }
-
-        /* Accessibility Panel UI */
-        .bg-active { background-color: #006837 !important; }
-        .bg-active .dot { transform: translateX(24px); }
-        #accessibility-panel.open { transform: translateX(0); }
     </style>
     
     {% block extra_css %}{% endblock %}
@@ -81,8 +67,8 @@
 
         <!-- Accessibility Icons -->
         <div class="flex gap-4 text-white/80 border-l pl-6 border-white/20">
-            <i id="accessibility-toggle" class="fas fa-universal-access cursor-pointer hover:text-white nav-transition" title="Toggle High Contrast"></i>
-            <i id="font-size-toggle" class="fas fa-font cursor-pointer hover:text-white nav-transition" title="Change Text Size"></i>
+            <i class="fas fa-universal-access cursor-pointer hover:text-white nav-transition" title="Accessibility"></i>
+            <i class="fas fa-font cursor-pointer hover:text-white nav-transition" title="Text Size"></i>
         </div>
     </div>
 
@@ -195,33 +181,7 @@
         </div>
     </footer>
 
-    <!-- Accessibility Panel -->
-    <div id="accessibility-panel" class="fixed inset-y-0 right-0 w-72 bg-white shadow-2xl z-[2000] transform translate-x-full transition-transform duration-300 border-l border-gray-200">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-8">
-                <h3 class="font-bold text-lg text-primary-green">Accessibility Tools</h3>
-                <button id="close-a11y" class="text-gray-400 hover:text-black"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium">High Contrast</span>
-                    <button id="btn-contrast" class="w-12 h-6 bg-gray-200 rounded-full relative transition-colors"><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></button>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium">Grayscale Mode</span>
-                    <button id="btn-grayscale" class="w-12 h-6 bg-gray-200 rounded-full relative transition-colors"><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></button>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium">Underline Links</span>
-                    <button id="btn-links" class="w-12 h-6 bg-gray-200 rounded-full relative transition-colors"><div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></button>
-                </div>
-                <hr>
-                <button id="reset-a11y" class="w-full py-2 text-xs font-bold uppercase tracking-widest text-red-600 hover:bg-red-50 rounded">Reset All Settings</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

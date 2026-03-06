@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+
+{% block title %}GAD Events Calendar | GAD Corner - Rodriguez{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cal-cell {
+        min-height: 90px;
+        transition: background 0.15s, box-shadow 0.15s;
+        position: relative;
+    }
+
+    @media (max-width: 640px) {
+        .cal-cell {
+            min-height: 54px;
+        }
+    }
+
+    .cal-cell:hover {
+        background: #f0faf5;
+        box-shadow: inset 0 0 0 2px #006837;
+        cursor: pointer;
+    }
+
+    .cal-cell.today-cell {
+        background: #e8f5ee;
+    }
+
+    .cal-cell.today-cell .day-num {
+        background: #006837;
+        color: #fff;
+        border-radius: 9999px;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .event-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        margin: 1px;
+        flex-shrink: 0;
+    }
+
+    .modal-backdrop {
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(3px);
+    }
+
+    .modal-box {
+        animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .chip-tag {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 2px 10px;
+        border-radius: 9999px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .category-filter.active {
+        background: #006837;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="px-[5%] lg:px-[10%] py-10">
+
+    <!-- Page Header -->
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+            <span class="text-[10px] font-black text-green-600 uppercase tracking-[0.2em] block mb-1">GAD Corner</span>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight">Events Calendar</h1>
+            <p class="text-gray-500 text-sm mt-1">GAD observances, programs, and community events in Rodriguez.</p>
+        </div>
+    </div>
+
+    <!-- Navigation Row -->
+    <div
+        class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <button id="prev-month"
+                class="w-9 h-9 rounded-full border border-gray-200 hover:border-primary-green hover:text-primary-green flex items-center justify-center nav-transition">
+                <i class="fas fa-chevron-left text-xs"></i>
+            </button>
+            <h2 id="month-label" class="text-lg font-extrabold text-gray-800 w-44 text-center"></h2>
+            <button id="next-month"
+                class="w-9 h-9 rounded-full border border-gray-200 hover:border-primary-green hover:text-primary-green flex items-center justify-center nav-transition">
+                <i class="fas fa-chevron-right text-xs"></i>
+            </button>
+        </div>
+        <button id="today-btn"
+            class="text-xs font-bold text-primary-green border border-primary-green px-5 py-2 rounded-full hover:bg-primary-green hover:text-white nav-transition">
+            Today
+        </button>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div id="category-filters" class="flex flex-wrap gap-2 mb-5">
+        <button data-cat="all"
+            class="category-filter active chip-tag border border-gray-200 bg-gray-100 text-gray-700 px-4 py-1 rounded-full">All</button>
+        <button data-cat="women"
+            class="category-filter chip-tag border border-gray-200 bg-gray-100 text-gray-700 px-4 py-1 rounded-full">Women's
+            Month</button>
+        <button data-cat="health"
+            class="category-filter chip-tag border border-gray-200 bg-gray-100 text-gray-700 px-4 py-1 rounded-full">Health</button>
+        <button data-cat="seminar"
+            class="category-filter chip-tag border border-gray-200 bg-gray-100 text-gray-700 px-4 py-1 rounded-full">Seminar</button>
+        <button data-cat="community"
+            class="category-filter chip-tag border border-gray-200 bg-gray-100 text-gray-700 px-4 py-1 rounded-full">Community</button>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="grid grid-cols-7 border-b border-gray-100">
+            <div class="py-3 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Sun</div>
+            <div class="py-3 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Mon</div>
+            <div class="py-3 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Tue</div>
+            <div class="py-3 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Wed</div>
+            <div class="py-3 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Thu</div>
+            <div class="py-3 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Fri</div>
+            <div class="py-3 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Sat</div>
+        </div>
+        <div id="calendar-grid" class="grid grid-cols-7 divide-x divide-y divide-gray-100"></div>
+    </div>
+
+    <!-- Legend -->
+    <div class="mt-5 flex flex-wrap gap-4 text-xs text-gray-500">
+        <span class="flex items-center gap-1.5"><span class="event-dot" style="background:#006837"></span>Women's
+            Month</span>
+        <span class="flex items-center gap-1.5"><span class="event-dot" style="background:#0284c7"></span>Health</span>
+        <span class="flex items-center gap-1.5"><span class="event-dot" style="background:#7c3aed"></span>Seminar</span>
+        <span class="flex items-center gap-1.5"><span class="event-dot"
+                style="background:#b45309"></span>Community</span>
+    </div>
+</div>
+
+<!-- EVENT DETAIL MODAL -->
+<div id="event-modal" class="fixed inset-0 z-[5000] hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="modal-box bg-white rounded-3xl shadow-2xl w-full max-w-md">
+        <div id="modal-color-bar" class="h-2 rounded-t-3xl w-full"></div>
+        <div class="p-6 md:p-8">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <span id="modal-category" class="chip-tag bg-green-100 text-primary-green inline-block mb-2"></span>
+                    <h3 id="modal-title" class="text-xl font-extrabold text-gray-900 leading-snug"></h3>
+                </div>
+                <button id="close-modal"
+                    class="text-gray-400 hover:text-gray-700 text-xl ml-4 mt-1 nav-transition shrink-0">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p id="modal-date" class="text-sm text-gray-500 flex items-center gap-2 mb-2">
+                <i class="fas fa-calendar-day text-primary-green"></i>
+            </p>
+            <p id="modal-days-left" class="text-sm font-semibold flex items-center gap-2 mb-4">
+                <i class="fas fa-hourglass-half text-yellow-500"></i>
+            </p>
+            <p id="modal-description" class="text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-4"></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const COLOR = {
+        women: '#006837',
+        health: '#0284c7',
+        seminar: '#7c3aed',
+        community: '#b45309',
+    };
+    const CATEGORY_LABEL = {
+        women: "Women's Month",
+        health: 'Health',
+        seminar: 'Seminar',
+        community: 'Community',
+    };
+
+    const today = new Date();
+    let viewYear = today.getFullYear();
+    let viewMonth = today.getMonth();
+    let activeFilter = 'all';
+    let ALL_EVENTS = [];
+
+    // ── Load events from server ────────────────────────────────────────────────
+    async function loadEvents() {
+        try {
+            const res = await fetch('/admin/api/events');
+            ALL_EVENTS = await res.json();
+        } catch (e) {
+            ALL_EVENTS = [];
+        }
+        renderCalendar();
+    }
+
+    // ── Render ─────────────────────────────────────────────────────────────────
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+
+    function renderCalendar() {
+        document.getElementById('month-label').textContent = `${MONTHS[viewMonth]} ${viewYear}`;
+        const grid = document.getElementById('calendar-grid');
+        grid.innerHTML = '';
+
+        const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+        const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+        const filtered = activeFilter === 'all'
+            ? ALL_EVENTS
+            : ALL_EVENTS.filter(e => e.category === activeFilter);
+
+        const evtMap = {};
+        filtered.forEach(e => {
+            if (!evtMap[e.date]) evtMap[e.date] = [];
+            evtMap[e.date].push(e);
+        });
+
+        for (let i = 0; i < firstDay; i++) {
+            const blank = document.createElement('div');
+            blank.className = 'cal-cell bg-gray-50/60 p-2';
+            grid.appendChild(blank);
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const isToday = d === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
+            const cell = document.createElement('div');
+            cell.className = `cal-cell p-2 ${isToday ? 'today-cell' : ''}`;
+            cell.dataset.date = dateStr;
+
+            const num = document.createElement('div');
+            num.className = 'day-num text-xs font-bold text-gray-700 mb-1 w-6 h-6 flex items-center justify-center';
+            num.textContent = d;
+            cell.appendChild(num);
+
+            const dots = evtMap[dateStr] || [];
+            if (dots.length) {
+                const dotRow = document.createElement('div');
+                dotRow.className = 'flex flex-wrap gap-0.5 mt-0.5';
+                dots.slice(0, 5).forEach(ev => {
+                    const dot = document.createElement('span');
+                    dot.className = 'event-dot';
+                    dot.style.background = COLOR[ev.category] || '#006837';
+                    dotRow.appendChild(dot);
+                });
+                cell.appendChild(dotRow);
+
+                if (dots[0]) {
+                    const titleEl = document.createElement('p');
+                    titleEl.className = 'hidden md:block text-[10px] text-gray-600 font-semibold mt-1 leading-tight line-clamp-2';
+                    titleEl.textContent = dots[0].title + (dots.length > 1 ? ` +${dots.length - 1}` : '');
+                    cell.appendChild(titleEl);
+                }
+
+                cell.addEventListener('click', () => openEventModal(dots));
+            }
+            grid.appendChild(cell);
+        }
+    }
+
+    // ── Event Modal ────────────────────────────────────────────────────────────
+    function openEventModal(events) {
+        const ev = events[0];
+        document.getElementById('modal-color-bar').style.background = COLOR[ev.category] || '#006837';
+        document.getElementById('modal-category').textContent = CATEGORY_LABEL[ev.category] || ev.category;
+        document.getElementById('modal-category').style.background = (COLOR[ev.category] || '#006837') + '22';
+        document.getElementById('modal-category').style.color = COLOR[ev.category] || '#006837';
+        document.getElementById('modal-title').textContent = ev.title;
+
+        const parts = ev.date.split('-');
+        const evDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        const fmt = evDate.toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('modal-date').innerHTML =
+            `<i class="fas fa-calendar-day" style="color:${COLOR[ev.category] || '#006837'}"></i> ${fmt}`;
+
+        const nowM = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const evM = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        const diff = Math.round((evM - nowM) / 86400000);
+        const dEl = document.getElementById('modal-days-left');
+        if (diff > 0) dEl.innerHTML = `<i class="fas fa-hourglass-half" style="color:#d97706"></i> <span class="text-amber-600">${diff} day${diff !== 1 ? 's' : ''} away</span>`;
+        else if (diff === 0) dEl.innerHTML = `<i class="fas fa-star" style="color:#006837"></i> <span class="text-green-700">Happening today!</span>`;
+        else dEl.innerHTML = `<i class="fas fa-check-circle" style="color:#6b7280"></i> <span class="text-gray-400">${Math.abs(diff)} day${Math.abs(diff) !== 1 ? 's' : ''} ago</span>`;
+
+        // Show all events on this day
+        let desc = ev.desc || '';
+        if (events.length > 1) {
+            desc += `\n\n+${events.length - 1} more event(s) on this day:\n`
+                + events.slice(1).map(e => '• ' + e.title).join('\n');
+        }
+        document.getElementById('modal-description').textContent = desc;
+        document.getElementById('event-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('close-modal').addEventListener('click', () => {
+        document.getElementById('event-modal').classList.add('hidden');
+    });
+    document.getElementById('event-modal').addEventListener('click', function (e) {
+        if (e.target === this) this.classList.add('hidden');
+    });
+
+    // ── Navigation ─────────────────────────────────────────────────────────────
+    document.getElementById('prev-month').addEventListener('click', () => {
+        viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } renderCalendar();
+    });
+    document.getElementById('next-month').addEventListener('click', () => {
+        viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } renderCalendar();
+    });
+    document.getElementById('today-btn').addEventListener('click', () => {
+        viewYear = today.getFullYear(); viewMonth = today.getMonth(); renderCalendar();
+    });
+
+    // ── Filters ────────────────────────────────────────────────────────────────
+    document.getElementById('category-filters').addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-cat]');
+        if (!btn) return;
+        activeFilter = btn.dataset.cat;
+        document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderCalendar();
+    });
+
+    // ── Init ───────────────────────────────────────────────────────────────────
+    loadEvents();
+</script>
+{% endblock %}

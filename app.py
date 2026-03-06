@@ -11,6 +11,8 @@ from routes.policies import policies_bp
 from routes.projects import projects_bp
 from routes.legal import legal_bp
 from routes.auth import auth_bp
+from routes.calendar import calendar_bp
+from routes.admin import admin_bp
 
 # Load environment variables from .env file
 load_dotenv()
@@ -88,6 +90,8 @@ app.register_blueprint(policies_bp)
 app.register_blueprint(projects_bp)
 app.register_blueprint(legal_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(calendar_bp)
+app.register_blueprint(admin_bp)
 
 # ---------------------------------------------------------
 # 5. GLOBAL ERROR HANDLERS

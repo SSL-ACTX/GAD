@@ -1,0 +1,242 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Events{% endblock %}
+{% block page_title %}Calendar Events{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pill {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 2px 10px;
+        border-radius: 9999px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .pill-women {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .pill-health {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .pill-seminar {
+        background: #ede9fe;
+        color: #5b21b6;
+    }
+
+    .pill-community {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .pill-default {
+        background: #f3f4f6;
+        color: #374151;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <p class="text-xs text-gray-400">{{ events|length }} event(s) total</p>
+    </div>
+    <button onclick="openAddModal()"
+        class="flex items-center gap-2 bg-primary-green hover:bg-primary-hover text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
+        <i class="fas fa-plus"></i> Add Event
+    </button>
+</div>
+
+<!-- Events Table -->
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-gray-100 bg-gray-50">
+                    <th class="px-6 py-3 text-left text-[10px] font-black uppercase tracking-widest text-gray-400">Date
+                    </th>
+                    <th class="px-6 py-3 text-left text-[10px] font-black uppercase tracking-widest text-gray-400">Title
+                    </th>
+                    <th class="px-6 py-3 text-left text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        Category</th>
+                    <th class="px-6 py-3 text-left text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        Description</th>
+                    <th class="px-6 py-3 text-right text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                {% for ev in events %}
+                <tr class="hover:bg-gray-50 transition-colors group">
+                    <td class="px-6 py-4 text-gray-500 whitespace-nowrap font-medium">{{ ev.date }}</td>
+                    <td class="px-6 py-4 font-semibold text-gray-800 max-w-xs">{{ ev.title }}</td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="pill pill-{{ ev.category if ev.category in ['women','health','seminar','community'] else 'default' }}">
+                            {{ ev.category }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-400 max-w-sm truncate">{{ ev.desc or '—' }}</td>
+                    <td class="px-6 py-4 text-right whitespace-nowrap">
+                        <button onclick='openEditModal({{ ev | tojson }})'
+                            class="text-xs font-bold text-blue-600 hover:text-blue-800 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors">
+                            <i class="fas fa-pencil-alt mr-1"></i>Edit
+                        </button>
+                        <form method="POST" action="{{ url_for('admin.delete_event', event_id=ev.id) }}" class="inline"
+                            onsubmit="return confirm('Delete this event?')">
+                            <button type="submit"
+                                class="text-xs font-bold text-red-500 hover:text-red-700 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
+                                <i class="fas fa-trash-alt mr-1"></i>Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-16 text-center text-gray-400">
+                        <i class="fas fa-calendar-times text-3xl mb-3 opacity-40 block"></i>
+                        No events yet. Click <strong>Add Event</strong> to create one.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ── ADD EVENT MODAL ──────────────────────────────────────────── -->
+<div id="add-modal" class="fixed inset-0 z-[5000] hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="modal-box bg-white rounded-3xl shadow-2xl w-full max-w-md p-7">
+        <div class="flex justify-between items-center mb-5">
+            <h3 class="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-calendar-plus text-primary-green"></i> Add New Event
+            </h3>
+            <button onclick="closeAddModal()" class="text-gray-400 hover:text-gray-700 text-xl transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form method="POST" action="{{ url_for('admin.add_event') }}" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Title *</label>
+                <input name="title" type="text" required placeholder="e.g. Buntis Congress 2026"
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Date
+                        *</label>
+                    <input name="date" type="date" required
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Category
+                        *</label>
+                    <select name="category"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green bg-white">
+                        <option value="women">Women's Month</option>
+                        <option value="health">Health</option>
+                        <option value="seminar">Seminar</option>
+                        <option value="community">Community</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label
+                    class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Description</label>
+                <textarea name="desc" rows="2" placeholder="Short description (optional)"
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green resize-none"></textarea>
+            </div>
+            <button type="submit"
+                class="w-full bg-primary-green hover:bg-primary-hover text-white font-bold py-3 rounded-xl text-sm transition-colors">
+                Save Event
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ── EDIT EVENT MODAL ─────────────────────────────────────────── -->
+<div id="edit-modal" class="fixed inset-0 z-[5000] hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="modal-box bg-white rounded-3xl shadow-2xl w-full max-w-md p-7">
+        <div class="flex justify-between items-center mb-5">
+            <h3 class="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-pencil-alt text-blue-600"></i> Edit Event
+            </h3>
+            <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-700 text-xl transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="edit-form" method="POST" action="" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Title *</label>
+                <input id="edit-title" name="title" type="text" required
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Date
+                        *</label>
+                    <input id="edit-date" name="date" type="date" required
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Category
+                        *</label>
+                    <select id="edit-category" name="category"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green bg-white">
+                        <option value="women">Women's Month</option>
+                        <option value="health">Health</option>
+                        <option value="seminar">Seminar</option>
+                        <option value="community">Community</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label
+                    class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Description</label>
+                <textarea id="edit-desc" name="desc" rows="2"
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green resize-none"></textarea>
+            </div>
+            <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-sm transition-colors">
+                Update Event
+            </button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openAddModal() {
+        document.getElementById('add-modal').classList.remove('hidden');
+    }
+    function closeAddModal() {
+        document.getElementById('add-modal').classList.add('hidden');
+    }
+    document.getElementById('add-modal').addEventListener('click', function (e) {
+        if (e.target === this) closeAddModal();
+    });
+
+    function openEditModal(ev) {
+        document.getElementById('edit-title').value = ev.title || '';
+        document.getElementById('edit-date').value = ev.date || '';
+        document.getElementById('edit-desc').value = ev.desc || '';
+        const sel = document.getElementById('edit-category');
+        sel.value = ev.category || 'community';
+        document.getElementById('edit-form').action = '/admin/events/edit/' + ev.id;
+        document.getElementById('edit-modal').classList.remove('hidden');
+    }
+    function closeEditModal() {
+        document.getElementById('edit-modal').classList.add('hidden');
+    }
+    document.getElementById('edit-modal').addEventListener('click', function (e) {
+        if (e.target === this) closeEditModal();
+    });
+</script>
+{% endblock %}

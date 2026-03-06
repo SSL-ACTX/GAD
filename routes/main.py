@@ -20,6 +20,7 @@ searchable_content = [
     {'title': 'Privacy Policy and Data Protection', 'url': 'legal.privacy_policy', 'category': 'Legal'},
     {'title': 'Terms of Use and Conditions', 'url': 'legal.terms_conditions', 'category': 'Legal'},
     {'title': 'System Developers Team', 'url': 'legal.developers', 'category': 'Team'},
+    {'title': 'GAD Events Calendar', 'url': 'calendar.calendar_view', 'category': 'Calendar'},
 ]
 
 # --- Core Routes ---

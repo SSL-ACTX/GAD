@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GAD Corner - Bagong Montalban{% endblock %}</title>
-    
+
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -27,41 +29,55 @@
     </script>
 
     <style type="text/css">
-        .nav-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .dropdown-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        html { scroll-behavior: smooth; }
-        
+        .nav-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dropdown-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         /* Desktop Navigation Hover Logic */
         @media (min-width: 1024px) {
-            .group:hover > .dropdown-menu { display: block !important; }
-            .group\/flyout:hover > .dropdown-menu { display: block !important; }
+            .group:hover>.dropdown-menu {
+                display: block !important;
+            }
+
+            .group\/flyout:hover>.dropdown-menu {
+                display: block !important;
+            }
         }
     </style>
-    
+
     {% block extra_css %}{% endblock %}
 </head>
+
 <body class="bg-bgLight text-text-dark font-sans leading-relaxed">
 
     <!-- Top Accessibility Bar -->
-    <div class="hidden md:flex bg-primary-green px-[5%] lg:px-[10%] py-3 justify-end items-center border-b border-white/10 gap-6">
-        
+    <div
+        class="hidden md:flex bg-primary-green px-[5%] lg:px-[10%] py-3 justify-end items-center border-b border-white/10 gap-6">
+
         <!-- SINGLE SEARCH BAR WITH SUGGESTION LOGIC -->
         <div class="relative">
-            <form action="{{ url_for('main.search') }}" method="GET" class="relative flex items-center group" autocomplete="off">
-                <input type="text" 
-                       id="search-input"
-                       name="q"
-                       placeholder="Search resources..." 
-                       class="pl-4 pr-10 py-2 bg-white/10 border border-white/20 rounded-full text-sm text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/20 w-64 nav-transition">
-                
-                <button type="submit" class="absolute right-4 text-white/60 text-xs group-focus-within:text-white group-focus-within:scale-110 transition-all">
+            <form action="{{ url_for('main.search') }}" method="GET" class="relative flex items-center group"
+                autocomplete="off">
+                <input type="text" id="search-input" name="q" placeholder="Search resources..."
+                    class="pl-4 pr-10 py-2 bg-white/10 border border-white/20 rounded-full text-sm text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/20 w-64 nav-transition">
+
+                <button type="submit"
+                    class="absolute right-4 text-white/60 text-xs group-focus-within:text-white group-focus-within:scale-110 transition-all">
                     <i class="fas fa-search"></i>
                 </button>
             </form>
 
             <!-- Suggestion Dropdown (The Ghost Box) -->
-            <div id="suggestion-box" 
-                 class="absolute top-full left-0 mt-2 w-full bg-[#1a1a1a] text-white rounded-xl shadow-2xl hidden z-[2000] border border-white/10 overflow-hidden">
+            <div id="suggestion-box"
+                class="absolute top-full left-0 mt-2 w-full bg-[#1a1a1a] text-white rounded-xl shadow-2xl hidden z-[2000] border border-white/10 overflow-hidden">
             </div>
         </div>
 
@@ -73,19 +89,25 @@
     </div>
 
     <!-- Header -->
-    <header class="bg-white px-[5%] lg:px-[10%] py-6 md:py-8 flex flex-col md:flex-row items-center gap-4 md:gap-8 text-center md:text-left">
+    <header
+        class="bg-white px-[5%] lg:px-[10%] py-6 md:py-8 flex flex-col md:flex-row items-center gap-4 md:gap-8 text-center md:text-left">
         <div class="flex gap-4">
             <div class="w-[50px] h-[50px] md:w-[85px] md:h-[85px] flex items-center justify-center">
-                <img src="{{ url_for('static', filename='assets/montalban-logo.png') }}" alt="Montalban Logo" class="w-full h-full object-contain">
+                <img src="{{ url_for('static', filename='assets/montalban-logo.png') }}" alt="Montalban Logo"
+                    class="w-full h-full object-contain">
             </div>
             <div class="w-[50px] h-[50px] md:w-[85px] md:h-[85px] flex items-center justify-center">
-                <img src="{{ url_for('static', filename='assets/GAD-logo.png') }}" alt="GAD Logo" class="w-full h-full object-contain">
+                <img src="{{ url_for('static', filename='assets/GAD-logo.png') }}" alt="GAD Logo"
+                    class="w-full h-full object-contain">
             </div>
         </div>
         <div class="flex flex-col">
-            <h2 class="text-[8px] md:text-xs font-bold uppercase tracking-[0.2em] text-gray-500 mb-1">Republic of the Philippines</h2>
-            <h1 class="text-xl md:text-4xl font-extrabold text-primary-green tracking-tight leading-tight mb-1">MUNICIPALITY OF RODRIGUEZ</h1>
-            <p class="text-sm md:text-lg font-medium text-gray-600 tracking-wide uppercase md:normal-case">Gender and Development (GAD) Corner</p>
+            <h2 class="text-[8px] md:text-xs font-bold uppercase tracking-[0.2em] text-gray-500 mb-1">Republic of the
+                Philippines</h2>
+            <h1 class="text-xl md:text-4xl font-extrabold text-primary-green tracking-tight leading-tight mb-1">
+                MUNICIPALITY OF RODRIGUEZ</h1>
+            <p class="text-sm md:text-lg font-medium text-gray-600 tracking-wide uppercase md:normal-case">Gender and
+                Development (GAD) Corner</p>
         </div>
     </header>
 
@@ -99,54 +121,96 @@
                 </button>
             </div>
 
-            <ul id="nav-menu" class="hidden lg:flex flex-col lg:flex-row list-none pb-6 lg:pb-0 divide-y divide-white/5 lg:divide-y-0">
-                <li><a href="{{ url_for('main.index') }}" class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition">Home</a></li>
-                
+            <ul id="nav-menu"
+                class="hidden lg:flex flex-col lg:flex-row list-none pb-6 lg:pb-0 divide-y divide-white/5 lg:divide-y-0">
+                <li><a href="{{ url_for('main.index') }}"
+                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition">Home</a>
+                </li>
+
                 <!-- About Us -->
                 <li class="relative group">
-                    <button class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
-                        About Us <i class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
+                    <button
+                        class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
+                        About Us <i
+                            class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
-                    <ul class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-64 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
-                        <li><a href="{{ url_for('main.vision_mission') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">Vision and Mission</a></li>
-                        <li><a href="{{ url_for('main.org_structure') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">Organization Structure</a></li>
-                        <li><a href="{{ url_for('main.gad_committee') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">GAD Committee</a></li>
-                        <li><a href="{{ url_for('main.contact') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green">Contact Us</a></li>
+                    <ul
+                        class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-64 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
+                        <li><a href="{{ url_for('main.vision_mission') }}"
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">Vision
+                                and Mission</a></li>
+                        <li><a href="{{ url_for('main.org_structure') }}"
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">Organization
+                                Structure</a></li>
+                        <li><a href="{{ url_for('main.gad_committee') }}"
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50">GAD
+                                Committee</a></li>
+                        <li><a href="{{ url_for('main.contact') }}"
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green">Contact
+                                Us</a></li>
                     </ul>
                 </li>
 
                 <!-- Policies and Reports -->
                 <li class="relative group">
-                    <button class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
-                        Policies and Reports <i class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
+                    <button
+                        class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
+                        Policies and Reports <i
+                            class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
-                    <ul class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-64 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
+                    <ul
+                        class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-64 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
                         <li class="relative group/flyout">
-                            <button class="w-full flex justify-between items-center px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50 dropdown-toggle-sub">
+                            <button
+                                class="w-full flex justify-between items-center px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green border-b border-gray-50 dropdown-toggle-sub">
                                 Policies <i class="fas fa-chevron-right hidden lg:block text-[10px] opacity-50"></i>
                                 <i class="fas fa-chevron-down block lg:hidden text-[10px] opacity-50"></i>
                             </button>
-                            <ul class="dropdown-menu lg:absolute lg:left-full lg:top-0 w-full lg:w-64 bg-gray-50 lg:bg-white lg:dropdown-shadow lg:border-l-4 border-primary-green hidden">
-                                <li><a href="{{ url_for('policies.policies_hub', category='circulars') }}" class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Circulars</a></li>
-                                <li><a href="{{ url_for('policies.policies_hub', category='resolutions') }}" class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Resolutions</a></li>
-                                <li><a href="{{ url_for('policies.policies_hub', category='memoranda') }}" class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Memoranda</a></li>
-                                <li><a href="{{ url_for('policies.policies_hub', category='orders') }}" class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Office Orders</a></li>
+                            <ul
+                                class="dropdown-menu lg:absolute lg:left-full lg:top-0 w-full lg:w-64 bg-gray-50 lg:bg-white lg:dropdown-shadow lg:border-l-4 border-primary-green hidden">
+                                <li><a href="{{ url_for('policies.policies_hub', category='circulars') }}"
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Circulars</a></li>
+                                <li><a href="{{ url_for('policies.policies_hub', category='resolutions') }}"
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Resolutions</a></li>
+                                <li><a href="{{ url_for('policies.policies_hub', category='memoranda') }}"
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Memoranda</a></li>
+                                <li><a href="{{ url_for('policies.policies_hub', category='orders') }}"
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Office Orders</a>
+                                </li>
                             </ul>
                         </li>
-                        <li><a href="{{ url_for('policies.reports') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green">Reports</a></li>
+                        <li><a href="{{ url_for('policies.reports') }}"
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green">Reports</a>
+                        </li>
                     </ul>
                 </li>
 
                 <!-- Projects -->
                 <li class="relative group">
-                    <button class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
-                        Projects <i class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
+                    <button
+                        class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
+                        Projects <i
+                            class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
-                    <ul class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-52 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
-                        <li><a href="{{ url_for('projects.project_year', year='2025') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year 2025</a></li>
-                        <li><a href="{{ url_for('projects.project_year', year='2024') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year 2024</a></li>
-                        <li><a href="{{ url_for('projects.projects_archive') }}" class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">More...</a></li>
+                    <ul
+                        class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-52 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
+                        <li><a href="{{ url_for('projects.project_year', year='2025') }}"
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year 2025</a>
+                        </li>
+                        <li><a href="{{ url_for('projects.project_year', year='2024') }}"
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year 2024</a>
+                        </li>
+                        <li><a href="{{ url_for('projects.projects_archive') }}"
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">More...</a>
+                        </li>
                     </ul>
+                </li>
+
+                <!-- Calendar -->
+                <li><a href="{{ url_for('calendar.calendar_view') }}"
+                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition flex items-center gap-2">
+                        <i class="fas fa-calendar-alt text-sm opacity-80"></i> Calendar
+                    </a>
                 </li>
             </ul>
         </div>
@@ -160,14 +224,18 @@
         <div class="px-[5%] lg:px-[10%] pt-16 pb-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
                 <div class="lg:col-span-5 space-y-6">
-                    <h2 class="text-white text-2xl font-bold">GAD<span class="text-primary-green">.</span> MONTALBAN</h2>
-                    <p class="text-sm border-l-2 border-primary-green/30 pl-4">Official digital hub for Gender and Development initiatives of Montalban, Rizal.</p>
+                    <h2 class="text-white text-2xl font-bold">GAD<span class="text-primary-green">.</span> MONTALBAN
+                    </h2>
+                    <p class="text-sm border-l-2 border-primary-green/30 pl-4">Official digital hub for Gender and
+                        Development initiatives of Montalban, Rizal.</p>
                 </div>
                 <div class="lg:col-span-2 lg:col-start-7">
                     <h4 class="text-white font-semibold uppercase text-xs mb-6">Legal</h4>
                     <ul class="space-y-3 text-sm">
-                        <li><a href="{{ url_for('legal.privacy_policy') }}" class="hover:text-white">Privacy Policy</a></li>
-                        <li><a href="{{ url_for('legal.terms_conditions') }}" class="hover:text-white">Terms of Use</a></li>
+                        <li><a href="{{ url_for('legal.privacy_policy') }}" class="hover:text-white">Privacy Policy</a>
+                        </li>
+                        <li><a href="{{ url_for('legal.terms_conditions') }}" class="hover:text-white">Terms of Use</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="lg:col-span-3 lg:col-start-10">
@@ -184,4 +252,5 @@
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>

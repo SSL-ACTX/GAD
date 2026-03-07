@@ -4,11 +4,15 @@ import uuid
 from functools import wraps
 from datetime import date, datetime
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
+from werkzeug.utils import secure_filename
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
-# ── Path to the events data file ──────────────────────────────────────────────
+# ── Data file paths ───────────────────────────────────────────────────────────
 DATA_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'events.json')
+PROJECTS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'projects.json')
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'projects')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 def load_events():
@@ -22,6 +26,31 @@ def save_events(events):
     os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
         json.dump(events, f, indent=2, ensure_ascii=False)
+
+def load_projects():
+    try:
+        with open(PROJECTS_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def save_projects(projects):
+    os.makedirs(os.path.dirname(PROJECTS_FILE), exist_ok=True)
+    with open(PROJECTS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(projects, f, indent=2, ensure_ascii=False)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_uploaded_image(file):
+    """Save uploaded image and return its URL path, or None."""
+    if file and file.filename and allowed_file(file.filename):
+        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        filename = str(uuid.uuid4())[:8] + '.' + ext
+        file.save(os.path.join(UPLOAD_FOLDER, filename))
+        return 'uploads/projects/' + filename
+    return None
 
 def login_required(f):
     @wraps(f)
@@ -125,3 +154,72 @@ def delete_event(event_id):
     save_events(events)
     flash('Event deleted.', 'success')
     return redirect(url_for('admin.events'))
+
+# ── Project Archives Management ───────────────────────────────────────────────
+@admin_bp.route('/projects')
+@login_required
+def projects():
+    all_projects = load_projects()
+    years = sorted(set(p.get('year', '') for p in all_projects), reverse=True)
+    total = len(all_projects)
+    return render_template('admin/projects.html', projects=all_projects, years=years, total=total)
+
+@admin_bp.route('/projects/add', methods=['POST'])
+@login_required
+def add_project():
+    all_projects = load_projects()
+    image_path = save_uploaded_image(request.files.get('image'))
+    new_project = {
+        'id': 'p' + str(uuid.uuid4())[:8],
+        'year': request.form.get('year', '').strip(),
+        'title': request.form.get('title', '').strip(),
+        'category': request.form.get('category', '').strip(),
+        'description': request.form.get('description', '').strip(),
+        'status': request.form.get('status', 'Ongoing').strip(),
+        'image': image_path,
+    }
+    if new_project['title'] and new_project['year']:
+        all_projects.append(new_project)
+        save_projects(all_projects)
+        flash('Project added successfully.', 'success')
+    else:
+        flash('Title and year are required.', 'error')
+    return redirect(url_for('admin.projects'))
+
+@admin_bp.route('/projects/edit/<project_id>', methods=['POST'])
+@login_required
+def edit_project(project_id):
+    all_projects = load_projects()
+    for p in all_projects:
+        if p['id'] == project_id:
+            p['year'] = request.form.get('year', p['year']).strip()
+            p['title'] = request.form.get('title', p['title']).strip()
+            p['category'] = request.form.get('category', p.get('category', '')).strip()
+            p['description'] = request.form.get('description', p.get('description', '')).strip()
+            p['status'] = request.form.get('status', p.get('status', 'Ongoing')).strip()
+            new_image = save_uploaded_image(request.files.get('image'))
+            if new_image:
+                # Delete old image if exists
+                if p.get('image'):
+                    old_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', p['image'])
+                    if os.path.exists(old_path):
+                        os.remove(old_path)
+                p['image'] = new_image
+            break
+    save_projects(all_projects)
+    flash('Project updated.', 'success')
+    return redirect(url_for('admin.projects'))
+
+@admin_bp.route('/projects/delete/<project_id>', methods=['POST'])
+@login_required
+def delete_project(project_id):
+    all_projects = load_projects()
+    project = next((p for p in all_projects if p['id'] == project_id), None)
+    if project and project.get('image'):
+        old_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', project['image'])
+        if os.path.exists(old_path):
+            os.remove(old_path)
+    all_projects = [p for p in all_projects if p['id'] != project_id]
+    save_projects(all_projects)
+    flash('Project deleted.', 'success')
+    return redirect(url_for('admin.projects'))

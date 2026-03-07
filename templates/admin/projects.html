@@ -1,0 +1,321 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Project Archives{% endblock %}
+{% block page_title %}Project Archives{% endblock %}
+
+{% block content %}
+
+<!-- Stats Bar -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-5 mb-8">
+    <div class="bg-white rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm flex items-start gap-3 md:gap-4">
+        <div class="w-9 h-9 md:w-11 md:h-11 bg-green-50 rounded-xl flex items-center justify-center shrink-0">
+            <i class="fas fa-folder-open text-primary-green text-sm md:text-base"></i>
+        </div>
+        <div>
+            <p class="text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Projects</p>
+            <p class="text-xl md:text-3xl font-extrabold text-gray-900 mt-0.5">{{ total }}</p>
+        </div>
+    </div>
+    <div class="bg-white rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm flex items-start gap-3 md:gap-4">
+        <div class="w-9 h-9 md:w-11 md:h-11 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+            <i class="fas fa-calendar text-blue-500 text-sm md:text-base"></i>
+        </div>
+        <div>
+            <p class="text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-gray-400">Years Covered</p>
+            <p class="text-xl md:text-3xl font-extrabold text-gray-900 mt-0.5">{{ years | length }}</p>
+        </div>
+    </div>
+    <div class="bg-white rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm flex items-start gap-3 md:gap-4 col-span-2 sm:col-span-1">
+        <div class="w-9 h-9 md:w-11 md:h-11 bg-amber-50 rounded-xl flex items-center justify-center shrink-0">
+            <i class="fas fa-spinner text-amber-500 text-sm md:text-base"></i>
+        </div>
+        <div>
+            <p class="text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-gray-400">Ongoing</p>
+            <p class="text-xl md:text-3xl font-extrabold text-gray-900 mt-0.5">{{ projects | selectattr('status', 'equalto', 'Ongoing') | list | length }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Header + Add Button -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+    <h3 class="font-bold text-gray-700 text-sm">All Projects</h3>
+    <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+        class="flex items-center justify-center gap-2 bg-primary-green text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-primary-hover transition-colors shadow-sm w-full sm:w-auto">
+        <i class="fas fa-plus"></i> Add Project
+    </button>
+</div>
+
+<!-- Year Filter Tabs -->
+{% if years %}
+<div class="overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar">
+    <div class="flex gap-2 mb-2 flex-nowrap whitespace-nowrap" id="yearTabs">
+        <button onclick="filterYear('all')" data-year="all"
+            class="year-tab active text-xs font-bold px-4 py-1.5 rounded-full border border-gray-200 bg-white hover:border-primary-green hover:text-primary-green transition-all shrink-0">
+            All Years
+        </button>
+        {% for yr in years %}
+        <button onclick="filterYear('{{ yr }}')" data-year="{{ yr }}"
+            class="year-tab text-xs font-bold px-4 py-1.5 rounded-full border border-gray-200 bg-white hover:border-primary-green hover:text-primary-green transition-all shrink-0">
+            {{ yr }}
+        </button>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Projects Table -->
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    {% if projects %}
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+            <thead class="bg-gray-50 text-gray-400 text-[10px] uppercase tracking-widest font-bold border-b border-gray-100">
+                <tr>
+                    <th class="px-6 py-4">Project Title</th>
+                    <th class="px-6 py-4">Year</th>
+                    <th class="px-6 py-4">Category</th>
+                    <th class="px-6 py-4">Status</th>
+                    <th class="px-6 py-4 text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="projectsTableBody" class="divide-y divide-gray-50">
+                {% for p in projects %}
+                <tr class="project-row hover:bg-gray-50/80 transition-colors group" data-year="{{ p.year }}">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            {% if p.image %}
+                            <img src="{{ url_for('static', filename=p.image) }}" class="w-10 h-10 rounded-lg object-cover border border-gray-100" alt="">
+                            {% else %}
+                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                                <i class="fas fa-image text-gray-300 text-lg"></i>
+                            </div>
+                            {% endif %}
+                            <div>
+                                <p class="font-semibold text-gray-800 group-hover:text-primary-green transition-colors">{{ p.title }}</p>
+                                <p class="text-[11px] text-gray-400 mt-0.5 line-clamp-1 max-w-xs">{{ p.description }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="bg-gray-100 text-gray-600 text-[10px] font-bold px-2.5 py-1 rounded-full">{{ p.year }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-xs text-gray-600 font-medium">{{ p.category or '—' }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if p.status == 'Completed' %}
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-green-100 text-green-700">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Completed
+                        </span>
+                        {% elif p.status == 'Ongoing' %}
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Ongoing
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> {{ p.status }}
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <!-- Edit -->
+                            <button onclick='openEdit({{ p | tojson | forceescape }})'
+                                class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center" title="Edit">
+                                <i class="fas fa-pencil-alt text-xs"></i>
+                            </button>
+                            <!-- Delete -->
+                            <button onclick='openDelete("{{ p.id }}", "{{ p.title | replace('"', '\\"') }}")'
+                                class="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center" title="Delete">
+                                <i class="fas fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="py-20 text-center text-gray-400">
+        <i class="fas fa-folder-open text-4xl mb-4 opacity-30"></i>
+        <p class="font-semibold text-sm">No projects yet.</p>
+        <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+            class="mt-3 text-primary-green text-xs font-bold hover:underline">Add your first project →</button>
+    </div>
+    {% endif %}
+</div>
+
+<!-- ── ADD MODAL ─────────────────────────────────────────────────────────── -->
+<div id="addModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+    <div class="modal-box bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="font-extrabold text-gray-800 text-lg">Add New Project</h3>
+            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <form action="{{ url_for('admin.add_project') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Year *</label>
+                    <input type="number" name="year" placeholder="2025" min="2000" max="2099" required
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Status</label>
+                    <select name="status" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all bg-white">
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Planned">Planned</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Title *</label>
+                <input type="text" name="title" placeholder="e.g. Buntis Congress 2025" required
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Category</label>
+                <input type="text" name="category" placeholder="e.g. Health & Wellness"
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Description</label>
+                <textarea name="description" rows="3" placeholder="Brief description of the project..."
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all resize-none"></textarea>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Project Image <span class="normal-case font-normal text-gray-300">(optional)</span></label>
+                <input type="file" name="image" accept="image/*"
+                    class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-green-50 file:text-primary-green hover:file:bg-primary-green hover:file:text-white file:transition-all cursor-pointer">
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')"
+                    class="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors">Cancel</button>
+                <button type="submit"
+                    class="flex-1 py-3 bg-primary-green text-white rounded-xl text-sm font-bold hover:bg-primary-hover transition-colors shadow-sm">Save Project</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── EDIT MODAL ─────────────────────────────────────────────────────────── -->
+<div id="editModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+    <div class="modal-box bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="font-extrabold text-gray-800 text-lg">Edit Project</h3>
+            <button onclick="document.getElementById('editModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Year *</label>
+                    <input type="number" id="editYear" name="year" min="2000" max="2099" required
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Status</label>
+                    <select id="editStatus" name="status" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all bg-white">
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Planned">Planned</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Title *</label>
+                <input type="text" id="editTitle" name="title" required
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Category</label>
+                <input type="text" id="editCategory" name="category"
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Description</label>
+                <textarea id="editDescription" name="description" rows="3"
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all resize-none"></textarea>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Replace Image <span class="normal-case font-normal text-gray-300">(optional)</span></label>
+                <input type="file" name="image" accept="image/*"
+                    class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-green-50 file:text-primary-green hover:file:bg-primary-green hover:file:text-white file:transition-all cursor-pointer">
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')"
+                    class="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors">Cancel</button>
+                <button type="submit"
+                    class="flex-1 py-3 bg-primary-green text-white rounded-xl text-sm font-bold hover:bg-primary-hover transition-colors shadow-sm">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── DELETE MODAL ───────────────────────────────────────────────────────── -->
+<div id="deleteModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+    <div class="modal-box bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center">
+        <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-trash text-red-500 text-xl"></i>
+        </div>
+        <h3 class="font-extrabold text-gray-800 text-lg mb-2">Delete Project?</h3>
+        <p class="text-sm text-gray-500 mb-6">You are about to delete <strong id="deleteProjectName" class="text-gray-800"></strong>. This cannot be undone.</p>
+        <form id="deleteForm" method="POST" class="flex gap-3">
+            <button type="button" onclick="document.getElementById('deleteModal').classList.add('hidden')"
+                class="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors">Cancel</button>
+            <button type="submit"
+                class="flex-1 py-3 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 transition-colors shadow-sm">Delete</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openEdit(p) {
+    document.getElementById('editForm').action = '/admin/projects/edit/' + p.id;
+    document.getElementById('editTitle').value = p.title || '';
+    document.getElementById('editYear').value = p.year || '';
+    document.getElementById('editCategory').value = p.category || '';
+    document.getElementById('editDescription').value = p.description || '';
+    const statusEl = document.getElementById('editStatus');
+    for (let opt of statusEl.options) {
+        opt.selected = opt.value === p.status;
+    }
+    document.getElementById('editModal').classList.remove('hidden');
+}
+
+function openDelete(id, name) {
+    document.getElementById('deleteForm').action = '/admin/projects/delete/' + id;
+    document.getElementById('deleteProjectName').textContent = name;
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function filterYear(year) {
+    // Update active tab style
+    document.querySelectorAll('.year-tab').forEach(btn => {
+        btn.classList.remove('active', 'bg-primary-green', 'text-white', 'border-primary-green');
+        btn.classList.add('bg-white', 'text-gray-600');
+    });
+    const active = document.querySelector(`.year-tab[data-year="${year}"]`);
+    if (active) {
+        active.classList.add('bg-primary-green', 'text-white', 'border-primary-green');
+        active.classList.remove('bg-white', 'text-gray-600');
+    }
+    // Filter rows
+    document.querySelectorAll('.project-row').forEach(row => {
+        row.style.display = (year === 'all' || row.dataset.year === year) ? '' : 'none';
+    });
+}
+
+// Close modals on backdrop click
+['addModal', 'editModal', 'deleteModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+        if (e.target === this) this.classList.add('hidden');
+    });
+});
+</script>
+{% endblock %}

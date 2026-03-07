@@ -90,10 +90,16 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body class="bg-gray-50 font-sans text-gray-800 flex h-screen overflow-hidden">
+<body class="bg-gray-50 font-sans text-gray-800 flex h-screen overflow-hidden relative">
+
+    <!-- ── MOBILE OVERLAY ────────────────────────────────────────────── -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()" 
+         class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[40] hidden lg:hidden"></div>
 
     <!-- ── SIDEBAR ─────────────────────────────────────────────────────── -->
-    <aside class="w-64 bg-sidebar-bg flex flex-col shrink-0 overflow-y-auto">
+    <aside id="sidebar" 
+           class="fixed inset-y-0 left-0 w-64 bg-sidebar-bg flex flex-col shrink-0 overflow-y-auto z-[50] 
+                  -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 ease-in-out">
         <!-- Logo -->
         <div class="px-5 py-7 border-b border-white/5">
             <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-0.5">GAD Corner</p>
@@ -109,6 +115,10 @@
             <a href="{{ url_for('admin.events') }}" class="sidebar-link flex items-center gap-3 px-5 py-3 text-gray-400 hover:text-white rounded-lg text-sm font-medium
                       {% if request.endpoint == 'admin.events' %}active text-white{% endif %}">
                 <i class="fas fa-calendar-alt w-4 text-center"></i> Calendar Events
+            </a>
+            <a href="{{ url_for('admin.projects') }}" class="sidebar-link flex items-center gap-3 px-5 py-3 text-gray-400 hover:text-white rounded-lg text-sm font-medium
+                      {% if request.endpoint in ['admin.projects', 'admin.add_project', 'admin.edit_project', 'admin.delete_project'] %}active text-white{% endif %}">
+                <i class="fas fa-folder-open w-4 text-center"></i> Project Archives
             </a>
         </nav>
         <!-- Footer -->
@@ -128,11 +138,17 @@
     <div class="flex-1 flex flex-col overflow-hidden">
 
         <!-- Topbar -->
-        <header class="bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between shrink-0">
-            <h2 class="font-bold text-gray-700 text-sm tracking-wide uppercase">{% block page_title %}Dashboard{%
-                endblock %}</h2>
+        <header class="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-4">
+                <!-- Hamburger Menu -->
+                <button onclick="toggleSidebar()" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <h2 class="font-bold text-gray-700 text-sm tracking-wide uppercase">{% block page_title %}Dashboard{%
+                    endblock %}</h2>
+            </div>
             <div class="flex items-center gap-3">
-                <span class="text-xs text-gray-400">Logged in as
+                <span class="text-xs text-gray-400 hidden sm:inline">Logged in as
                     <strong class="text-gray-700">{{ session.get('admin_user', 'Admin') }}</strong></span>
                 <div
                     class="w-8 h-8 rounded-full bg-primary-green flex items-center justify-center text-white text-xs font-bold">
@@ -144,7 +160,7 @@
         <!-- Flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-        <div class="px-8 pt-4 space-y-2">
+        <div class="px-4 md:px-8 pt-4 space-y-2">
             {% for category, message in messages %}
             <div class="flash-anim flash-{{ category }} text-sm px-4 py-3 rounded-lg flex items-center gap-2">
                 <i
@@ -157,11 +173,26 @@
         {% endwith %}
 
         <!-- Page Content -->
-        <main class="flex-1 overflow-y-auto px-8 py-6">
+        <main class="flex-1 overflow-y-auto px-4 md:px-8 py-6">
             {% block content %}{% endblock %}
         </main>
     </div>
 
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isSidebarVisible = !sidebar.classList.contains('-translate-x-full');
+
+            if (isSidebarVisible) {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            }
+        }
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 

@@ -94,6 +94,23 @@ app.register_blueprint(calendar_bp)
 app.register_blueprint(admin_bp)
 
 # ---------------------------------------------------------
+# 5. GLOBAL CONTEXT PROCESSOR
+# ---------------------------------------------------------
+@app.context_processor
+def inject_nav_years():
+    """Inject project years into every template for the navbar dropdown."""
+    import json
+    projects_file = os.path.join(app.root_path, 'data', 'projects.json')
+    try:
+        with open(projects_file, 'r', encoding='utf-8') as f:
+            projects = json.load(f)
+        years = sorted(set(p.get('year', '') for p in projects if p.get('year')), reverse=True)
+    except (FileNotFoundError, json.JSONDecodeError):
+        years = []
+    return dict(nav_project_years=years)
+
+
+# ---------------------------------------------------------
 # 5. GLOBAL ERROR HANDLERS
 # ---------------------------------------------------------
 @app.errorhandler(404)

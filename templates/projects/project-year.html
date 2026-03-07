@@ -3,18 +3,7 @@
 {% block title %}GAD Projects {{ year }} - GAD Corner{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-[10%] py-12">
-    
-    <!-- Breadcrumbs -->
-    <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <!-- FIXED: Added 'main.' prefix -->
-        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
-        <i class="fas fa-chevron-right text-[10px]"></i>
-        <!-- FIXED: Added 'projects.' prefix -->
-        <a href="{{ url_for('projects.projects_hub') }}" class="text-primary-green hover:underline">Projects</a>
-        <i class="fas fa-chevron-right text-[10px]"></i>
-        <span class="font-semibold text-gray-700">Year {{ year }}</span>
-    </nav>
+<div class="max-w-7xl mx-auto px-6 py-12">
 
     <!-- Page Header -->
     <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
@@ -24,76 +13,73 @@
             </h2>
             <p class="text-gray-500 mt-2 ml-6 text-sm italic">Gender-responsive programs and initiatives implemented in the year {{ year }}.</p>
         </div>
-        
-        <!-- FIXED: Link to archive using 'projects.' prefix -->
         <a href="{{ url_for('projects.projects_archive') }}" class="inline-flex items-center px-5 py-2 text-primary-green border border-primary-green rounded-lg text-sm font-bold hover:bg-primary-green hover:text-white transition-all nav-transition">
             View All Archives <i class="fas fa-archive ml-2 text-xs"></i>
         </a>
     </div>
 
     <!-- Projects Grid -->
+    {% if projects %}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        <!-- Project Card 1 -->
+        {% for p in projects %}
         <div class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300">
-            <div class="h-56 bg-gray-200 flex flex-col items-center justify-center text-gray-400 font-bold relative overflow-hidden">
+            <!-- Image -->
+            {% if p.image %}
+            <div class="h-56 overflow-hidden">
+                <img src="{{ url_for('static', filename=p.image) }}" alt="{{ p.title }}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            </div>
+            {% else %}
+            <div class="h-56 bg-gray-100 flex flex-col items-center justify-center text-gray-400 font-bold relative overflow-hidden">
                 <i class="fas fa-image text-4xl mb-2 opacity-20"></i>
-                <span class="text-xs uppercase tracking-widest opacity-30">Project Image Placeholder</span>
+                <span class="text-xs uppercase tracking-widest opacity-30">No Image</span>
                 <div class="absolute top-4 right-4 bg-primary-green text-white text-[10px] font-bold px-3 py-1 rounded-full">
-                    {{ year }}
+                    {{ p.year }}
                 </div>
             </div>
-            
+            {% endif %}
+
             <div class="p-8">
                 <div class="flex items-center gap-2 mb-3">
-                    <span class="bg-green-50 text-primary-green text-[10px] font-bold px-2 py-1 rounded uppercase">Health & Wellness</span>
+                    {% if p.category %}
+                    <span class="bg-green-50 text-primary-green text-[10px] font-bold px-2 py-1 rounded uppercase">{{ p.category }}</span>
+                    {% endif %}
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 group-hover:text-primary-green transition-colors mb-3">Buntis Congress {{ year }}</h3>
-                <p class="text-gray-600 text-sm leading-relaxed mb-6">
-                    Providing essential maternal health services, prenatal checkups, and educational seminars for expectant mothers across various barangays.
-                </p>
+                <h3 class="text-xl font-bold text-gray-800 group-hover:text-primary-green transition-colors mb-3">{{ p.title }}</h3>
+                <p class="text-gray-600 text-sm leading-relaxed mb-6">{{ p.description }}</p>
                 <div class="flex items-center justify-between pt-6 border-t border-gray-50">
                     <a href="#" class="text-primary-green font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
-                        Read Success Story <i class="fas fa-arrow-right text-xs"></i>
+                        Read More <i class="fas fa-arrow-right text-xs"></i>
                     </a>
+                    {% if p.status == 'Completed' %}
                     <span class="text-[10px] text-gray-400 uppercase font-medium">Completed</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Project Card 2 -->
-        <div class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300">
-            <div class="h-56 bg-gray-200 flex flex-col items-center justify-center text-gray-400 font-bold relative overflow-hidden">
-                <i class="fas fa-laptop-code text-4xl mb-2 opacity-20"></i>
-                <span class="text-xs uppercase tracking-widest opacity-30">Project Image Placeholder</span>
-                <div class="absolute top-4 right-4 bg-primary-green text-white text-[10px] font-bold px-3 py-1 rounded-full">
-                    {{ year }}
-                </div>
-            </div>
-            
-            <div class="p-8">
-                <div class="flex items-center gap-2 mb-3">
-                    <span class="bg-green-50 text-primary-green text-[10px] font-bold px-2 py-1 rounded uppercase">Economic Empowerment</span>
-                </div>
-                <h3 class="text-xl font-bold text-gray-800 group-hover:text-primary-green transition-colors mb-3">Women's Livelihood Training</h3>
-                <p class="text-gray-600 text-sm leading-relaxed mb-6">
-                    A series of skills development workshops including digital literacy, tailoring, and small business management for local women entrepreneurs.
-                </p>
-                <div class="flex items-center justify-between pt-6 border-t border-gray-50">
-                    <a href="#" class="text-primary-green font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
-                        View Project Details <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
+                    {% elif p.status == 'Ongoing' %}
                     <span class="text-[10px] text-blue-500 uppercase font-medium">Ongoing</span>
+                    {% else %}
+                    <span class="text-[10px] text-amber-500 uppercase font-medium">{{ p.status }}</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
-
+        {% endfor %}
     </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-white rounded-2xl border border-dashed border-gray-200 py-24 flex flex-col items-center justify-center text-center px-8">
+        <div class="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-5">
+            <i class="fas fa-folder-open text-3xl text-gray-200"></i>
+        </div>
+        <p class="text-gray-700 font-extrabold text-lg mb-2">No Projects Yet</p>
+        <p class="text-gray-400 text-sm max-w-sm">No projects have been added for <strong>{{ year }}</strong> yet. Check back later or explore other years.</p>
+        <a href="{{ url_for('projects.projects_archive') }}" class="mt-6 text-primary-green font-bold text-sm hover:underline">
+            View Other Years →
+        </a>
+    </div>
+    {% endif %}
 
-    <!-- More Archive Link -->
+    <!-- Archive Link -->
     <div class="mt-16 flex justify-center">
         <div class="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden min-w-[250px]">
-            <!-- FIXED: Added 'projects.' prefix -->
             <a href="{{ url_for('projects.projects_archive') }}" class="block px-6 py-4 text-center text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:text-primary-green nav-transition group">
                 Looking for older projects? <span class="text-primary-green group-hover:underline">View More Archive...</span>
             </a>

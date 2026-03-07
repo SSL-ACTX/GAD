@@ -3,18 +3,9 @@
 {% block title %}GAD Reports - GAD Corner{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-[10%] py-12">
+<div class="max-w-7xl mx-auto px-6 py-12">
     
-    <!-- Breadcrumbs -->
-    <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <!-- FIXED: Added 'main.' prefix -->
-        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
-        <i class="fas fa-chevron-right text-[10px]"></i>
-        <!-- FIXED: Added 'policies.' prefix and category='hub' -->
-        <a href="{{ url_for('policies.policies_hub', category='hub') }}" class="hover:text-primary-green">Policies and Reports</a>
-        <i class="fas fa-chevron-right text-[10px]"></i>
-        <span class="font-semibold text-gray-700">Accomplishment Reports</span>
-    </nav>
+
 
     <!-- Page Header -->
     <div class="mb-10">

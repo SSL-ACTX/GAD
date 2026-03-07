@@ -42,12 +42,12 @@
 
 {% block content %}
 
-<div class="flex items-center justify-between mb-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div>
         <p class="text-xs text-gray-400">{{ events|length }} event(s) total</p>
     </div>
     <button onclick="openAddModal()"
-        class="flex items-center gap-2 bg-primary-green hover:bg-primary-hover text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
+        class="flex items-center justify-center gap-2 bg-primary-green hover:bg-primary-hover text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors shadow-sm w-full sm:w-auto">
         <i class="fas fa-plus"></i> Add Event
     </button>
 </div>
@@ -83,7 +83,7 @@
                     </td>
                     <td class="px-6 py-4 text-gray-400 max-w-sm truncate">{{ ev.desc or '—' }}</td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
-                        <button onclick='openEditModal({{ ev | tojson }})'
+                        <button onclick='openEditModal({{ ev | tojson | forceescape }})'
                             class="text-xs font-bold text-blue-600 hover:text-blue-800 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors">
                             <i class="fas fa-pencil-alt mr-1"></i>Edit
                         </button>

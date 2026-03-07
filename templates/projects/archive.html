@@ -2,23 +2,14 @@
 {% block title %}Project Archives - GAD Corner{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-[10%] py-12">
-    <!-- Breadcrumbs -->
-    <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <!-- FIXED: main.index -->
-        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
-        <i class="fas fa-chevron-right text-[10px]"></i>
-        <!-- FIXED: projects.projects_hub -->
-        <a href="{{ url_for('projects.projects_hub') }}" class="text-primary-green hover:underline">Projects</a>
-        <i class="fas fa-chevron-right text-[10px]"></i>
-        <span class="font-semibold text-gray-700">Archives</span>
-    </nav>
+<div class="max-w-7xl mx-auto px-6 py-12">
+
 
     <h2 class="text-2xl font-bold text-gray-800 border-l-8 border-primary-green pl-4 uppercase mb-10">Project Archives</h2>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {% for yr in ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015'] %}
-        <!-- FIXED: projects.project_year -->
+        {% set display_years = years if years else ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015'] %}
+        {% for yr in display_years %}
         <a href="{{ url_for('projects.project_year', year=yr) }}" class="group bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:border-primary-green hover:shadow-md transition-all">
             <span class="block text-2xl font-black text-gray-300 group-hover:text-primary-green transition-colors mb-1">{{ yr }}</span>
             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-gray-600">Explore Projects</span>

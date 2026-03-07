@@ -3,16 +3,9 @@
 {% from "policies/components/table_controls.html" import render_controls with context %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-[10%] py-12">
+<div class="max-w-7xl mx-auto px-6 py-12">
     
-    <!-- Breadcrumbs -->
-    <nav class="flex text-sm text-gray-500 mb-8 items-center gap-2">
-        <a href="{{ url_for('main.index') }}" class="text-primary-green hover:underline">Home</a>
-        <i class="fas fa-chevron-right text-[10px]"></i>
-        <a href="{{ url_for('policies.policies_hub', category='hub') }}" class="hover:text-primary-green">Policies and Reports</a>
-        <i class="fas fa-chevron-right text-[10px]"></i>
-        <span class="font-semibold text-gray-700">Resolutions</span>
-    </nav>
+
 
     <div class="mb-10">
         <h2 class="text-3xl font-extrabold text-gray-800 border-l-8 border-primary-green pl-4 uppercase tracking-tight">Legislative <span class="text-primary-green">Resolutions</span></h2>

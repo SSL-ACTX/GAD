@@ -1,0 +1,29 @@
+[
+  {
+    "id": "p1a2b3c4",
+    "year": "2025",
+    "title": "Buntis Congress 2025",
+    "category": "Health & Wellness",
+    "description": "Providing essential maternal health services, prenatal checkups, and educational seminars for expectant mothers across various barangays.",
+    "status": "Completed",
+    "image": null
+  },
+  {
+    "id": "p5d6e7f8",
+    "year": "2025",
+    "title": "Women's Livelihood Training",
+    "category": "Economic Empowerment",
+    "description": "A series of skills development workshops including digital literacy, tailoring, and small business management for local women entrepreneurs.",
+    "status": "Ongoing",
+    "image": null
+  },
+  {
+    "id": "p60b84a4d",
+    "year": "2026",
+    "title": "Kick Off Tree Planting",
+    "category": "Community",
+    "description": "",
+    "status": "Ongoing",
+    "image": null
+  }
+]

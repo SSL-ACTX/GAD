@@ -194,12 +194,11 @@
                     </button>
                     <ul
                         class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-52 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
-                        <li><a href="{{ url_for('projects.project_year', year='2025') }}"
-                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year 2025</a>
+                        {% for yr in nav_project_years[:4] %}
+                        <li><a href="{{ url_for('projects.project_year', year=yr) }}"
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year {{ yr }}</a>
                         </li>
-                        <li><a href="{{ url_for('projects.project_year', year='2024') }}"
-                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year 2024</a>
-                        </li>
+                        {% endfor %}
                         <li><a href="{{ url_for('projects.projects_archive') }}"
                                 class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">More...</a>
                         </li>

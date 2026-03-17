@@ -1,6 +1,7 @@
 import os
 import json
 import uuid
+import subprocess
 from functools import wraps
 from datetime import date, datetime
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
@@ -105,6 +106,76 @@ def dashboard():
     # Most recent 5 upcoming events
     upcoming = sorted([e for e in events if e['date'] >= today], key=lambda x: x['date'])[:5]
     return render_template('admin/dashboard.html', stats=stats, upcoming=upcoming)
+
+# ── System Features ───────────────────────────────────────────────────────────
+@admin_bp.route('/features')
+@login_required
+def features():
+    schedule_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'scraper_schedule.json')
+    schedule_config = {"enabled": False, "hour": "2", "minute": "0"}
+    try:
+        if os.path.exists(schedule_file):
+            with open(schedule_file, 'r') as f:
+                schedule_config = json.load(f)
+    except Exception:
+        pass
+    
+    return render_template('admin/features.html', schedule=schedule_config)
+
+@admin_bp.route('/configure_scraper', methods=['POST'])
+@login_required
+def configure_scraper():
+    enabled = request.form.get('enabled') == 'on'
+    hour = request.form.get('hour', '2').strip()
+    minute = request.form.get('minute', '0').strip()
+    
+    schedule_config = {
+        "enabled": enabled,
+        "hour": hour,
+        "minute": minute
+    }
+    
+    schedule_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'scraper_schedule.json')
+    try:
+        with open(schedule_file, 'w') as f:
+            json.dump(schedule_config, f)
+        
+        # We need to tell the main app to reload the schedule. 
+        # In a real production deployment with multiple workers, we'd use a database or Redis for this.
+        # But for this simple app, we can just let it restart or wait for Wzeug reload if in dev.
+        # However, a cleaner way is just importing the scheduler here and updating it, but since
+        # it's defined in app.py we might get circular imports.
+        # For simplicity, we'll just save it and let the next app start pick it up, 
+        # OR we can try to do a local update if we move the scheduler init.
+        # The prompt asked for a simple scheduler so saving to JSON and notifying user it requires restart
+        # OR we can just try to import app and scheduler. Let's just flash a message.
+        from app import setup_scheduler
+        setup_scheduler() # This will dynamically update the scheduler in the current process!
+        
+        if enabled:
+            flash(f'Scraper schedule saved and enabled for {hour.zfill(2)}:{minute.zfill(2)} everyday.', 'success')
+        else:
+            flash('Scraper schedule saved and disabled.', 'success')
+            
+    except Exception as e:
+        flash(f'Failed to save schedule: {e}', 'error')
+        
+    return redirect(url_for('admin.features'))
+
+@admin_bp.route('/scrape_news', methods=['POST'])
+@login_required
+def scrape_news():
+    try:
+        script_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'scripts', 'scrape_news.py')
+        # Run scraper script and wait for completion
+        subprocess.run(['python', script_path], check=True)
+        flash('News scraper completed successfully. Homepage is updated.', 'success')
+    except subprocess.CalledProcessError as e:
+        flash(f'Error running scraper. It may have failed or timed out.', 'error')
+    except Exception as e:
+        flash(f'An unexpected error occurred: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.features'))
 
 # ── Events Management ──────────────────────────────────────────────────────────
 @admin_bp.route('/events')

@@ -1,0 +1,118 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Features Control{% endblock %}
+{% block page_title %}Features Control{% endblock %}
+
+{% block content %}
+
+<!-- Header Section -->
+<div class="mb-8 border-b border-gray-100 pb-5">
+    <h2 class="text-2xl font-black text-gray-800 tracking-tight">System Features</h2>
+    <p class="text-gray-500 text-sm mt-1">Manage and trigger optional system features and background processes.</p>
+</div>
+
+<!-- System Features Grid -->
+<div class="grid grid-cols-1 gap-6">
+
+    <!-- News Scraper Combined Control -->
+    <div
+        class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300">
+        <div class="p-8 flex flex-col lg:flex-row gap-8 lg:gap-12 w-full">
+
+            <!-- Left Side: Info & Manual Run -->
+            <div class="flex-1 flex flex-col gap-6">
+                <div class="flex items-start gap-5">
+                    <div
+                        class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-satellite-dish text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-gray-800 text-lg mb-1">Facebook News Scraper</h3>
+                        <p class="text-sm text-gray-500 leading-relaxed max-w-lg">
+                            Fetch the latest posts from the official MGADO Facebook page. This process runs a headless
+                            browser to safely extract posts and download images.
+                        </p>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-amber-50 rounded-xl p-4 border border-amber-100 flex gap-3 text-amber-800 mt-auto w-full max-w-lg">
+                    <i class="fas fa-microchip mt-1 shrink-0 opacity-70"></i>
+                    <div class="text-xs space-y-1">
+                        <p class="font-bold">Heavy CPU & RAM Required</p>
+                        <p class="opacity-90">This process spawns a headless browser environment. It is CPU
+                            and memory intensive. Existing records are updated safely without deletion.</p>
+                    </div>
+                </div>
+
+                <form action="{{ url_for('admin.scrape_news') }}" method="POST"
+                    onsubmit="return confirm('Initiate Facebook scraper? This might take a while and temporarily spike server CPU and RAM.');"
+                    class="w-full max-w-lg">
+                    <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-black text-sm uppercase tracking-wider py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-3">
+                        <i class="fas fa-sync-alt"></i> Force Run Scraper
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Side: Automation Control -->
+            <div
+                class="w-full lg:w-[450px] flex flex-col pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-gray-100 lg:pl-12">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 text-base">Automated Schedule</h4>
+                </div>
+
+                <form action="{{ url_for('admin.configure_scraper') }}" method="POST"
+                    class="flex-1 flex flex-col space-y-5">
+
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input type="checkbox" name="enabled" class="sr-only peer" {% if schedule and
+                                schedule.enabled %}checked{% endif %}>
+                            <div
+                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500">
+                            </div>
+                        </label>
+                        <span class="text-sm font-bold text-gray-700 flex-1">Enable Daily Auto-Scraper</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Hour
+                                (24H)</label>
+                            <select name="hour"
+                                class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white">
+                                {% for h in range(0, 24) %}
+                                <option value="{{ h }}" {% if schedule and schedule.hour | int==h %}selected{% endif %}>
+                                    {{ "%02d" | format(h) }}:00</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Minute</label>
+                            <select name="minute"
+                                class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white">
+                                {% for m in range(0, 60, 5) %}
+                                <option value="{{ m }}" {% if schedule and schedule.minute | int==m %}selected{% endif
+                                    %}>{{ "%02d" | format(m) }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full mt-auto bg-green-600 hover:bg-green-700 active:scale-[0.98] text-white font-black text-sm uppercase tracking-wider py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-3">
+                        <i class="fas fa-save"></i> Save Schedule
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

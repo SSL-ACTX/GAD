@@ -39,14 +39,114 @@ def random_delay(min_seconds: float = 1.0, max_seconds: float = 2.5) -> None:
     time.sleep(random.uniform(min_seconds, max_seconds))
 
 
+import re
+from datetime import timedelta
+
+# Patterns that indicate Facebook alt text, NOT a date
+_ALT_TEXT_PATTERNS = re.compile(
+    r"May be|image of|photo of|text that says|No photo description",
+    re.IGNORECASE,
+)
+
+# Month names for validation
+_MONTHS = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+]
+_MONTH_ABBR = [m[:3] for m in _MONTHS]
+
+
+def _looks_like_date(text: str) -> bool:
+    """Return True only if text is short and looks like a date, not alt text."""
+    if not text or len(text) > 60:
+        return False
+    if _ALT_TEXT_PATTERNS.search(text):
+        return False
+    # Must match one of: month name, relative time, or numeric patterns
+    t = text.lower().strip()
+    if any(m.lower() in t for m in _MONTHS + _MONTH_ABBR):
+        return True
+    if re.match(r"^\d+[hms]\s*(ago)?$", t):       # "2h", "30m", "5s"
+        return True
+    if re.match(r"^\d+d\s*(ago)?$", t):            # "3d"
+        return True
+    if t in ("just now", "yesterday", "today"):
+        return True
+    if re.match(r"^\d{1,2}/\d{1,2}/\d{2,4}$", t): # "3/10/2026"
+        return True
+    return False
+
+
+def normalize_fb_date(raw: str) -> str:
+    """Convert Facebook date text to a clean date string.
+
+    Handles:
+      - 'yesterday' -> '2026-03-16'
+      - '2h' / '30m' / 'just now' / 'today' -> today's date
+      - '3d' -> 3 days ago
+      - 'March 10 at 10:30 AM' -> 'March 10, 2026'
+      - 'March 10' (no year) -> adds current year
+    """
+    now = datetime.now()
+    t = raw.strip().lower()
+
+    if not t:
+        return ""
+
+    # Relative: just now / today
+    if t in ("just now", "today"):
+        return now.strftime("%B %d, %Y")
+
+    # Relative: yesterday
+    if t == "yesterday":
+        return (now - timedelta(days=1)).strftime("%B %d, %Y")
+
+    # Relative: Nh, Nm, Ns
+    m = re.match(r"^(\d+)\s*([hms])", t)
+    if m:
+        return now.strftime("%B %d, %Y")
+
+    # Relative: Nd (days ago)
+    m = re.match(r"^(\d+)\s*d", t)
+    if m:
+        days = int(m.group(1))
+        return (now - timedelta(days=days)).strftime("%B %d, %Y")
+
+    # "March 10 at 10:30 AM" -> "March 10, 2026"
+    m = re.match(r"^([A-Za-z]+ \d{1,2})\s+at\s+", raw.strip())
+    if m:
+        date_part = m.group(1)
+        return f"{date_part}, {now.year}"
+
+    # "March 10" (no year, no time)
+    m = re.match(r"^([A-Za-z]+ \d{1,2})$", raw.strip())
+    if m:
+        return f"{m.group(1)}, {now.year}"
+
+    # Already looks complete (e.g. "March 10, 2026")
+    return raw.strip()
+
+
 def generate_post_signature(caption: str, photos: List[str]) -> str:
     content = caption + "".join(photos)
     return hashlib.md5(content.encode("utf-8")).hexdigest()
 
 
-def generate_post_id(caption: str, photos: List[str]) -> str:
-    """Short 8-char hex ID derived from post content."""
-    return generate_post_signature(caption, photos)[:8]
+def generate_caption_hash(caption: str) -> str:
+    """Hash based on caption text only — stable across re-scrapes."""
+    return hashlib.md5(caption.strip().encode("utf-8")).hexdigest()[:8]
+
+
+def load_existing_news(path: str = None) -> Dict[str, Dict[str, Any]]:
+    """Load existing news.json and return a dict keyed by caption hash."""
+    if path is None:
+        path = OUTPUT_FILE
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            items = json.load(f)
+        return {item["id"]: item for item in items if isinstance(item, dict) and "id" in item}
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
 
 
 def upload_to_imgbb(image_url: str, api_key: str, expiration: int = 604800) -> str:
@@ -78,9 +178,12 @@ def scrape_facebook_page(
     imgbb_api_key: str,
     target_post_count: int = 7,
     max_scrolls: int = 30,
+    existing_posts: Dict[str, Dict[str, Any]] = None,
 ) -> List[Dict[str, Any]]:
     posts_data: List[Dict[str, Any]] = []
     seen_signatures: Set[str] = set()
+    if existing_posts is None:
+        existing_posts = {}
 
     with sync_playwright() as p:
         print("[STATUS] Initializing stealth environment...")
@@ -220,6 +323,82 @@ def scrape_facebook_page(
                         if msg_locator.count() > 0:
                             caption = msg_locator.first.inner_text().strip()
 
+                        # --- Extract post URL ---
+                        post_url = ""
+                        try:
+                            # Look for permalink-style links (timestamps that link to the post)
+                            link_locator = article.locator('a[href*="/posts/"], a[href*="/photos/"], a[href*="pfbid"], a[href*="/permalink/"]')
+                            if link_locator.count() > 0:
+                                href = link_locator.first.get_attribute("href") or ""
+                                if href.startswith("/"):
+                                    post_url = f"https://www.facebook.com{href}"
+                                elif href.startswith("http"):
+                                    post_url = href.split("?")[0]  # strip tracking params
+                        except Exception:
+                            pass
+
+                        # --- Extract post date ---
+                        post_date = ""
+                        try:
+                            # Strategy 1: direct text inside permalink-style timestamp links
+                            time_links = article.locator('a[href*="/posts/"], a[href*="pfbid"], a[href*="/permalink/"]')
+                            for tl in range(min(time_links.count(), 5)):
+                                link_el = time_links.nth(tl)
+                                # Check the link's own direct text first
+                                link_text = link_el.inner_text().strip()
+                                if _looks_like_date(link_text):
+                                    post_date = link_text
+                                    break
+                                # Check immediate child spans (skip deeply nested img alt text)
+                                direct_spans = link_el.locator('> span')
+                                for s in range(min(direct_spans.count(), 3)):
+                                    span_text = direct_spans.nth(s).inner_text().strip()
+                                    if _looks_like_date(span_text):
+                                        post_date = span_text
+                                        break
+                                if post_date:
+                                    break
+
+                            # Strategy 2: aria-label on links containing month names
+                            if not post_date:
+                                date_link = article.locator('a[aria-label]')
+                                for d in range(min(date_link.count(), 5)):
+                                    label = date_link.nth(d).get_attribute("aria-label") or ""
+                                    if _looks_like_date(label):
+                                        post_date = label
+                                        break
+
+                            # Normalize to clean date format
+                            if post_date:
+                                post_date = normalize_fb_date(post_date)
+
+                        except Exception:
+                            pass
+
+                        # --- Check if post already exists (skip image upload) ---
+                        caption_id = generate_caption_hash(caption) if caption else ""
+
+                        if caption_id and caption_id in existing_posts:
+                            existing = existing_posts[caption_id]
+                            print(f"   -> [CACHED] Post already exists, reusing images.")
+                            # Update URL/date if newly scraped but keep existing images
+                            updated = {
+                                "id": caption_id,
+                                "caption": caption,
+                                "photos": existing.get("photos", []),
+                                "post_url": post_url or existing.get("post_url", ""),
+                                "post_date": post_date or existing.get("post_date", ""),
+                                "scraped_at": existing.get("scraped_at", datetime.now().isoformat(timespec="seconds")),
+                            }
+                            if caption_id not in seen_signatures:
+                                posts_data.append(updated)
+                                seen_signatures.add(caption_id)
+                                print(f"[SUCCESS] Data acquired (cached). Progress: {len(posts_data)}/{target_post_count}")
+                            else:
+                                print("   -> Discarded (Duplicate hash).")
+                            processed_index += 1
+                            continue
+
                         raw_photos = []
                         processed_photos = []
                         images = article.locator("img").all()
@@ -253,18 +432,20 @@ def scrape_facebook_page(
                                 processed_photos = list(executor.map(process_single_image, raw_photos))
 
                         if caption or processed_photos:
-                            signature = generate_post_signature(caption, processed_photos)
+                            post_id = caption_id if caption_id else generate_post_signature(caption, processed_photos)[:8]
 
-                            if signature not in seen_signatures:
+                            if post_id not in seen_signatures:
                                 posts_data.append(
                                     {
-                                        "id": generate_post_id(caption, processed_photos),
+                                        "id": post_id,
                                         "caption": caption,
                                         "photos": processed_photos,
+                                        "post_url": post_url,
+                                        "post_date": post_date,
                                         "scraped_at": datetime.now().isoformat(timespec="seconds"),
                                     }
                                 )
-                                seen_signatures.add(signature)
+                                seen_signatures.add(post_id)
                                 print(f"[SUCCESS] Data acquired. Progress: {len(posts_data)}/{target_post_count}")
                             else:
                                 print("   -> Discarded (Duplicate hash).")
@@ -303,11 +484,17 @@ def save_to_json(posts: List[Dict[str, Any]], output_path: str = OUTPUT_FILE) ->
 if __name__ == "__main__":
     start_time = time.time()
 
+    # Load existing data to avoid re-uploading images
+    existing = load_existing_news()
+    if existing:
+        print(f"[INFO] Loaded {len(existing)} existing posts from cache.")
+
     results = scrape_facebook_page(
         FACEBOOK_PAGE_URL,
         imgbb_api_key=IMGBB_API_KEY,
         target_post_count=TARGET_POSTS,
         max_scrolls=MAX_SCROLLS,
+        existing_posts=existing,
     )
 
     print("\n" + "=" * 50)

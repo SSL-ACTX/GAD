@@ -42,7 +42,10 @@
             {% endif %}
 
             <div class="p-6 flex-grow flex flex-col">
-                {% if item.scraped_at %}
+                {% if item.post_date %}
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ item.post_date
+                    }}</span>
+                {% elif item.scraped_at %}
                 <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ item.scraped_at[:10]
                     }}</span>
                 {% endif %}
@@ -59,10 +62,19 @@
                     {{ preview[:200] }}{% if preview|length > 200 %}…{% endif %}
                 </p>
                 <div class="mt-auto flex items-center justify-between">
-                    <a href="{{ url_for('main.news_detail', news_id=item.id) }}"
-                        class="text-primary-green font-bold text-xs uppercase flex items-center gap-2 hover:gap-3 transition-all">
-                        Read Full Story <i class="fas fa-arrow-right"></i>
-                    </a>
+                    <div class="flex items-center gap-3">
+                        <a href="{{ url_for('main.news_detail', news_id=item.id) }}"
+                            class="text-primary-green font-bold text-xs uppercase flex items-center gap-2 hover:gap-3 transition-all">
+                            Read Full Story <i class="fas fa-arrow-right"></i>
+                        </a>
+                        {% if item.post_url %}
+                        <a href="{{ item.post_url }}" target="_blank"
+                            class="inline-flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-bold px-3 py-1.5 rounded-full transition-colors"
+                            title="View on Facebook">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </a>
+                        {% endif %}
+                    </div>
                     {% if item.photos|length > 1 %}
                     <span class="text-[10px] text-gray-400 font-medium"><i class="fas fa-images mr-1"></i>{{
                         item.photos|length }} photos</span>

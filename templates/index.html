@@ -3,9 +3,15 @@
 {% block content %}
 <!-- Hero Section -->
 <section class="px-[5%] lg:px-[10%] py-6 md:py-12">
-    <div class="h-[300px] md:h-[450px] rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center text-center text-white relative overflow-hidden bg-cover bg-center shadow-2xl"
-        style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80');">
-        <div class="max-w-2xl px-6">
+    <div
+        class="h-[300px] md:h-[450px] rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center text-center text-white relative overflow-hidden shadow-2xl">
+        <!-- Parallax Background Layer -->
+        <div id="heroParallaxBG"
+            class="absolute w-full h-[130%] -top-[15%] left-0 bg-cover bg-center -z-10 will-change-transform"
+            style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y');">
+        </div>
+
+        <div class="max-w-2xl px-6 relative z-10">
             <span
                 class="uppercase tracking-[0.2em] text-[10px] md:text-sm font-bold text-green-400 mb-2 md:mb-4 block">Welcome
                 to GAD Corner</span>
@@ -27,7 +33,7 @@
 
     <!-- Sidebar (Now Left Column on Desktop) -->
     <aside class="lg:col-span-3 order-1 lg:order-1 flex flex-col gap-6">
-        <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-2">Quick Resources</h3>
+        <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 px-2">Quick Resources</h3>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6">
             <a href="{{ url_for('policies.reports') }}"
@@ -37,7 +43,7 @@
                     <i class="fas fa-file-signature"></i>
                 </div>
                 <p class="font-bold text-gray-800 text-base md:text-lg">Plan & Budget</p>
-                <p class="text-[10px] text-gray-400 mt-1">Transparency and financial reports.</p>
+                <p class="text-xs text-gray-500 mt-1">Transparency and financial reports.</p>
             </a>
 
             <a href="{{ url_for('projects.projects_hub') }}"
@@ -47,7 +53,7 @@
                     <i class="fas fa-project-diagram"></i>
                 </div>
                 <p class="font-bold text-gray-800 text-base md:text-lg">GAD Projects</p>
-                <p class="text-[10px] text-gray-400 mt-1">Active community programs.</p>
+                <p class="text-xs text-gray-500 mt-1">Active community programs.</p>
             </a>
 
             <a href="{{ url_for('policies.policies_hub', category='hub') }}"
@@ -57,7 +63,7 @@
                     <i class="fas fa-book"></i>
                 </div>
                 <p class="font-bold text-gray-800 text-base md:text-lg">Policy Vault</p>
-                <p class="text-[10px] text-gray-400 mt-1">Legal mandates and circulars.</p>
+                <p class="text-xs text-gray-500 mt-1">Legal mandates and circulars.</p>
             </a>
         </div>
     </aside>
@@ -97,7 +103,9 @@
                     <div class="flex items-center gap-3 mb-2">
                         <span
                             class="bg-green-100 text-primary-green text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Update</span>
-                        {% if item.scraped_at %}
+                        {% if item.post_date %}
+                        <span class="text-[10px] text-gray-400 font-semibold uppercase">{{ item.post_date }}</span>
+                        {% elif item.scraped_at %}
                         <span class="text-[10px] text-gray-400 font-semibold uppercase">{{ item.scraped_at[:10]
                             }}</span>
                         {% endif %}
@@ -113,10 +121,19 @@
                     <p class="text-gray-500 text-xs mb-3 line-clamp-2">{{ preview[:150] }}{% if preview|length > 150
                         %}…{% endif %}</p>
 
-                    <a href="{{ url_for('main.news_detail', news_id=item.id) }}"
-                        class="inline-flex items-center font-bold text-xs text-primary-green gap-2">
-                        Read Full Article <i class="fas fa-long-arrow-alt-right"></i>
-                    </a>
+                    <div class="flex items-center gap-3">
+                        <a href="{{ url_for('main.news_detail', news_id=item.id) }}"
+                            class="inline-flex items-center font-bold text-xs text-primary-green gap-2">
+                            Read Full Article <i class="fas fa-long-arrow-alt-right"></i>
+                        </a>
+                        {% if item.post_url %}
+                        <a href="{{ item.post_url }}" target="_blank"
+                            class="inline-flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-bold px-3 py-1.5 rounded-full transition-colors"
+                            title="View on Facebook">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -129,4 +146,25 @@
         </div>
     </main>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const parallaxBG = document.getElementById('heroParallaxBG');
+        if (!parallaxBG) return;
+
+        let ticking = false;
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    // Move the background down at 40% of the scroll speed
+                    parallaxBG.style.transform = `translateY(${scrollY * 0.4}px)`;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    });
+</script>
 {% endblock %}

@@ -10,7 +10,9 @@
         <div class="flex items-center gap-3 mb-4">
             <span
                 class="bg-green-50 text-primary-green text-[10px] font-bold px-3 py-1 rounded uppercase tracking-wider">Update</span>
-            {% if article.scraped_at %}
+            {% if article.post_date %}
+            <span class="text-gray-400 text-xs font-medium">{{ article.post_date }}</span>
+            {% elif article.scraped_at %}
             <span class="text-gray-400 text-xs font-medium">{{ article.scraped_at[:10] }}</span>
             {% endif %}
         </div>
@@ -21,18 +23,63 @@
         <!-- Social Share -->
         <div class="flex gap-4 border-y border-gray-100 py-4">
             <span class="text-xs text-gray-400 font-bold uppercase self-center mr-2">Share:</span>
+            {% if article.post_url %}
+            <a href="{{ article.post_url }}" target="_blank" class="text-gray-400 hover:text-blue-600"
+                title="View on Facebook"><i class="fab fa-facebook-f"></i></a>
+            {% else %}
             <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+            {% endif %}
             <a href="#" class="text-gray-400 hover:text-blue-400"><i class="fab fa-twitter"></i></a>
             <a href="#" class="text-gray-400 hover:text-primary-green"><i class="fas fa-link"></i></a>
         </div>
     </header>
 
-    <!-- Hero Image -->
+    <!-- Hero Image / Carousel -->
     {% if article.photos %}
-    <div class="w-full rounded-3xl mb-10 overflow-hidden shadow-lg">
-        <img src="{{ article.photos[0] }}" alt="Article main photo" class="w-full max-h-[500px] object-cover"
+    {% if article.photos|length > 1 %}
+    <!-- Auto-cycling carousel for multiple images -->
+    <div class="w-full rounded-3xl mb-10 overflow-hidden shadow-lg relative group" id="heroCarousel">
+        <div class="relative w-full h-[400px] md:h-[500px] cursor-pointer"
+            onclick="openLightbox(typeof currentSlide !== 'undefined' ? currentSlide : 0)">
+            {% for photo in article.photos %}
+            <img src="{{ photo }}" alt="Photo {{ loop.index }}"
+                class="carousel-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out {% if loop.first %}opacity-100{% else %}opacity-0{% endif %}"
+                loading="lazy">
+            {% endfor %}
+        </div>
+
+        <!-- Nav arrows -->
+        <button onclick="changeSlide(-1)"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/40 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <i class="fas fa-chevron-left text-sm"></i>
+        </button>
+        <button onclick="changeSlide(1)"
+            class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/40 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <i class="fas fa-chevron-right text-sm"></i>
+        </button>
+
+        <!-- Dots indicator -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {% for photo in article.photos %}
+            <button onclick="goToSlide({{ loop.index0 }})"
+                class="carousel-dot w-2.5 h-2.5 rounded-full transition-all duration-300 {% if loop.first %}bg-white scale-110{% else %}bg-white/50{% endif %}"
+                aria-label="Go to slide {{ loop.index }}"></button>
+            {% endfor %}
+        </div>
+
+        <!-- Counter badge -->
+        <div class="absolute top-4 right-4 bg-black/50 text-white text-xs font-bold px-3 py-1.5 rounded-full z-10">
+            <span id="slideCounter">1</span> / {{ article.photos|length }}
+        </div>
+    </div>
+    {% else %}
+    <!-- Single image -->
+    <div class="w-full rounded-3xl mb-10 overflow-hidden shadow-lg cursor-pointer" onclick="openLightbox(0)">
+        <img src="{{ article.photos[0] }}" alt="Article main photo"
+            class="w-full max-h-[500px] object-cover hover:scale-[1.02] transition-transform duration-500"
             loading="lazy">
     </div>
+    {% endif %}
     {% else %}
     <div
         class="w-full h-[400px] bg-gray-200 rounded-3xl mb-10 flex items-center justify-center text-gray-400 overflow-hidden">
@@ -53,7 +100,7 @@
         {% endfor %}
     </div>
 
-    <!-- Photo Gallery -->
+    <!-- Photo Gallery (clickable thumbnails) -->
     {% if article.photos|length > 1 %}
     <div class="mt-12">
         <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
@@ -61,12 +108,12 @@
         </h3>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
             {% for photo in article.photos %}
-            <a href="{{ photo }}" target="_blank"
-                class="group rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100">
+            <div onclick="openLightbox({{ loop.index0 }})"
+                class="group rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 cursor-pointer">
                 <img src="{{ photo }}" alt="Gallery photo {{ loop.index }}"
                     class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy">
-            </a>
+            </div>
             {% endfor %}
         </div>
     </div>
@@ -86,4 +133,122 @@
         </div>
     </div>
 </div>
+
+<!-- ===== Lightbox Overlay ===== -->
+{% if article.photos %}
+<div id="lightbox" class="fixed inset-0 bg-black/90 z-[9999] hidden items-center justify-center"
+    onclick="closeLightboxOutside(event)">
+    <!-- Close button -->
+    <button onclick="closeLightbox()"
+        class="absolute top-6 right-6 w-10 h-10 bg-white/10 hover:bg-white/25 text-white rounded-full flex items-center justify-center transition-colors z-10">
+        <i class="fas fa-times text-lg"></i>
+    </button>
+
+    <!-- Counter -->
+    <div class="absolute top-6 left-6 text-white/70 text-sm font-medium z-10">
+        <span id="lbCounter">1</span> / {{ article.photos|length }}
+    </div>
+
+    <!-- Prev / Next -->
+    <button onclick="lightboxNav(-1)"
+        class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/25 text-white rounded-full flex items-center justify-center transition-colors z-10">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button onclick="lightboxNav(1)"
+        class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/25 text-white rounded-full flex items-center justify-center transition-colors z-10">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <!-- Image -->
+    <img id="lbImage" src="" alt="Lightbox"
+        class="max-w-[90vw] max-h-[85vh] object-contain rounded-xl shadow-2xl select-none">
+</div>
+{% endif %}
+
+<!-- ===== Carousel + Lightbox Script ===== -->
+{% if article.photos %}
+<script>
+    (function () {
+        const photos = {{ article.photos | tojson
+    }};
+    window.currentSlide = 0;
+    let autoTimer = null;
+    let lbIndex = 0;
+
+    // --- Carousel ---
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const counter = document.getElementById('slideCounter');
+
+    function showSlide(idx) {
+        window.currentSlide = ((idx % photos.length) + photos.length) % photos.length;
+        slides.forEach((s, i) => {
+            s.classList.toggle('opacity-100', i === window.currentSlide);
+            s.classList.toggle('opacity-0', i !== window.currentSlide);
+        });
+        dots.forEach((d, i) => {
+            d.classList.toggle('bg-white', i === window.currentSlide);
+            d.classList.toggle('scale-110', i === window.currentSlide);
+            d.classList.toggle('bg-white/50', i !== window.currentSlide);
+        });
+        if (counter) counter.textContent = window.currentSlide + 1;
+    }
+
+    function startAuto() {
+        stopAuto();
+        if (photos.length > 1) {
+            autoTimer = setInterval(() => showSlide(window.currentSlide + 1), 4000);
+        }
+    }
+    function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
+
+    window.changeSlide = function (dir) { stopAuto(); showSlide(window.currentSlide + dir); startAuto(); };
+    window.goToSlide = function (idx) { stopAuto(); showSlide(idx); startAuto(); };
+
+    if (photos.length > 1) startAuto();
+
+    // --- Lightbox ---
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImage');
+    const lbCount = document.getElementById('lbCounter');
+
+    window.openLightbox = function (idx) {
+        lbIndex = idx;
+        lbImg.src = photos[lbIndex];
+        if (lbCount) lbCount.textContent = lbIndex + 1;
+        lb.classList.remove('hidden');
+        lb.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        stopAuto();
+    };
+
+    window.closeLightbox = function () {
+        lb.classList.add('hidden');
+        lb.classList.remove('flex');
+        document.body.style.overflow = '';
+        startAuto();
+    };
+
+    window.closeLightboxOutside = function (e) {
+        if (e.target === lb) closeLightbox();
+    };
+
+    window.lightboxNav = function (dir) {
+        lbIndex = ((lbIndex + dir) % photos.length + photos.length) % photos.length;
+        lbImg.src = photos[lbIndex];
+        if (lbCount) lbCount.textContent = lbIndex + 1;
+    };
+
+    // Keyboard controls
+    document.addEventListener('keydown', function (e) {
+        if (!lb.classList.contains('hidden')) {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') lightboxNav(-1);
+            if (e.key === 'ArrowRight') lightboxNav(1);
+        }
+    });
+}) ();
+</script>
+{% endif %}
+
 {% endblock %}

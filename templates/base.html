@@ -51,6 +51,23 @@
                 display: block !important;
             }
         }
+
+        /* Accessibility Classes */
+        body.high-contrast {
+            filter: contrast(130%) saturate(120%);
+        }
+
+        body.invert-colors {
+            filter: invert(100%) hue-rotate(180deg);
+            background-color: #0b080a;
+            /* Inverted bgLight */
+        }
+
+        body.invert-colors img,
+        body.invert-colors video,
+        body.invert-colors .bg-cover {
+            filter: invert(100%) hue-rotate(180deg);
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -81,10 +98,67 @@
             </div>
         </div>
 
-        <!-- Accessibility Icons -->
-        <div class="flex gap-4 text-white/80 border-l pl-6 border-white/20">
-            <i class="fas fa-universal-access cursor-pointer hover:text-white nav-transition" title="Accessibility"></i>
-            <i class="fas fa-font cursor-pointer hover:text-white nav-transition" title="Text Size"></i>
+        <!-- Accessibility Icons & Menu -->
+        <div class="flex gap-4 text-white/80 border-l pl-6 border-white/20 relative">
+            <button id="a11y-menu-btn" class="focus:outline-none hover:text-white nav-transition"
+                title="Accessibility Menu">
+                <i class="fas fa-universal-access"></i>
+            </button>
+            <button id="a11y-quick-text-btn" class="focus:outline-none hover:text-white nav-transition"
+                title="Quick Text Zoom">
+                <i class="fas fa-font"></i>
+            </button>
+
+            <!-- A11y Menu Dropdown -->
+            <div id="a11y-menu"
+                class="absolute top-full right-0 mt-3 w-72 bg-white text-gray-800 rounded-xl shadow-2xl hidden z-[2000] border border-gray-100 overflow-hidden transform origin-top-right transition-all">
+                <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                    <h3 class="font-bold text-sm text-primary-green"><i class="fas fa-wheelchair mr-2"></i>Accessibility
+                        Options</h3>
+                    <button id="a11y-close" class="text-gray-400 hover:text-red-500 transition-colors"><i
+                            class="fas fa-times"></i></button>
+                </div>
+                <div class="p-2 space-y-1">
+                    <button
+                        class="a11y-toggle w-full flex items-center gap-3 px-3 py-2 text-sm text-left hover:bg-green-50 rounded-lg transition-colors"
+                        data-action="contrast">
+                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600"><i
+                                class="fas fa-adjust"></i></div>
+                        <div>
+                            <p class="font-bold">High Contrast</p>
+                            <p class="text-[10px] text-gray-500">Enhance readability</p>
+                        </div>
+                    </button>
+                    <button
+                        class="a11y-toggle w-full flex items-center gap-3 px-3 py-2 text-sm text-left hover:bg-green-50 rounded-lg transition-colors"
+                        data-action="invert">
+                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600"><i
+                                class="fas fa-fill-drip"></i></div>
+                        <div>
+                            <p class="font-bold">Invert Colors</p>
+                            <p class="text-[10px] text-gray-500">Reverse color scheme</p>
+                        </div>
+                    </button>
+                    <div class="px-3 py-3 mt-1 border-t border-gray-100">
+                        <p class="font-bold text-xs text-gray-600 uppercase tracking-wider mb-2">Text Size</p>
+                        <div class="flex items-center gap-2">
+                            <button id="a11y-text-dec"
+                                class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 rounded font-bold text-xs"
+                                title="Decrease Text Size">-A</button>
+                            <button id="a11y-text-reset"
+                                class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 rounded text-xs"
+                                title="Reset Text Size"><i class="fas fa-undo"></i> Reset</button>
+                            <button id="a11y-text-inc"
+                                class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 rounded font-bold text-base"
+                                title="Increase Text Size">+A</button>
+                        </div>
+                    </div>
+                    <button id="a11y-reset-all"
+                        class="w-full mt-1 text-center text-xs text-red-500 font-bold py-2.5 hover:bg-red-50 rounded transition-colors">
+                        Reset All Settings
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -196,7 +270,8 @@
                         class="dropdown-menu lg:absolute left-0 top-full w-full lg:w-52 bg-white lg:dropdown-shadow lg:border-t-4 border-primary-green hidden">
                         {% for yr in nav_project_years[:4] %}
                         <li><a href="{{ url_for('projects.project_year', year=yr) }}"
-                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year {{ yr }}</a>
+                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">Year {{ yr
+                                }}</a>
                         </li>
                         {% endfor %}
                         <li><a href="{{ url_for('projects.projects_archive') }}"

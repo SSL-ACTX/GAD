@@ -49,7 +49,9 @@ csp = {
         '\'self\'',
         'data:',
         'https://images.unsplash.com',
-        'https://ui-avatars.com'
+        'https://ui-avatars.com',
+        'https://wsrv.nl',
+        'https://i.ibb.co'
     ]
 }
 

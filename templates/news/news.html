@@ -5,77 +5,120 @@
 {% block content %}
 <div class="max-w-7xl mx-auto px-6 py-12">
 
-
     <!-- Header -->
     <div class="mb-10">
         <h2 class="text-3xl font-bold text-gray-800 border-l-8 border-primary-green pl-4 uppercase">
             News <span class="text-primary-green">& Updates</span>
         </h2>
-        <p class="text-gray-500 mt-2 ml-6 text-sm">Stay informed about the latest GAD activities, announcements, and events.</p>
+        <p class="text-gray-500 mt-2 ml-6 text-sm">Stay informed about the latest GAD activities, announcements, and
+            events.</p>
     </div>
 
+    {% if news_items %}
     <!-- News Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        
-        <!-- News Card 1 -->
-        <article class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all flex flex-col">
+        {% for item in news_items %}
+        <article
+            class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all flex flex-col group">
+            <!-- Card Image -->
+            {% if item.photos %}
+            <div class="h-48 overflow-hidden relative">
+                <img src="{{ item.photos[0] }}" alt="News photo"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy">
+                <div
+                    class="absolute top-4 left-4 bg-primary-green text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">
+                    Update
+                </div>
+            </div>
+            {% else %}
             <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400 relative">
                 <i class="fas fa-image text-4xl opacity-20"></i>
-                <div class="absolute top-4 left-4 bg-primary-green text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">
-                    Announcement
+                <div
+                    class="absolute top-4 left-4 bg-primary-green text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">
+                    Update
                 </div>
             </div>
+            {% endif %}
+
             <div class="p-6 flex-grow flex flex-col">
-                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">February 16, 2024</span>
+                {% if item.post_date %}
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ item.post_date
+                    }}</span>
+                {% elif item.scraped_at %}
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">{{ item.scraped_at[:10]
+                    }}</span>
+                {% endif %}
+
+                {% set lines = item.caption.split('\n') %}
+                {% set title = lines[0].strip().strip('"').strip('\u201c').strip('\u201d') %}
                 <h3 class="text-lg font-bold text-gray-800 mb-3 hover:text-primary-green transition-colors">
-                    <!-- FIXED: main.news_detail -->
-                    <a href="{{ url_for('main.news_detail') }}">GAD Strategic Planning for FY 2024 Successfully Concluded</a>
+                    <a href="{{ url_for('main.news_detail', news_id=item.id) }}">{{ title[:100] }}{% if title|length >
+                        100 %}…{% endif %}</a>
                 </h3>
+
+                {% set preview = lines[1:]|join(' ')|trim %}
                 <p class="text-gray-600 text-sm line-clamp-3 mb-6">
-                    The Gender and Development office recently completed its three-day strategic planning workshop aimed at strengthening gender mainstreaming...
+                    {{ preview[:200] }}{% if preview|length > 200 %}…{% endif %}
                 </p>
-                <div class="mt-auto">
-                    <!-- FIXED: main.news_detail -->
-                    <a href="{{ url_for('main.news_detail') }}" class="text-primary-green font-bold text-xs uppercase flex items-center gap-2 hover:gap-3 transition-all">
-                        Read Full Story <i class="fas fa-arrow-right"></i>
-                    </a>
+                <div class="mt-auto flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <a href="{{ url_for('main.news_detail', news_id=item.id) }}"
+                            class="text-primary-green font-bold text-xs uppercase flex items-center gap-2 hover:gap-3 transition-all">
+                            Read Full Story <i class="fas fa-arrow-right"></i>
+                        </a>
+                        {% if item.post_url %}
+                        <a href="{{ item.post_url }}" target="_blank"
+                            class="inline-flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-bold px-3 py-1.5 rounded-full transition-colors"
+                            title="View on Facebook">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% if item.photos|length > 1 %}
+                    <span class="text-[10px] text-gray-400 font-medium"><i class="fas fa-images mr-1"></i>{{
+                        item.photos|length }} photos</span>
+                    {% endif %}
                 </div>
             </div>
         </article>
-
-        <!-- News Card 2 -->
-        <article class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all flex flex-col">
-            <div class="h-48 bg-gray-100 flex items-center justify-center text-gray-400 relative">
-                <i class="fas fa-calendar-alt text-4xl opacity-20"></i>
-                <div class="absolute top-4 left-4 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">
-                    Event
-                </div>
-            </div>
-            <div class="p-6 flex-grow flex flex-col">
-                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">February 10, 2024</span>
-                <h3 class="text-lg font-bold text-gray-800 mb-3 hover:text-primary-green transition-colors">
-                    Upcoming Webinar: Understanding Gender Fair Language
-                </h3>
-                <p class="text-gray-600 text-sm line-clamp-3 mb-6">
-                    Join us next Friday for an interactive session on how to use inclusive language in government communications and office documentation.
-                </p>
-                <div class="mt-auto">
-                    <a href="#" class="text-primary-green font-bold text-xs uppercase flex items-center gap-2 hover:gap-3 transition-all">
-                        Register Now <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </article>
-
+        {% endfor %}
     </div>
 
     <!-- Pagination -->
+    {% if total_pages > 1 %}
     <div class="mt-16 flex justify-center gap-2">
-        <button class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white transition-all">1</button>
-        <button class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white transition-all">2</button>
-        <button class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white transition-all">
+        {% if page > 1 %}
+        <a href="{{ url_for('main.news_hub', page=page-1) }}"
+            class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white transition-all">
+            <i class="fas fa-chevron-left text-xs"></i>
+        </a>
+        {% endif %}
+
+        {% for p in range(1, total_pages + 1) %}
+        <a href="{{ url_for('main.news_hub', page=p) }}"
+            class="w-10 h-10 rounded-lg border flex items-center justify-center transition-all
+                  {% if p == page %}bg-primary-green text-white border-primary-green{% else %}border-gray-200 text-gray-400 hover:bg-primary-green hover:text-white{% endif %}">
+            {{ p }}
+        </a>
+        {% endfor %}
+
+        {% if page < total_pages %} <a href="{{ url_for('main.news_hub', page=page+1) }}"
+            class="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white transition-all">
             <i class="fas fa-chevron-right text-xs"></i>
-        </button>
+            </a>
+            {% endif %}
     </div>
+    {% endif %}
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-24">
+        <i class="fas fa-newspaper text-6xl text-gray-200 mb-6"></i>
+        <h3 class="text-xl font-bold text-gray-400">No News Yet</h3>
+        <p class="text-gray-400 text-sm mt-2">Check back soon for the latest updates from the GAD Office.</p>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

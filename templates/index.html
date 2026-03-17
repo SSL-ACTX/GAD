@@ -23,10 +23,10 @@
 </section>
 
 <!-- Responsive Content Grid -->
-<div class="max-w-[1400px] w-full px-[5%] lg:px-[10%] mx-auto mb-24 grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
+<div class="max-w-[1400px] w-full px-[5%] lg:px-[6%] mx-auto mb-24 grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10">
 
     <!-- Sidebar (Now Left Column on Desktop) -->
-    <aside class="lg:col-span-4 order-2 lg:order-1 flex flex-col gap-6">
+    <aside class="lg:col-span-3 order-1 lg:order-1 flex flex-col gap-6">
         <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-2">Quick Resources</h3>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6">
@@ -63,7 +63,7 @@
     </aside>
 
     <!-- News Section (Now Right Column on Desktop) -->
-    <main class="lg:col-span-8 order-1 lg:order-2">
+    <main class="lg:col-span-9 order-2 lg:order-2">
         <div class="flex justify-between items-end mb-8 md:mb-10 pb-4 border-b border-gray-200">
             <div>
                 <h2 class="text-xl md:text-3xl font-black text-gray-800 leading-none">LATEST NEWS</h2>
@@ -75,30 +75,57 @@
             </a>
         </div>
 
-        <!-- News Item -->
-        <div
-            class="group bg-white flex flex-col sm:flex-row rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-50 nav-transition">
+        <!-- News Items from JSON -->
+        <div class="space-y-6">
+            {% if latest_news is defined and latest_news %}
+            {% for item in latest_news %}
             <div
-                class="w-full sm:w-48 md:w-64 h-48 sm:h-auto bg-gray-100 flex items-center justify-center relative overflow-hidden">
-                <i class="fas fa-newspaper text-4xl md:text-6xl text-gray-200 group-hover:scale-110 nav-transition"></i>
-            </div>
-            <div class="p-6 md:p-10 flex flex-col justify-center">
-                <div class="flex items-center gap-3 mb-4">
-                    <span
-                        class="bg-green-100 text-primary-green text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Update</span>
-                    <span class="text-[10px] text-gray-400 font-semibold uppercase">January 24, 2024</span>
+                class="group bg-white flex flex-col sm:flex-row sm:h-[200px] rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-50 nav-transition">
+                <div class="w-full sm:w-56 md:w-72 h-48 sm:h-full relative overflow-hidden flex-shrink-0">
+                    {% if item.photos %}
+                    <img src="{{ item.photos[0] }}" alt="News photo"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy">
+                    {% else %}
+                    <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                        <i
+                            class="fas fa-newspaper text-4xl md:text-6xl text-gray-200 group-hover:scale-110 nav-transition"></i>
+                    </div>
+                    {% endif %}
                 </div>
-                <h3
-                    class="text-xl md:text-2xl font-extrabold text-gray-800 mb-3 group-hover:text-primary-green transition-colors leading-tight">
-                    GAD Annual Planning Session 2024</h3>
-                <p class="text-gray-500 text-sm mb-6 line-clamp-2">The GAD Office recently conducted its annual planning
-                    session to improve gender mainstreaming initiatives.</p>
+                <div class="p-5 md:p-6 flex flex-col justify-center min-w-0 flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span
+                            class="bg-green-100 text-primary-green text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">Update</span>
+                        {% if item.scraped_at %}
+                        <span class="text-[10px] text-gray-400 font-semibold uppercase">{{ item.scraped_at[:10]
+                            }}</span>
+                        {% endif %}
+                    </div>
 
-                <a href="{{ url_for('main.news_detail') }}"
-                    class="inline-flex items-center font-bold text-sm text-primary-green gap-2">
-                    Read Full Article <i class="fas fa-long-arrow-alt-right"></i>
-                </a>
+                    {% set lines = item.caption.split('\n') %}
+                    {% set title = lines[0].strip().strip('"').strip('\u201c').strip('\u201d') %}
+                    <h3
+                        class="text-base md:text-lg font-extrabold text-gray-800 mb-1 group-hover:text-primary-green transition-colors leading-tight line-clamp-2">
+                        {{ title[:100] }}{% if title|length > 100 %}…{% endif %}</h3>
+
+                    {% set preview = lines[1:]|join(' ')|trim %}
+                    <p class="text-gray-500 text-xs mb-3 line-clamp-2">{{ preview[:150] }}{% if preview|length > 150
+                        %}…{% endif %}</p>
+
+                    <a href="{{ url_for('main.news_detail', news_id=item.id) }}"
+                        class="inline-flex items-center font-bold text-xs text-primary-green gap-2">
+                        Read Full Article <i class="fas fa-long-arrow-alt-right"></i>
+                    </a>
+                </div>
             </div>
+            {% endfor %}
+            {% else %}
+            <div class="text-center py-12 text-gray-400">
+                <i class="fas fa-newspaper text-4xl mb-4 opacity-30"></i>
+                <p class="text-sm">No news available yet.</p>
+            </div>
+            {% endif %}
         </div>
     </main>
 </div>

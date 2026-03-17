@@ -1,22 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}News Article - GAD Corner{% endblock %}
+{% block title %}{{ article.caption[:60] }}… - GAD Corner{% endblock %}
 
 {% block content %}
 <div class="max-w-5xl mx-auto px-6 py-12">
 
-
     <!-- Article Header -->
     <header class="mb-10">
         <div class="flex items-center gap-3 mb-4">
-            <span class="bg-green-50 text-primary-green text-[10px] font-bold px-3 py-1 rounded uppercase tracking-wider">Announcement</span>
-            <span class="text-gray-400 text-xs font-medium">February 16, 2024 • 5 min read</span>
+            <span
+                class="bg-green-50 text-primary-green text-[10px] font-bold px-3 py-1 rounded uppercase tracking-wider">Update</span>
+            {% if article.scraped_at %}
+            <span class="text-gray-400 text-xs font-medium">{{ article.scraped_at[:10] }}</span>
+            {% endif %}
         </div>
-        <h1 class="text-4xl font-black text-gray-800 leading-tight mb-6">
-            GAD Strategic Planning for FY 2024 Successfully Concluded
+        <h1 class="text-3xl md:text-4xl font-black text-gray-800 leading-tight mb-6">
+            {{ article.caption.split('\n')[0][:120] }}
         </h1>
-        
-        <!-- Social Share Small -->
+
+        <!-- Social Share -->
         <div class="flex gap-4 border-y border-gray-100 py-4">
             <span class="text-xs text-gray-400 font-bold uppercase self-center mr-2">Share:</span>
             <a href="#" class="text-gray-400 hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
@@ -25,48 +27,62 @@
         </div>
     </header>
 
-    <!-- Main Image -->
-    <div class="w-full h-[400px] bg-gray-200 rounded-3xl mb-10 flex items-center justify-center text-gray-400 overflow-hidden">
+    <!-- Hero Image -->
+    {% if article.photos %}
+    <div class="w-full rounded-3xl mb-10 overflow-hidden shadow-lg">
+        <img src="{{ article.photos[0] }}" alt="Article main photo" class="w-full max-h-[500px] object-cover"
+            loading="lazy">
+    </div>
+    {% else %}
+    <div
+        class="w-full h-[400px] bg-gray-200 rounded-3xl mb-10 flex items-center justify-center text-gray-400 overflow-hidden">
         <i class="fas fa-image text-6xl opacity-20"></i>
     </div>
+    {% endif %}
 
     <!-- Article Body -->
-    <div class="prose prose-green max-w-none text-gray-700 leading-relaxed space-y-6">
-        <p class="text-lg font-medium text-gray-600 italic">
-            "Improving gender-responsive governance is at the heart of our mission this year."
-        </p>
-        
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </p>
-
-        <h3 class="text-xl font-bold text-gray-800 mt-8">Key Objectives Achieved</h3>
-        <p>
-            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-
-        <ul class="list-disc pl-6 space-y-2">
-            <li>Finalization of the Gender Mainstreaming Evaluation Framework.</li>
-            <li>Approval of the 2024 GAD Budget Allocation for community projects.</li>
-            <li>Establishment of new training modules for local officials.</li>
-        </ul>
-
-        <p>
-            Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida.
-        </p>
+    <div class="prose prose-green max-w-none text-gray-700 leading-relaxed space-y-4">
+        {% for line in article.caption.split('\n') %}
+        {% if line.strip() %}
+        {% if line.strip().startswith('#') %}
+        <p class="text-primary-green font-semibold text-sm">{{ line.strip() }}</p>
+        {% else %}
+        <p>{{ line.strip() }}</p>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
     </div>
+
+    <!-- Photo Gallery -->
+    {% if article.photos|length > 1 %}
+    <div class="mt-12">
+        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <i class="fas fa-images text-primary-green"></i> Photo Gallery
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {% for photo in article.photos %}
+            <a href="{{ photo }}" target="_blank"
+                class="group rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100">
+                <img src="{{ photo }}" alt="Gallery photo {{ loop.index }}"
+                    class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy">
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Footer of Article -->
     <div class="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
-        <!-- FIXED: Added 'main.' prefix -->
-        <a href="{{ url_for('main.news_hub') }}" class="text-primary-green font-bold flex items-center gap-2 hover:underline">
+        <a href="{{ url_for('main.news_hub') }}"
+            class="text-primary-green font-bold flex items-center gap-2 hover:underline">
             <i class="fas fa-chevron-left text-xs"></i> Back to News Feed
         </a>
-        
-        <div class="flex items-center gap-4">
+
+        <div class="flex items-center gap-4 flex-wrap">
             <span class="text-sm text-gray-500 italic">Tags:</span>
-            <span class="text-[10px] bg-gray-100 px-3 py-1 rounded-full font-bold text-gray-500 uppercase">Planning</span>
-            <span class="text-[10px] bg-gray-100 px-3 py-1 rounded-full font-bold text-gray-500 uppercase">FY 2024</span>
+            <span class="text-[10px] bg-gray-100 px-3 py-1 rounded-full font-bold text-gray-500 uppercase">GAD</span>
+            <span class="text-[10px] bg-gray-100 px-3 py-1 rounded-full font-bold text-gray-500 uppercase">MGADO</span>
         </div>
     </div>
 </div>

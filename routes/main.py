@@ -1,6 +1,22 @@
-from flask import Blueprint, render_template, request, jsonify
+import os
+import json
+import math
+from flask import Blueprint, render_template, request, jsonify, abort, current_app
 
 main_bp = Blueprint('main', __name__)
+
+# --- News Helper ---
+POSTS_PER_PAGE = 6
+
+def load_news():
+    """Load all news items from data/news.json."""
+    news_file = os.path.join(current_app.root_path, 'data', 'news.json')
+    try:
+        with open(news_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
 
 # --- Mock Database of Searchable Content ---
 # This list is used by both the search results page and the live suggestion API.
@@ -27,7 +43,9 @@ searchable_content = [
 
 @main_bp.route('/')
 def index():
-    return render_template('index.html')
+    news_items = load_news()
+    latest_news = news_items[:3]  # Show 3 most recent on homepage
+    return render_template('index.html', latest_news=latest_news)
 
 # --- About Section Routes ---
 
@@ -55,11 +73,29 @@ def contact():
 
 @main_bp.route('/news')
 def news_hub():
-    return render_template('news/news.html')
+    news_items = load_news()
+    page = request.args.get('page', 1, type=int)
+    total_pages = max(1, math.ceil(len(news_items) / POSTS_PER_PAGE))
+    page = max(1, min(page, total_pages))
 
-@main_bp.route('/news/article-1')
-def news_detail():
-    return render_template('news/news-detail.html')
+    start = (page - 1) * POSTS_PER_PAGE
+    end = start + POSTS_PER_PAGE
+    paginated = news_items[start:end]
+
+    return render_template(
+        'news/news.html',
+        news_items=paginated,
+        page=page,
+        total_pages=total_pages,
+    )
+
+@main_bp.route('/news/<news_id>')
+def news_detail(news_id):
+    news_items = load_news()
+    article = next((item for item in news_items if item.get('id') == news_id), None)
+    if article is None:
+        abort(404)
+    return render_template('news/news-detail.html', article=article)
 
 # --- Search Functionality ---
 

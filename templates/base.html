@@ -198,14 +198,17 @@
             <ul id="nav-menu"
                 class="hidden lg:flex flex-col lg:flex-row list-none pb-6 lg:pb-0 divide-y divide-white/5 lg:divide-y-0">
                 <li><a href="{{ url_for('main.index') }}"
-                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition">Home</a>
+                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition flex items-center gap-2">
+                        <i class="fas fa-home text-sm opacity-80"></i> Home</a>
                 </li>
 
                 <!-- About Us -->
                 <li class="relative group">
                     <button
                         class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
-                        About Us <i
+                        <span class="flex items-center gap-2"><i class="fas fa-info-circle text-sm opacity-80"></i>
+                            About Us</span>
+                        <i
                             class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
                     <ul
@@ -229,7 +232,9 @@
                 <li class="relative group">
                     <button
                         class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
-                        Policies and Reports <i
+                        <span class="flex items-center gap-2"><i class="fas fa-file-contract text-sm opacity-80"></i>
+                            Policies and Reports</span>
+                        <i
                             class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
                     <ul
@@ -277,7 +282,9 @@
                 <li class="relative group">
                     <button
                         class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
-                        Projects <i
+                        <span class="flex items-center gap-2"><i class="fas fa-tasks text-sm opacity-80"></i>
+                            Projects</span>
+                        <i
                             class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
                     <ul
@@ -296,9 +303,8 @@
 
                 <!-- Knowledge & IEC -->
                 <li><a href="{{ url_for('main.knowledge_products') }}"
-                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition">GAD
-                        Knowledge
-                        & IEC</a>
+                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-sm opacity-80"></i> GAD Knowledge & IEC</a>
                 </li>
 
                 <!-- Calendar -->
@@ -341,18 +347,74 @@
                         <li class="flex items-center gap-3"><a href="mailto:lgugadrodriguezrizal@gmail.com"
                                 class="hover:text-white flex items-center gap-3"><i
                                     class="fas fa-envelope w-4 text-center"></i> lgugadrodriguezrizal@gmail.com</a></li>
-                        <li class="flex items-center gap-3"><a href="https://m.me/MontalbanGenderAndDevelopment"
-                                target="_blank" class="hover:text-white flex items-center gap-3"><i
-                                    class="fab fa-facebook-messenger w-4 text-center"></i>
-                                m.me/MontalbanGenderAndDevelopment</a></li>
+                        <li class="flex items-center gap-3"><a
+                                href="https://www.facebook.com/MontalbanGenderAndDevelopment" target="_blank"
+                                class="hover:text-white flex items-center gap-3"><i
+                                    class="fab fa-facebook-f w-4 text-center"></i> Montalban GAD Office</a></li>
+                        <!-- GAD QR Code Support -->
+                        <li class="flex items-start gap-4 p-4 bg-gray-800/50 rounded-2xl border border-gray-700/50 mt-4 group hover:bg-gray-800 transition-all duration-300 cursor-pointer"
+                            onclick="openGlobalLightbox('{{ url_for('static', filename='assets/GAD-qr.svg') }}')">
+                            <div
+                                class="shrink-0 w-14 h-14 bg-white p-1.5 rounded-xl shadow-lg group-hover:scale-105 transition-transform">
+                                <img src="{{ url_for('static', filename='assets/GAD-qr.svg') }}" alt="GAD QR Support"
+                                    class="w-full h-full object-contain">
+                            </div>
+                            <div class="flex flex-col justify-center h-full">
+                                <span
+                                    class="block text-white font-black text-[10px] uppercase tracking-widest mb-1.5">Scan
+                                    for Support</span>
+                                <p class="text-[9px] leading-relaxed text-gray-500 font-medium">Click to expand or scan
+                                    our QR code for quick assistance and GAD inquiries.</p>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="border-t border-gray-800 bg-gray-900/50 py-6 text-center">
-            <p class="text-[10px] uppercase">&copy; 2026 Municipality of Montalban. All rights reserved.</p>
+            <p class="text-[10px] uppercase">&copy; 2026 Municipality of Rodriguez. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Global Lightbox Overlay -->
+    <div id="globalLightbox"
+        class="fixed inset-0 bg-black/95 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm"
+        onclick="closeGlobalLightboxOutside(event)">
+        <button onclick="closeGlobalLightbox()"
+            class="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all z-10 border border-white/10">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <img id="globalLbImage" src="" alt="Full View"
+            class="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl select-none">
+    </div>
+
+    <script>
+        window.openGlobalLightbox = function (src) {
+            const lb = document.getElementById('globalLightbox');
+            const img = document.getElementById('globalLbImage');
+            if (!lb || !img) return;
+            img.src = src;
+            lb.classList.remove('hidden');
+            lb.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeGlobalLightbox = function () {
+            const lb = document.getElementById('globalLightbox');
+            if (!lb) return;
+            lb.classList.add('hidden');
+            lb.classList.remove('flex');
+            document.body.style.overflow = '';
+        };
+
+        window.closeGlobalLightboxOutside = function (e) {
+            if (e.target.id === 'globalLightbox') closeGlobalLightbox();
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeGlobalLightbox();
+        });
+    </script>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     {% block extra_js %}{% endblock %}

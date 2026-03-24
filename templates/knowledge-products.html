@@ -23,6 +23,54 @@
 <div class="max-w-7xl mx-auto px-[5%] lg:px-[10%] py-16">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
+        <!-- GAD-related Laws Redirect Card -->
+        <div
+            class="group bg-gradient-to-br from-primary-green to-primary-green/80 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-2 flex flex-col">
+            <div class="h-48 overflow-hidden relative flex items-center justify-center bg-white/10 backdrop-blur-sm">
+                <i
+                    class="fas fa-balance-scale text-white text-6xl opacity-30 group-hover:scale-110 transition-transform duration-500"></i>
+                <div
+                    class="absolute top-4 right-4 bg-white/20 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest backdrop-blur-md">
+                    Legislation
+                </div>
+            </div>
+            <div class="p-8 flex-1 flex flex-col">
+                <h3 class="text-xl font-bold text-white mb-2">GAD-related Laws</h3>
+                <p class="text-white/70 text-sm mb-6 leading-relaxed">Access official Republic Acts (RA), Magna Carta of
+                    Women, and other national legislation related to GAD.</p>
+                <div class="mt-auto flex justify-end">
+                    <a href="{{ url_for('policies.policies_hub', category='republic_acts') }}"
+                        class="inline-flex items-center gap-2 bg-white text-primary-green font-bold text-xs px-6 py-3 rounded-2xl hover:gap-3 transition-all shadow-lg">
+                        VIEW ALL LAWS <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAD Policies & Issuances Redirect Card -->
+        <div
+            class="group bg-gradient-to-br from-blue-600 to-blue-500 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:-translate-y-2 flex flex-col">
+            <div class="h-48 overflow-hidden relative flex items-center justify-center bg-white/10 backdrop-blur-sm">
+                <i
+                    class="fas fa-file-contract text-white text-6xl opacity-30 group-hover:scale-110 transition-transform duration-500"></i>
+                <div
+                    class="absolute top-4 right-4 bg-white/20 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest backdrop-blur-md">
+                    Documents
+                </div>
+            </div>
+            <div class="p-8 flex-1 flex flex-col">
+                <h3 class="text-xl font-bold text-white mb-2">Policies & Issuances</h3>
+                <p class="text-white/70 text-sm mb-6 leading-relaxed">View all GAD-related office memoranda, executive
+                    orders, resolutions, and official issuances.</p>
+                <div class="mt-auto flex justify-end">
+                    <a href="{{ url_for('policies.policies_index') }}"
+                        class="inline-flex items-center gap-2 bg-white text-blue-600 font-bold text-xs px-6 py-3 rounded-2xl hover:gap-3 transition-all shadow-lg">
+                        VIEW POLICIES <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- IEC Material Card 1 -->
         <div
             class="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 hover:-translate-y-2">

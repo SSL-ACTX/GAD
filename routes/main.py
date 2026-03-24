@@ -45,6 +45,7 @@ searchable_content = [
     {'title': 'Terms of Use and Conditions', 'url': 'legal.terms_conditions', 'category': 'Legal'},
     {'title': 'System Developers Team', 'url': 'legal.developers', 'category': 'Team'},
     {'title': 'GAD Events Calendar', 'url': 'calendar.calendar_view', 'category': 'Calendar'},
+    {'title': 'GAD Knowledge Products and IEC', 'url': 'main.knowledge_products', 'category': 'Resources'},
 ]
 
 # --- Core Routes ---
@@ -55,6 +56,11 @@ def index():
     latest_news = news_items[:3]  # Show 3 most recent on homepage
     carousel_images = load_carousel()
     return render_template('index.html', latest_news=latest_news, carousel_images=carousel_images)
+
+
+@main_bp.route('/knowledge-products')
+def knowledge_products():
+    return render_template('knowledge-products.html')
 
 # --- About Section Routes ---
 

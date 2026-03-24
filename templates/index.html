@@ -185,14 +185,14 @@
         <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 px-2">Quick Resources</h3>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6">
-            <a href="{{ url_for('policies.reports') }}"
+            <a href="{{ url_for('policies.lbp_forms') }}"
                 class="group bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green transition-all">
                 <div
                     class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary-green group-hover:text-white nav-transition">
-                    <i class="fas fa-file-signature"></i>
+                    <i class="fas fa-file-invoice-dollar"></i>
                 </div>
-                <p class="font-bold text-gray-800 text-base md:text-lg">Plan & Budget</p>
-                <p class="text-xs text-gray-500 mt-1">Transparency and financial reports.</p>
+                <p class="font-bold text-gray-800 text-base md:text-lg">GAD Plan & Budget</p>
+                <p class="text-xs text-gray-500 mt-1">LBP Forms and financial planning.</p>
             </a>
 
             <a href="{{ url_for('projects.projects_hub') }}"
@@ -205,14 +205,14 @@
                 <p class="text-xs text-gray-500 mt-1">Active community programs.</p>
             </a>
 
-            <a href="{{ url_for('policies.policies_hub', category='hub') }}"
+            <a href="{{ url_for('main.knowledge_products') }}"
                 class="group bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green transition-all">
                 <div
                     class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary-green group-hover:text-white nav-transition">
-                    <i class="fas fa-book"></i>
+                    <i class="fas fa-lightbulb"></i>
                 </div>
-                <p class="font-bold text-gray-800 text-base md:text-lg">Policy Vault</p>
-                <p class="text-xs text-gray-500 mt-1">Legal mandates and circulars.</p>
+                <p class="font-bold text-gray-800 text-base md:text-lg">GAD Knowledge & IEC</p>
+                <p class="text-xs text-gray-500 mt-1">Information and Education Materials.</p>
             </a>
         </div>
     </aside>

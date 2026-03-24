@@ -60,3 +60,6 @@ def policies_placeholder():
     """Render a themed placeholder page for upcoming policy sections."""
     return render_template("policies/placeholder.html")
 
+@policies_bp.route('/lbp-forms')
+def lbp_forms():
+    return render_template('policies/lbp-forms.html')

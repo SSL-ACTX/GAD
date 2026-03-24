@@ -253,8 +253,21 @@
                                 </li>
                             </ul>
                         </li>
-                        <li><a href="{{ url_for('policies.reports') }}"
-                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green">Reports</a>
+                        <li class="relative group/flyout">
+                            <button
+                                class="w-full flex justify-between items-center px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green dropdown-toggle-sub">
+                                Reports <i class="fas fa-chevron-right hidden lg:block text-[10px] opacity-50"></i>
+                                <i class="fas fa-chevron-down block lg:hidden text-[10px] opacity-50"></i>
+                            </button>
+                            <ul
+                                class="dropdown-menu lg:absolute lg:left-full lg:top-0 w-full lg:w-64 bg-gray-50 lg:bg-white lg:dropdown-shadow lg:border-l-4 border-primary-green hidden">
+                                <li><a href="{{ url_for('policies.lbp_forms') }}"
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">LBP Forms (Plan &
+                                        Budget)</a></li>
+                                <li><a href="{{ url_for('policies.reports') }}"
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Accomplishment
+                                        Reports</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
@@ -278,6 +291,13 @@
                                 class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50">More...</a>
                         </li>
                     </ul>
+                </li>
+
+                <!-- Knowledge & IEC -->
+                <li><a href="{{ url_for('main.knowledge_products') }}"
+                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition">GAD
+                        Knowledge
+                        & IEC</a>
                 </li>
 
                 <!-- Calendar -->

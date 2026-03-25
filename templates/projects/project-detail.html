@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - GAD Projects{% endblock %}
+
+{% block breadcrumb_current %}{{ project.title[:30] }}{% if project.title|length > 30 %}...{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-6 py-16">
+
+    <!-- Project Header -->
+    <div class="mb-12">
+        <div class="flex items-center gap-3 mb-6">
+            <span
+                class="bg-primary-green/10 text-primary-green text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">{{
+                project.year }}</span>
+            {% if project.category %}
+            <span
+                class="bg-gray-100 text-gray-500 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">{{
+                project.category }}</span>
+            {% endif %}
+
+            {% if project.status == 'Completed' %}
+            <span
+                class="bg-green-100 text-green-600 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest border border-green-200">Completed</span>
+            {% elif project.status == 'Ongoing' %}
+            <span
+                class="bg-blue-100 text-blue-600 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest border border-blue-200">Ongoing</span>
+            {% else %}
+            <span
+                class="bg-amber-100 text-amber-600 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest border border-amber-200">{{
+                project.status }}</span>
+            {% endif %}
+        </div>
+
+        <h1 class="text-4xl md:text-5xl font-black text-gray-800 leading-tight mb-8">
+            {{ project.title }}
+        </h1>
+
+        <div class="flex flex-wrap gap-8 items-center text-sm text-gray-400 font-medium">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-calendar-alt text-primary-green"></i>
+                <span>Implementation Year: <strong class="text-gray-600">{{ project.year }}</strong></span>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-tag text-primary-green"></i>
+                <span>Category: <strong class="text-gray-600">{{ project.category or 'General' }}</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+        <!-- Left Panel: Content -->
+        <div class="lg:col-span-8 space-y-12">
+            <!-- Project Image -->
+            <div class="relative group">
+                {% if project.image %}
+                <div class="rounded-[2rem] overflow-hidden shadow-2xl bg-gray-100">
+                    <img src="{{ url_for('static', filename=project.image) }}" alt="{{ project.title }}"
+                        class="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700">
+                </div>
+                {% else %}
+                <div
+                    class="aspect-video bg-gray-50 rounded-[2rem] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 group-hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-image text-6xl text-gray-200 mb-4"></i>
+                    <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">No project documentation image
+                        available</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Description Section -->
+            <section class="prose prose-lg prose-green max-w-none">
+                <h3 class="text-2xl font-black text-gray-800 uppercase tracking-tight mb-6 flex items-center gap-3">
+                    <span
+                        class="w-8 h-8 rounded-lg bg-primary-green/10 flex items-center justify-center text-primary-green text-sm">01</span>
+                    Project Overview
+                </h3>
+                <div class="text-gray-600 leading-relaxed text-lg">
+                    {% if project.description %}
+                    {{ project.description }}
+                    {% else %}
+                    <p class="italic text-gray-400">No project description provided for this initiative.</p>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- GAD Objectives (Contextual) -->
+            <section
+                class="bg-primary-green/5 rounded-[2.5rem] p-10 md:p-14 border border-primary-green/10 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-64 h-64 bg-primary-green/5 rounded-full translate-x-1/2 -translate-y-1/2 group-hover:scale-110 transition-transform duration-700">
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-black text-gray-800 uppercase tracking-tight mb-8">GAD Perspective</h3>
+                    <p class="text-gray-700 font-medium leading-relaxed mb-10 text-lg">
+                        This project is part of our commitment to gender-responsive governance in Montalban. It aligns
+                        with our goals of ensuring social protection and empowering all genders in our community.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <div
+                            class="flex items-center gap-3 bg-white px-5 py-3 rounded-2xl shadow-sm border border-gray-100">
+                            <i class="fas fa-check-circle text-primary-green"></i>
+                            <span class="text-sm font-bold text-gray-600">Gender Equality</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-3 bg-white px-5 py-3 rounded-2xl shadow-sm border border-gray-100">
+                            <i class="fas fa-check-circle text-primary-green text-blue-500"></i>
+                            <span class="text-sm font-bold text-gray-600">Inclusion</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Panel: Sidebar Information -->
+        <div class="lg:col-span-4 space-y-8">
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-50 flex flex-col gap-4">
+                <a href="{{ url_for('projects.project_year', year=project.year) }}"
+                    class="flex items-center justify-center gap-3 bg-gray-900 text-white font-bold py-5 rounded-2xl hover:bg-black transition-all group">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i>
+                    Back to {{ project.year }} Projects
+                </a>
+                <button onclick="window.print()"
+                    class="flex items-center justify-center gap-3 border-2 border-gray-100 text-gray-600 font-black py-5 rounded-2xl hover:border-primary-green hover:text-primary-green transition-all uppercase tracking-widest text-xs">
+                    <i class="fas fa-print"></i>
+                    Print Details
+                </button>
+            </div>
+
+            <!-- Stakeholders / Info -->
+            <div class="bg-gray-50 rounded-[2rem] p-8 border border-gray-100">
+                <h4 class="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-8 italic">Implementation Hub
+                </h4>
+                <div class="space-y-8">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-primary-green">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <div>
+                            <span
+                                class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Office</span>
+                            <p class="text-sm font-bold text-gray-800">Municipal GAD Office (MGADO)</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-primary-green">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <span
+                                class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Local
+                                Focus</span>
+                            <p class="text-sm font-bold text-gray-800">Rodriguez, Rizal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Latest News Widget -->
+            <div
+                class="p-8 bg-primary-green text-white rounded-[2rem] shadow-2xl shadow-primary-green/20 relative overflow-hidden group">
+                <div
+                    class="absolute -bottom-4 -right-4 w-32 h-32 bg-white/10 rounded-full group-hover:scale-125 transition-transform duration-700">
+                </div>
+                <div class="relative z-10">
+                    <h4 class="text-xl font-black mb-4">Latest GAD Updates</h4>
+                    <p class="text-white/70 text-sm font-medium mb-6 leading-relaxed">Stay updated with our latest
+                        activities and program announcements.</p>
+                    <a href="{{ url_for('main.news_hub') }}"
+                        class="inline-flex items-center gap-2 bg-white text-primary-green px-6 py-3 rounded-xl font-bold text-sm hover:scale-105 transition-all">
+                        View Feed <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

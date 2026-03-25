@@ -1,30 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Circulars - GAD Corner{% endblock %}
+{% block title %}Republic Acts - GAD Corner{% endblock %}
 {% from "policies/components/table_controls.html" import render_controls with context %}
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-6 py-12">
-
-
-
 
     <!-- Header & Description -->
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
             <h2
                 class="text-3xl font-extrabold text-gray-800 border-l-8 border-primary-green pl-4 uppercase tracking-tight">
-                GAD Policies: <span class="text-primary-green">Circulars</span>
+                GAD Policies: <span class="text-primary-green">Republic Acts</span>
             </h2>
             <p class="mt-2 text-gray-600 max-w-2xl ml-6">
-                Access official memorandum circulars, guidelines, and directives issued by the Philippine Commission on
-                Women (PCW) and related oversight agencies.
+                Access official Republic Acts (RA) related to Gender and Development and the Magna Carta of Women.
             </p>
         </div>
 
         <!-- Stats Summary -->
         <div class="flex gap-4 ml-6 md:ml-0">
             <div class="bg-green-50 px-4 py-2 rounded-lg border border-green-100">
-                <span class="block text-xs text-gray-500 uppercase font-bold">Total Files</span>
+                <span class="block text-xs text-gray-500 uppercase font-bold">Total RA</span>
                 <span class="text-xl font-bold text-primary-green">{{ stats.total }}</span>
             </div>
             <div class="bg-blue-50 px-4 py-2 rounded-lg border border-blue-100">
@@ -37,7 +33,7 @@
     {{ render_controls(
     search_id="policySearch",
     filter_id="yearFilter",
-    placeholder="Search by subject, keyword, or Ref No...",
+    placeholder="Search by RA Number, title, or keyword...",
     start_year=site_config.get('policies', {}).get('start_year', 2002),
     current_year=site_config.get('policies', {}).get('current_year', now.year)
     ) }}
@@ -48,7 +44,7 @@
             <table id="policyTable" class="w-full text-left border-collapse">
                 <thead class="bg-primary-green text-white">
                     <tr>
-                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Policy Information</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">RA Information</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Status</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Date Published</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-center">Actions</th>
@@ -63,7 +59,7 @@
                             <div class="flex items-start">
                                 <div
                                     class="mt-1 mr-4 text-primary-green bg-green-50 p-2 rounded-lg group-hover:bg-white transition-colors">
-                                    <i class="fas fa-file-pdf text-xl"></i>
+                                    <i class="fas fa-balance-scale text-xl"></i>
                                 </div>
                                 <div>
                                     {% if item.url %}
@@ -97,13 +93,8 @@
                             <div class="flex items-center justify-center gap-2">
                                 {% if item.url %}
                                 <a href="{{ item.url }}" target="_blank"
-                                    class="p-2 text-gray-400 hover:text-blue-600 transition-colors"
-                                    title="Visit PCW Website">
+                                    class="p-2 text-gray-400 hover:text-blue-600 transition-colors" title="View Source">
                                     <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="{{ item.url }}" target="_blank"
-                                    class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-all shadow-sm whitespace-nowrap">
-                                    <i class="fas fa-external-link-alt mr-2"></i> VISIT PCW
                                 </a>
                                 {% else %}
                                 <a href="{{ url_for('static', filename=item.file) }}" target="_blank"
@@ -122,7 +113,7 @@
                     {% else %}
                     <tr>
                         <td colspan="4" class="px-6 py-10 text-center text-sm text-gray-500">
-                            No circulars found. Please add them via the admin panel.
+                            No Republic Acts found.
                         </td>
                     </tr>
                     {% endif %}
@@ -148,10 +139,9 @@
                 <i class="fas fa-info-circle"></i>
             </div>
             <div>
-                <h4 class="text-sm font-bold text-blue-800">Need help finding a policy?</h4>
-                <p class="text-xs text-blue-700">If you cannot find a specific circular, please contact the GAD
-                    Secretariat office or email us at <a href="mailto:gad@montalban.gov.ph"
-                        class="underline">gad@montalban.gov.ph</a></p>
+                <h4 class="text-sm font-bold text-blue-800">Need help?</h4>
+                <p class="text-xs text-blue-700">If you cannot find a specific act, please contact the GAD
+                    Secretariat office or email us.</p>
             </div>
         </div>
     </div>

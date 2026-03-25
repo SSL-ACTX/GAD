@@ -531,12 +531,46 @@ def scrape_facebook_page(
 # ---------------------------------------------------------------------------
 # Save to JSON
 # ---------------------------------------------------------------------------
-def save_to_json(posts: List[Dict[str, Any]], output_path: str = OUTPUT_FILE) -> None:
-    """Write scraped posts to a JSON file, creating directories if needed."""
+def save_to_json(new_posts: List[Dict[str, Any]], output_path: str = OUTPUT_FILE) -> None:
+    """Merge newly scraped posts with existing ones and save to JSON.
+    
+    This ensures data persistence by prepending new findings to the top
+    and keeping all previously scraped items that weren't updated in this run.
+    """
+    # 1. Load ALL existing posts from the file to handle history
+    try:
+        if os.path.exists(output_path):
+            with open(output_path, "r", encoding="utf-8") as f:
+                all_posts = json.load(f)
+                if not isinstance(all_posts, list):
+                    all_posts = []
+        else:
+            all_posts = []
+    except (json.JSONDecodeError, IOError):
+        all_posts = []
+
+    # 2. Identify IDs that were just refreshed or added
+    found_ids = {p["id"] for p in new_posts if isinstance(p, dict) and "id" in p}
+    
+    # 3. Preserve historical posts that were NOT in the current scrape
+    # This keeps the history alive and avoids duplicates.
+    preserved_posts = [p for p in all_posts if isinstance(p, dict) and p.get("id") not in found_ids]
+    
+    # 4. Final list: Current results (newest first) + historical remainder
+    merged_results = new_posts + preserved_posts
+    
+    # 5. Write back to disk
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(posts, f, indent=4, ensure_ascii=False)
-    print(f"\n[SAVED] {len(posts)} posts written to {output_path}")
+        json.dump(merged_results, f, indent=4, ensure_ascii=False)
+    
+    newly_added = len(found_ids) - (len(all_posts) - len(preserved_posts))
+    
+    print(f"\n[SAVED] Persistence sync complete:")
+    print(f"   -> Scraped/Updated in this session: {len(new_posts)}")
+    print(f"   -> Preserved from history: {len(preserved_posts)}")
+    print(f"   -> Total records now: {len(merged_results)}")
+    print(f"   -> Destination: {output_path}")
 
 
 # ---------------------------------------------------------------------------

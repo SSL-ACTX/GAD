@@ -11,9 +11,11 @@
             <h2 class="text-2xl font-bold text-gray-800 border-l-8 border-primary-green pl-4 uppercase tracking-tight">
                 GAD Projects: <span class="text-primary-green">{{ year }}</span>
             </h2>
-            <p class="text-gray-500 mt-2 ml-6 text-sm italic">Gender-responsive programs and initiatives implemented in the year {{ year }}.</p>
+            <p class="text-gray-500 mt-2 ml-6 text-sm italic">Gender-responsive programs and initiatives implemented in
+                the year {{ year }}.</p>
         </div>
-        <a href="{{ url_for('projects.projects_archive') }}" class="inline-flex items-center px-5 py-2 text-primary-green border border-primary-green rounded-lg text-sm font-bold hover:bg-primary-green hover:text-white transition-all nav-transition">
+        <a href="{{ url_for('projects.projects_archive') }}"
+            class="inline-flex items-center px-5 py-2 text-primary-green border border-primary-green rounded-lg text-sm font-bold hover:bg-primary-green hover:text-white transition-all nav-transition">
             View All Archives <i class="fas fa-archive ml-2 text-xs"></i>
         </a>
     </div>
@@ -22,7 +24,8 @@
     {% if projects %}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         {% for p in projects %}
-        <div class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300">
+        <div
+            class="group bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300">
             <!-- Image -->
             {% if p.image %}
             <div class="h-56 overflow-hidden">
@@ -30,10 +33,12 @@
                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
             </div>
             {% else %}
-            <div class="h-56 bg-gray-100 flex flex-col items-center justify-center text-gray-400 font-bold relative overflow-hidden">
+            <div
+                class="h-56 bg-gray-100 flex flex-col items-center justify-center text-gray-400 font-bold relative overflow-hidden">
                 <i class="fas fa-image text-4xl mb-2 opacity-20"></i>
                 <span class="text-xs uppercase tracking-widest opacity-30">No Image</span>
-                <div class="absolute top-4 right-4 bg-primary-green text-white text-[10px] font-bold px-3 py-1 rounded-full">
+                <div
+                    class="absolute top-4 right-4 bg-primary-green text-white text-[10px] font-bold px-3 py-1 rounded-full">
                     {{ p.year }}
                 </div>
             </div>
@@ -42,13 +47,16 @@
             <div class="p-8">
                 <div class="flex items-center gap-2 mb-3">
                     {% if p.category %}
-                    <span class="bg-green-50 text-primary-green text-[10px] font-bold px-2 py-1 rounded uppercase">{{ p.category }}</span>
+                    <span class="bg-green-50 text-primary-green text-[10px] font-bold px-2 py-1 rounded uppercase">{{
+                        p.category }}</span>
                     {% endif %}
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 group-hover:text-primary-green transition-colors mb-3">{{ p.title }}</h3>
+                <h3 class="text-xl font-bold text-gray-800 group-hover:text-primary-green transition-colors mb-3">{{
+                    p.title }}</h3>
                 <p class="text-gray-600 text-sm leading-relaxed mb-6">{{ p.description }}</p>
                 <div class="flex items-center justify-between pt-6 border-t border-gray-50">
-                    <a href="#" class="text-primary-green font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
+                    <a href="{{ url_for('projects.project_detail', project_id=p.id) }}"
+                        class="text-primary-green font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
                         Read More <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                     {% if p.status == 'Completed' %}
@@ -65,13 +73,16 @@
     </div>
     {% else %}
     <!-- Empty State -->
-    <div class="bg-white rounded-2xl border border-dashed border-gray-200 py-24 flex flex-col items-center justify-center text-center px-8">
+    <div
+        class="bg-white rounded-2xl border border-dashed border-gray-200 py-24 flex flex-col items-center justify-center text-center px-8">
         <div class="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-5">
             <i class="fas fa-folder-open text-3xl text-gray-200"></i>
         </div>
         <p class="text-gray-700 font-extrabold text-lg mb-2">No Projects Yet</p>
-        <p class="text-gray-400 text-sm max-w-sm">No projects have been added for <strong>{{ year }}</strong> yet. Check back later or explore other years.</p>
-        <a href="{{ url_for('projects.projects_archive') }}" class="mt-6 text-primary-green font-bold text-sm hover:underline">
+        <p class="text-gray-400 text-sm max-w-sm">No projects have been added for <strong>{{ year }}</strong> yet. Check
+            back later or explore other years.</p>
+        <a href="{{ url_for('projects.projects_archive') }}"
+            class="mt-6 text-primary-green font-bold text-sm hover:underline">
             View Other Years →
         </a>
     </div>
@@ -80,8 +91,10 @@
     <!-- Archive Link -->
     <div class="mt-16 flex justify-center">
         <div class="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden min-w-[250px]">
-            <a href="{{ url_for('projects.projects_archive') }}" class="block px-6 py-4 text-center text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:text-primary-green nav-transition group">
-                Looking for older projects? <span class="text-primary-green group-hover:underline">View More Archive...</span>
+            <a href="{{ url_for('projects.projects_archive') }}"
+                class="block px-6 py-4 text-center text-gray-700 text-sm font-semibold hover:bg-gray-50 hover:text-primary-green nav-transition group">
+                Looking for older projects? <span class="text-primary-green group-hover:underline">View More
+                    Archive...</span>
             </a>
         </div>
     </div>

@@ -1,5 +1,6 @@
 {
-  "circulars": [
+  "republic_acts": [],
+  "memoranda": [
     {
       "id": "c_2026_02",
       "year": 2026,
@@ -134,9 +135,7 @@
       "date": "2024-01-31",
       "status": "Active",
       "url": "https://pcw.gov.ph/pcw-memorandum-circular-no-2024-02-guide-for-the-2024-national-womens-month-celebration/"
-    }
-  ],
-  "memoranda": [
+    },
     {
       "id": "m1",
       "year": 2024,

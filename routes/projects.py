@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort
 
 projects_bp = Blueprint('projects', __name__)
 
@@ -27,4 +27,12 @@ def project_year(year):
 def projects_archive():
     all_projects = load_projects()
     years = sorted(set(p.get('year') for p in all_projects), reverse=True)
-    return render_template('projects/archive.html', years=years)
+    return render_template('projects/archive.html', years=years)
+
+@projects_bp.route('/projects/detail/<project_id>')
+def project_detail(project_id):
+    all_projects = load_projects()
+    project = next((p for p in all_projects if p.get('id') == project_id), None)
+    if not project:
+        abort(404)
+    return render_template('projects/project-detail.html', project=project)

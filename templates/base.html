@@ -70,6 +70,91 @@
         }
     </style>
 
+    <!-- Floating Navigation Styles -->
+    <style>
+        #floating-nav-btn {
+            box-shadow: 0 10px 30px -5px rgba(0, 104, 55, 0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #floating-nav-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 15px 40px -5px rgba(0, 104, 55, 0.5);
+        }
+
+        #floating-nav-btn:active {
+            transform: scale(0.9);
+        }
+
+        .fab-menu-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fab-menu-active .fab-menu-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered animation for menu items */
+        .fab-menu-active .fab-menu-item:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .fab-menu-active .fab-menu-item:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .fab-menu-active .fab-menu-item:nth-child(3) {
+            transition-delay: 0.2s;
+        }
+
+        .fab-menu-active .fab-menu-item:nth-child(4) {
+            transition-delay: 0.25s;
+        }
+
+        .fab-menu-active .fab-menu-item:nth-child(5) {
+            transition-delay: 0.3s;
+        }
+
+        #fab-overlay {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.5s ease;
+        }
+
+        /* Hamburger Animation */
+        .burger-line {
+            transition: all 0.3s ease;
+        }
+
+        .burger-active .line-1 {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .burger-active .line-2 {
+            opacity: 0;
+            transform: translateX(10px);
+        }
+
+        .burger-active .line-3 {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* Floating Nav Button should only show after scroll */
+        #floating-nav-container {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #floating-nav-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -198,14 +283,17 @@
             <ul id="nav-menu"
                 class="hidden lg:flex flex-col lg:flex-row list-none pb-6 lg:pb-0 divide-y divide-white/5 lg:divide-y-0">
                 <li><a href="{{ url_for('main.index') }}"
-                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition">Home</a>
+                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition flex items-center gap-2">
+                        <i class="fas fa-home text-sm opacity-80"></i> Home</a>
                 </li>
 
                 <!-- About Us -->
                 <li class="relative group">
                     <button
                         class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
-                        About Us <i
+                        <span class="flex items-center gap-2"><i class="fas fa-info-circle text-sm opacity-80"></i>
+                            About Us</span>
+                        <i
                             class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
                     <ul
@@ -229,7 +317,9 @@
                 <li class="relative group">
                     <button
                         class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
-                        Policies and Reports <i
+                        <span class="flex items-center gap-2"><i class="fas fa-file-contract text-sm opacity-80"></i>
+                            Policies and Reports</span>
+                        <i
                             class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
                     <ul
@@ -242,19 +332,33 @@
                             </button>
                             <ul
                                 class="dropdown-menu lg:absolute lg:left-full lg:top-0 w-full lg:w-64 bg-gray-50 lg:bg-white lg:dropdown-shadow lg:border-l-4 border-primary-green hidden">
-                                <li><a href="{{ url_for('policies.policies_hub', category='circulars') }}"
-                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Circulars</a></li>
+                                <li><a href="{{ url_for('policies.policies_hub', category='republic_acts') }}"
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Republic
+                                        Acts (RA)</a></li>
                                 <li><a href="{{ url_for('policies.policies_hub', category='resolutions') }}"
                                         class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Resolutions</a></li>
                                 <li><a href="{{ url_for('policies.policies_hub', category='memoranda') }}"
                                         class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Memoranda</a></li>
                                 <li><a href="{{ url_for('policies.policies_hub', category='orders') }}"
-                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Office Orders</a>
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Executive Orders</a>
                                 </li>
                             </ul>
                         </li>
-                        <li><a href="{{ url_for('policies.reports') }}"
-                                class="block px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green">Reports</a>
+                        <li class="relative group/flyout">
+                            <button
+                                class="w-full flex justify-between items-center px-10 lg:px-6 py-4 text-text-dark text-sm hover:bg-green-50 hover:text-primary-green dropdown-toggle-sub">
+                                Reports <i class="fas fa-chevron-right hidden lg:block text-[10px] opacity-50"></i>
+                                <i class="fas fa-chevron-down block lg:hidden text-[10px] opacity-50"></i>
+                            </button>
+                            <ul
+                                class="dropdown-menu lg:absolute lg:left-full lg:top-0 w-full lg:w-64 bg-gray-50 lg:bg-white lg:dropdown-shadow lg:border-l-4 border-primary-green hidden">
+                                <li><a href="{{ url_for('policies.lbp_forms') }}"
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">LBP Forms (Plan &
+                                        Budget)</a></li>
+                                <li><a href="{{ url_for('policies.reports') }}"
+                                        class="block px-14 lg:px-6 py-4 text-sm hover:bg-green-100">Accomplishment
+                                        Reports</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
@@ -263,7 +367,9 @@
                 <li class="relative group">
                     <button
                         class="w-full flex justify-between lg:justify-start items-center gap-2 py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition dropdown-toggle">
-                        Projects <i
+                        <span class="flex items-center gap-2"><i class="fas fa-tasks text-sm opacity-80"></i>
+                            Projects</span>
+                        <i
                             class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
                     </button>
                     <ul
@@ -280,6 +386,12 @@
                     </ul>
                 </li>
 
+                <!-- Knowledge & IEC -->
+                <li><a href="{{ url_for('main.knowledge_products') }}"
+                        class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-sm opacity-80"></i> GAD Knowledge & IEC</a>
+                </li>
+
                 <!-- Calendar -->
                 <li><a href="{{ url_for('calendar.calendar_view') }}"
                         class="block py-4 lg:py-5 px-6 text-white text-[0.95rem] font-semibold hover:bg-primary-hover nav-transition flex items-center gap-2">
@@ -291,8 +403,84 @@
     </nav>
 
     <main class="min-h-[60vh]">
+        <!-- Smart Breadcrumbs (Automatic detection) -->
+        {% block breadcrumbs %}
+        {% if breadcrumbs %}
+        <div class="bg-white border-b border-gray-100">
+            <div
+                class="px-[5%] lg:px-[10%] py-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-400 overflow-x-auto whitespace-nowrap lg:overflow-visible">
+                <a href="{{ url_for('main.index') }}" title="Go to Home"
+                    class="hover:text-primary-green transition-colors flex-shrink-0"><i class="fas fa-home"></i></a>
+
+                {% for crumb in breadcrumbs %}
+                <i class="fas fa-chevron-right text-[8px] opacity-30 flex-shrink-0"></i>
+                {% if not loop.last %}
+                <a href="{{ crumb.url }}" class="hover:text-primary-green transition-colors flex-shrink-0">{{ crumb.name
+                    }}</a>
+                {% else %}
+                <span class="text-gray-600 truncate">{% block breadcrumb_current %}{{ breadcrumbs[-1].name }}{% endblock
+                    %}</span>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endblock %}
+
         {% block content %}{% endblock %}
     </main>
+
+    <!-- Floating Navigation Burger (FAB) -->
+    <div id="floating-nav-container" class="fixed bottom-8 right-8 z-[9000]">
+        <button id="floating-nav-btn" title="Quick Navigation" aria-label="Toggle Navigation Menu"
+            class="w-16 h-16 bg-primary-green text-white rounded-full flex flex-col items-center justify-center gap-1.5 focus:outline-none relative">
+            <div class="burger-line line-1 w-6 h-0.5 bg-white rounded-full"></div>
+            <div class="burger-line line-2 w-6 h-0.5 bg-white rounded-full"></div>
+            <div class="burger-line line-3 w-6 h-0.5 bg-white rounded-full"></div>
+            <span
+                class="absolute -top-12 right-0 bg-[#1a1a1a] text-white text-[10px] font-black px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden md:block border border-white/10 uppercase tracking-widest">Quick
+                Navigation</span>
+        </button>
+    </div>
+
+    <!-- Full Screen Navigation Overlay -->
+    <div id="fab-overlay"
+        class="fixed inset-0 bg-primary-green/90 z-[8500] flex items-center justify-center translate-x-full transition-transform duration-500 overflow-hidden">
+        <div
+            class="absolute inset-0 bg-[url('https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=10&maxage=10y')] bg-cover bg-center opacity-10 mix-blend-overlay">
+        </div>
+
+        <div class="relative z-10 w-full max-w-lg px-8 text-center" id="fab-menu-container">
+            <h2 class="text-white/40 text-xs font-black uppercase tracking-[0.4em] mb-12">Quick Access</h2>
+            <div class="flex flex-col gap-6">
+                <a href="{{ url_for('main.index') }}"
+                    class="fab-menu-item text-white text-3xl md:text-5xl font-black hover:text-green-400 transition-colors uppercase tracking-tight">Home</a>
+                <a href="{{ url_for('main.news_hub') }}"
+                    class="fab-menu-item text-white text-3xl md:text-5xl font-black hover:text-green-400 transition-colors uppercase tracking-tight">Latest
+                    News</a>
+                <a href="{{ url_for('policies.reports') }}"
+                    class="fab-menu-item text-white text-3xl md:text-5xl font-black hover:text-green-400 transition-colors uppercase tracking-tight">Reports</a>
+                <a href="{{ url_for('projects.projects_archive') }}"
+                    class="fab-menu-item text-white text-3xl md:text-5xl font-black hover:text-green-400 transition-colors uppercase tracking-tight">Projects</a>
+                <a href="{{ url_for('main.contact') }}"
+                    class="fab-menu-item text-white text-3xl md:text-5xl font-black hover:text-green-400 transition-colors uppercase tracking-tight">Contact
+                    Us</a>
+            </div>
+
+            <div class="mt-20 pt-12 border-t border-white/10 fab-menu-item">
+                <p class="text-white/60 text-xs font-bold uppercase tracking-widest mb-4 italic">Social Hub</p>
+                <div class="flex justify-center gap-4">
+                    <a href="https://www.facebook.com/MontalbanGenderAndDevelopment" target="_blank" rel="noopener"
+                        title="Visit our Facebook Page"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-primary-green transition-all"><i
+                            class="fab fa-facebook-f text-lg"></i></a>
+                    <button id="scrollToTopFAB" title="Scroll to Top"
+                        class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-primary-green transition-all"><i
+                            class="fas fa-arrow-up text-lg"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="bg-gray-900 text-gray-400 border-t-4 border-primary-green relative overflow-hidden">
         <div class="px-[5%] lg:px-[10%] pt-16 pb-12">
@@ -320,18 +508,74 @@
                         <li class="flex items-center gap-3"><a href="mailto:lgugadrodriguezrizal@gmail.com"
                                 class="hover:text-white flex items-center gap-3"><i
                                     class="fas fa-envelope w-4 text-center"></i> lgugadrodriguezrizal@gmail.com</a></li>
-                        <li class="flex items-center gap-3"><a href="https://m.me/MontalbanGenderAndDevelopment"
-                                target="_blank" class="hover:text-white flex items-center gap-3"><i
-                                    class="fab fa-facebook-messenger w-4 text-center"></i>
-                                m.me/MontalbanGenderAndDevelopment</a></li>
+                        <li class="flex items-center gap-3"><a
+                                href="https://www.facebook.com/MontalbanGenderAndDevelopment" target="_blank"
+                                class="hover:text-white flex items-center gap-3"><i
+                                    class="fab fa-facebook-f w-4 text-center"></i> Montalban GAD Office</a></li>
+                        <!-- GAD QR Code Support -->
+                        <li class="flex items-start gap-4 p-4 bg-gray-800/50 rounded-2xl border border-gray-700/50 mt-4 group hover:bg-gray-800 transition-all duration-300 cursor-pointer"
+                            onclick="openGlobalLightbox('{{ url_for('static', filename='assets/GAD-qr.svg') }}')">
+                            <div
+                                class="shrink-0 w-14 h-14 bg-white p-1.5 rounded-xl shadow-lg group-hover:scale-105 transition-transform">
+                                <img src="{{ url_for('static', filename='assets/GAD-qr.svg') }}" alt="GAD QR Support"
+                                    class="w-full h-full object-contain">
+                            </div>
+                            <div class="flex flex-col justify-center h-full">
+                                <span
+                                    class="block text-white font-black text-[10px] uppercase tracking-widest mb-1.5">Scan
+                                    for Support</span>
+                                <p class="text-[9px] leading-relaxed text-gray-500 font-medium">Click to expand or scan
+                                    our QR code for quick assistance and GAD inquiries.</p>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="border-t border-gray-800 bg-gray-900/50 py-6 text-center">
-            <p class="text-[10px] uppercase">&copy; 2026 Municipality of Montalban. All rights reserved.</p>
+            <p class="text-[10px] uppercase">&copy; 2026 Municipality of Rodriguez. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Global Lightbox Overlay -->
+    <div id="globalLightbox"
+        class="fixed inset-0 bg-black/95 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm"
+        onclick="closeGlobalLightboxOutside(event)">
+        <button onclick="closeGlobalLightbox()"
+            class="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all z-10 border border-white/10">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <img id="globalLbImage" src="" alt="Full View"
+            class="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl select-none">
+    </div>
+
+    <script>
+        window.openGlobalLightbox = function (src) {
+            const lb = document.getElementById('globalLightbox');
+            const img = document.getElementById('globalLbImage');
+            if (!lb || !img) return;
+            img.src = src;
+            lb.classList.remove('hidden');
+            lb.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeGlobalLightbox = function () {
+            const lb = document.getElementById('globalLightbox');
+            if (!lb) return;
+            lb.classList.add('hidden');
+            lb.classList.remove('flex');
+            document.body.style.overflow = '';
+        };
+
+        window.closeGlobalLightboxOutside = function (e) {
+            if (e.target.id === 'globalLightbox') closeGlobalLightbox();
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeGlobalLightbox();
+        });
+    </script>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     {% block extra_js %}{% endblock %}

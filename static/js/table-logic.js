@@ -1,35 +1,35 @@
 /**
  * GAD Corner - Unified Table Logic
  * Handles Search, Year Filter, and Pagination for:
- * Circulars, Memoranda, Office Orders, and Resolutions
+ * Circulars, Memoranda, Executive Orders, and Resolutions
  */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // 1. SELECTOR MAPPING
-    const searchInput = document.getElementById('policySearch') || 
-                        document.getElementById('memoSearch') || 
-                        document.getElementById('orderSearch') || 
-                        document.getElementById('resolutionSearch');
+    const searchInput = document.getElementById('policySearch') ||
+        document.getElementById('memoSearch') ||
+        document.getElementById('orderSearch') ||
+        document.getElementById('resolutionSearch');
 
-    const yearFilter = document.getElementById('yearFilter') || 
-                       document.getElementById('memoYearFilter') || 
-                       document.getElementById('orderYearFilter') || 
-                       document.getElementById('resolutionYearFilter');
+    const yearFilter = document.getElementById('yearFilter') ||
+        document.getElementById('memoYearFilter') ||
+        document.getElementById('orderYearFilter') ||
+        document.getElementById('resolutionYearFilter');
 
-    const paginationControls = document.getElementById('paginationControls') || 
-                               document.getElementById('memoPagination') || 
-                               document.getElementById('orderPagination') || 
-                               document.getElementById('resolutionPagination');
+    const paginationControls = document.getElementById('paginationControls') ||
+        document.getElementById('memoPagination') ||
+        document.getElementById('orderPagination') ||
+        document.getElementById('resolutionPagination');
 
     const tableRows = Array.from(document.querySelectorAll('.policy-row, .memo-row, .order-row, .resolution-row'));
 
     // 2. SUMMARY MAPPING (For text updates)
-    const summaryTotal = document.getElementById('totalItems') || 
-                         document.getElementById('memoCount') || 
-                         document.getElementById('orderTotal') || 
-                         document.getElementById('resoTotalCount');
+    const summaryTotal = document.getElementById('totalItems') ||
+        document.getElementById('memoCount') ||
+        document.getElementById('orderTotal') ||
+        document.getElementById('resoTotalCount');
 
-    const showingCount = document.getElementById('orderShowingCount') || 
-                         document.getElementById('resolutionShowingCount');
+    const showingCount = document.getElementById('orderShowingCount') ||
+        document.getElementById('resolutionShowingCount');
 
     const startText = document.getElementById('showingStart'); // Circulars specific
     const endText = document.getElementById('showingEnd');     // Circulars specific
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         filteredRows = tableRows.filter(row => {
             const content = (row.getAttribute('data-title') || row.getAttribute('data-content') || "").toLowerCase();
             const year = row.getAttribute('data-year') || "";
-            
+
             const matchesSearch = content.includes(searchTerm);
             const matchesYear = (selectedYear === 'all' || year === selectedYear);
 
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // --- PAGINATION ---
         const total = filteredRows.length;
         const totalPages = Math.ceil(total / rowsPerPage);
-        
+
         if (currentPage > totalPages) currentPage = 1;
         if (totalPages === 0) currentPage = 0;
 
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // --- COUNTER UPDATES ---
         if (summaryTotal) summaryTotal.textContent = total;
         if (showingCount) showingCount.textContent = total;
-        
+
         // For Circulars "Showing X to Y" format
         if (startText) startText.textContent = total === 0 ? 0 : start + 1;
         if (endText) endText.textContent = Math.min(end, total);

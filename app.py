@@ -36,6 +36,7 @@ csp = {
         '\'self\'',
         'https://cdn.tailwindcss.com',
         'https://cdnjs.cloudflare.com',
+        'https://connect.facebook.net',
         '\'unsafe-inline\''  # Necessary for Tailwind CDN and inline scripts
     ],
     'style-src': [
@@ -56,6 +57,11 @@ csp = {
         'https://ui-avatars.com',
         'https://wsrv.nl',
         'https://i.ibb.co'
+    ],
+    'frame-src': [
+        '\'self\'',
+        'https://www.facebook.com',
+        'https://web.facebook.com'
     ]
 }
 
@@ -136,9 +142,11 @@ def save_site_config(config: dict):
 
 
 @app.context_processor
-def inject_nav_years():
-    """Inject project years + site config into every template."""
+def inject_global_data():
+    """Inject navigation, site config, and smart breadcrumbs into every template."""
     import json
+    
+    # 1. Project Years
     projects_file = os.path.join(app.root_path, 'data', 'projects.json')
     try:
         with open(projects_file, 'r', encoding='utf-8') as f:
@@ -147,13 +155,40 @@ def inject_nav_years():
     except (FileNotFoundError, json.JSONDecodeError):
         years = []
 
+    # 2. Site Config
     site_config = load_site_config()
-    site_config.setdefault('policies', {
-        'start_year': 2002,
-        'current_year': datetime.now().year
-    })
 
-    return dict(nav_project_years=years, site_config=site_config, now=datetime.now())
+    # 3. Smart Breadcrumbs
+    path_parts = [p for p in request.path.split('/') if p]
+    breadcrumbs = []
+    
+    # Mapping for segments to readable titles
+    segment_titles = {
+        'about': 'About Us', 'news': 'Latest News', 'policies': 'Policies & Reports',
+        'projects': 'GAD Projects', 'calendar': 'Events Calendar', 'legal': 'Legal',
+        'knowledge-products': 'Knowledge & IEC', 'vision-mission': 'Vision & Mission',
+        'org-structure': 'Organization Structure', 'gad-committee': 'Committee',
+        'contact': 'Contact Us', 'republic-acts': 'Republic Acts', 'resolutions': 'Resolutions',
+        'memoranda': 'Memoranda', 'orders': 'Executive Orders', 'reports': 'Reports',
+        'lbp-forms': 'LBP Forms', 'archive': 'Archive', 'search': 'Search Results'
+    }
+
+    current_url = ''
+    for part in path_parts:
+        current_url += f'/{part}'
+        # Handle dynamic IDs (hex hashes) - check if looks like a hash
+        if len(part) == 8 and all(c in '0123456789abcdefABCDEF' for c in part):
+            name = "Details"
+        else:
+            name = segment_titles.get(part, part.replace('-', ' ').replace('_', ' ').title())
+        breadcrumbs.append({'name': name, 'url': current_url})
+
+    return dict(
+        nav_project_years=years,
+        site_config=site_config,
+        breadcrumbs=breadcrumbs,
+        now=datetime.now()
+    )
 
 
 # ---------------------------------------------------------

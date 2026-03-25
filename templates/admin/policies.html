@@ -47,6 +47,11 @@
         color: #1e40af;
     }
 
+    .pill-cat-republic_acts {
+        background: #fef2f2;
+        color: #991b1b;
+    }
+
     .pill-cat-resolutions {
         background: #e0f2fe;
         color: #0c4a6e;
@@ -101,7 +106,7 @@
                     <select id="policyCategoryFilter"
                         class="border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
                         <option value="all">All categories</option>
-                        <option value="circulars">Circulars</option>
+                        <option value="republic_acts">Republic Acts (RA)</option>
                         <option value="resolutions">Resolutions</option>
                         <option value="memoranda">Memoranda</option>
                         <option value="orders">Office Orders</option>
@@ -147,9 +152,9 @@
                             </tr>
                         </thead>
                         <tbody id="policiesTableBody" class="divide-y divide-gray-100 bg-white">
-                            {% set category_labels = {'circulars':'Circulars', 'resolutions':'Resolutions',
+                            {% set category_labels = {'republic_acts':'Republic Acts', 'resolutions':'Resolutions',
                             'memoranda':'Memoranda', 'orders':'Office Orders'} %}
-                            {% for category in ['circulars', 'resolutions', 'memoranda', 'orders'] %}
+                            {% for category in ['republic_acts', 'resolutions', 'memoranda', 'orders'] %}
                             {% for entry in policies.get(category, []) %}
                             <tr class="policy-row hover:bg-gray-50 transition-colors" data-category="{{ category }}"
                                 data-search="{{ category_labels[category] }} {{ entry.year }} {{ entry.title }} {{ entry.date }} {{ entry.status }} {{ entry.file }}">
@@ -179,7 +184,7 @@
                                 </td>
                                 <td class="px-4 py-4 text-right whitespace-nowrap">
                                     <button type="button"
-                                        onclick='openEditPolicyModal({{ {"id": entry.id, "category": category, "year": entry.year, "title": entry.title, "description": entry.description, "date": entry.date, "status": entry.status, "file": entry.file, "url": entry.url|default("")} | tojson | forceescape }})'
+                                        onclick='openEditPolicyModal({{ {"id": entry.id|default(""), "category": category, "year": entry.year|default(0), "title": entry.title|default(""), "description": entry.description|default(""), "date": entry.date|default(""), "status": entry.status|default(""), "file": entry.file|default(""), "url": entry.url|default("")} | tojson | forceescape }})'
                                         class="text-xs font-bold text-blue-600 hover:text-blue-800 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors mr-1">
                                         <i class="fas fa-pencil-alt mr-1"></i>Edit
                                     </button>
@@ -233,7 +238,7 @@
                     *</label>
                 <select name="category" required
                     class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green bg-white">
-                    <option value="circulars">Circulars</option>
+                    <option value="republic_acts">Republic Acts (RA)</option>
                     <option value="resolutions">Resolutions</option>
                     <option value="memoranda">Memoranda</option>
                     <option value="orders">Office Orders</option>
@@ -319,7 +324,7 @@
                     *</label>
                 <select id="edit-policy-category" name="category" required
                     class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green bg-white">
-                    <option value="circulars">Circulars</option>
+                    <option value="republic_acts">Republic Acts (RA)</option>
                     <option value="resolutions">Resolutions</option>
                     <option value="memoranda">Memoranda</option>
                     <option value="orders">Office Orders</option>

@@ -13,16 +13,16 @@ def load_policies():
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         return {
-            'circulars': [],
-            'resolutions': [],
+            'republic_acts': [],
             'memoranda': [],
+            'resolutions': [],
             'orders': []
         }
 
 
 def get_category_template(category):
     return {
-        'circulars': 'policies/circulars.html',
+        'republic_acts': 'policies/republic-acts.html',
         'resolutions': 'policies/resolution.html',
         'memoranda': 'policies/memoranda.html',
         'orders': 'policies/office-orders.html',
@@ -60,3 +60,6 @@ def policies_placeholder():
     """Render a themed placeholder page for upcoming policy sections."""
     return render_template("policies/placeholder.html")
 
+@policies_bp.route('/lbp-forms')
+def lbp_forms():
+    return render_template('policies/lbp-forms.html')

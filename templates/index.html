@@ -3,28 +3,103 @@
 {% block content %}
 <!-- Hero Section -->
 <section id="heroSection" class="px-[5%] lg:px-[10%] py-6 md:py-12 relative z-20 bg-gray-50">
-    <div
-        class="h-[300px] md:h-[450px] rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center text-center text-white relative overflow-hidden shadow-2xl">
-        <!-- Parallax Background Layer -->
-        <div id="heroParallaxBG"
-            class="absolute w-full h-[130%] -top-[15%] left-0 bg-cover bg-center -z-10 will-change-transform"
-            style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y');">
+    <div id="heroCarousel" class="rounded-[1.5rem] md:rounded-[2rem] relative overflow-hidden shadow-2xl group"
+        style="height:300px; transition: height 0.6s cubic-bezier(0.4,0,0.2,1);">
+
+        <!-- Slide 1: Welcome -->
+        <div
+            class="hero-slide absolute inset-0 opacity-100 z-10 transition-all duration-1000 flex items-center justify-center text-center text-white">
+            <!-- Parallax Background Layer -->
+            <div id="heroParallaxBG"
+                class="absolute w-full h-[150%] top-0 left-0 bg-cover bg-center -z-10 will-change-transform"
+                style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y');">
+            </div>
+
+            <div class="max-w-2xl px-6 relative z-10">
+                <span
+                    class="uppercase tracking-[0.2em] text-[10px] md:text-sm font-bold text-green-400 mb-2 md:mb-4 block">Welcome
+                    to GAD Corner</span>
+                <h1 class="text-3xl md:text-5xl font-extrabold mb-4 md:mb-6 leading-tight">Empowering Every Gender in
+                    Montalban</h1>
+                <p class="text-sm md:text-lg opacity-90 font-light mb-6 md:mb-8 hidden sm:block">Discover our latest
+                    initiatives, programs, and resources dedicated to equality.</p>
+
+                <a href="{{ url_for('main.about') }}"
+                    class="bg-primary-green hover:bg-primary-hover px-6 py-3 md:px-8 md:py-4 rounded-full font-bold text-xs md:text-sm uppercase tracking-widest nav-transition shadow-lg">Learn
+                    More</a>
+            </div>
         </div>
 
-        <div class="max-w-2xl px-6 relative z-10">
-            <span
-                class="uppercase tracking-[0.2em] text-[10px] md:text-sm font-bold text-green-400 mb-2 md:mb-4 block">Welcome
-                to GAD Corner</span>
-            <h1 class="text-3xl md:text-5xl font-extrabold mb-4 md:mb-6 leading-tight">Empowering Every Gender in
-                Montalban</h1>
-            <p class="text-sm md:text-lg opacity-90 font-light mb-6 md:mb-8 hidden sm:block">Discover our latest
-                initiatives, programs, and resources dedicated to equality.</p>
+        <!-- Slide 2: Facebook Embed -->
+        <div
+            class="hero-slide absolute inset-0 opacity-0 z-0 transition-all duration-1000 flex items-center justify-center bg-black overflow-hidden pointer-events-none">
+            <!-- Facebook SDK Root + Player Setup -->
+            <div id="fb-root"></div>
+            <script>
+                window.fbPlayerInstance = null;
+                window.currentSlideIndex = 0;
+                window.videoHasFinished = false;
+                window.fbAsyncInit = function () {
+                    FB.init({ xfbml: true, version: 'v19.0' });
+                    FB.Event.subscribe('xfbml.ready', function (msg) {
+                        if (msg.type === 'video') {
+                            window.fbPlayerInstance = msg.instance;
 
-            <!-- FIXED: Added blueprint namespace 'main.' -->
-            <a href="{{ url_for('main.about') }}"
-                class="bg-primary-green hover:bg-primary-hover px-6 py-3 md:px-8 md:py-4 rounded-full font-bold text-xs md:text-sm uppercase tracking-widest nav-transition shadow-lg">Learn
-                More</a>
+                            // Auto-scroll to next slide when video finishes
+                            window.fbPlayerInstance.subscribe('finishedPlaying', function () {
+                                window.videoHasFinished = true; // Mark as played for this session
+                                if (typeof window.heroNextSlide === 'function') {
+                                    window.heroNextSlide();
+                                }
+                            });
+
+                            // If initialized while on the video slide, play immediately
+                            if (window.currentSlideIndex === 1) {
+                                window.fbPlayerInstance.mute(); // Must be muted for autoplay
+                                window.fbPlayerInstance.play();
+                            }
+                        }
+                    });
+                };
+            </script>
+            <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+            <div class="fb-video w-full h-full flex justify-center items-center"
+                data-href="https://www.facebook.com/reel/927800116517540/" data-width="auto" data-show-text="false"
+                data-autoplay="false" data-allowfullscreen="true">
+            </div>
+
+            <!-- Overlay for Video Slide (Optional text) -->
+            <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none flex items-end p-8">
+                <div class="text-left text-white max-w-lg">
+                    <span
+                        class="text-[10px] md:text-xs font-bold text-green-400 uppercase tracking-widest mb-1 block">Featured
+                        Video</span>
+                    <h2 class="text-xl md:text-2xl font-black">Latest GAD Initiatives</h2>
+                    <p class="text-[10px] md:text-xs opacity-80 mt-1">Watch our recent story on community empowering
+                        programs.</p>
+                </div>
+            </div>
         </div>
+
+        <!-- Dots -->
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2.5 z-30">
+            <button class="hero-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white transition-all duration-300"
+                data-index="0"></button>
+            <button class="hero-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white transition-all duration-300"
+                data-index="1"></button>
+        </div>
+
+        <!-- Buttons -->
+        <button id="heroPrev"
+            class="absolute left-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white flex items-center justify-center z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-4 group-hover:translate-x-0">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="heroNext"
+            class="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white flex items-center justify-center z-30 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+            <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
 </section>
 
@@ -120,14 +195,14 @@
         <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 px-2">Quick Resources</h3>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6">
-            <a href="{{ url_for('policies.reports') }}"
+            <a href="{{ url_for('policies.lbp_forms') }}"
                 class="group bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green transition-all">
                 <div
                     class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary-green group-hover:text-white nav-transition">
-                    <i class="fas fa-file-signature"></i>
+                    <i class="fas fa-file-invoice-dollar"></i>
                 </div>
-                <p class="font-bold text-gray-800 text-base md:text-lg">Plan & Budget</p>
-                <p class="text-xs text-gray-500 mt-1">Transparency and financial reports.</p>
+                <p class="font-bold text-gray-800 text-base md:text-lg">GAD Plan & Budget</p>
+                <p class="text-xs text-gray-500 mt-1">LBP Forms and financial planning.</p>
             </a>
 
             <a href="{{ url_for('projects.projects_hub') }}"
@@ -140,14 +215,14 @@
                 <p class="text-xs text-gray-500 mt-1">Active community programs.</p>
             </a>
 
-            <a href="{{ url_for('policies.policies_hub', category='hub') }}"
+            <a href="{{ url_for('main.knowledge_products') }}"
                 class="group bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-primary-green transition-all">
                 <div
                     class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary-green group-hover:text-white nav-transition">
-                    <i class="fas fa-book"></i>
+                    <i class="fas fa-lightbulb"></i>
                 </div>
-                <p class="font-bold text-gray-800 text-base md:text-lg">Policy Vault</p>
-                <p class="text-xs text-gray-500 mt-1">Legal mandates and circulars.</p>
+                <p class="font-bold text-gray-800 text-base md:text-lg">GAD Knowledge & IEC</p>
+                <p class="text-xs text-gray-500 mt-1">Information and Education Materials.</p>
             </a>
         </div>
     </aside>
@@ -232,23 +307,161 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener("DOMContentLoaded", () => {
+        const slides = document.querySelectorAll(".hero-slide");
+        const dots = document.querySelectorAll(".hero-dot");
+        const prevBtn = document.getElementById("heroPrev");
+        const nextBtn = document.getElementById("heroNext");
         const parallaxBG = document.getElementById('heroParallaxBG');
-        if (!parallaxBG) return;
 
-        let ticking = false;
+        let currentIndex = 0;
+        let autoPlayTimer;
+        let isHeroVisible = true;
+        let canInteract = true;
 
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    const scrollY = window.scrollY;
-                    // Move the background down at 40% of the scroll speed
-                    parallaxBG.style.transform = `translateY(${scrollY * 0.4}px)`;
-                    ticking = false;
-                });
-                ticking = true;
+        const VIDEO_SLIDE_INDEX = 1;
+
+        // Heights for each breakpoint
+        function getNormalHeight() {
+            return window.innerWidth >= 768 ? 450 : 300;
+        }
+        function getVideoHeight() {
+            // Match Facebook embed aspect ratio: 314/560
+            const w = document.getElementById('heroCarousel').offsetWidth;
+            return Math.round(w * (314 / 560));
+        }
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    slide.classList.add("opacity-100", "z-10");
+                    slide.classList.remove("opacity-0", "z-0", "pointer-events-none");
+                } else {
+                    slide.classList.remove("opacity-100", "z-10");
+                    slide.classList.add("opacity-0", "z-0", "pointer-events-none");
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.add("bg-white", "w-6");
+                    dot.classList.remove("bg-white/40", "w-2");
+                } else {
+                    dot.classList.remove("bg-white", "w-6");
+                    dot.classList.add("bg-white/40", "w-2");
+                }
+            });
+            currentIndex = index;
+
+            // Resize hero + pause/resume autoplay based on slide
+            const carousel = document.getElementById('heroCarousel');
+            window.currentSlideIndex = index;
+
+            if (index === VIDEO_SLIDE_INDEX) {
+                carousel.style.height = getVideoHeight() + 'px';
+                if (window.fbPlayerInstance) {
+                    window.fbPlayerInstance.mute(); // Muted to bypass browser autoplay blocks
+                    window.fbPlayerInstance.play();
+                }
+                stopAutoPlay();
+            } else {
+                carousel.style.height = getNormalHeight() + 'px';
+                if (window.fbPlayerInstance) {
+                    window.fbPlayerInstance.pause();
+                }
+                startAutoPlay();
             }
-        }, { passive: true });
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                isHeroVisible = entry.isIntersecting;
+                if (!isHeroVisible) {
+                    stopAutoPlay();
+                } else if (currentIndex !== VIDEO_SLIDE_INDEX) {
+                    startAutoPlay();
+                }
+            });
+        }, { threshold: 0.1 });
+        observer.observe(document.getElementById("heroSection"));
+
+        function nextSlide() {
+            let nextIndex = (currentIndex + 1) % slides.length;
+            // Skip video slide if already finished in this session
+            if (nextIndex === VIDEO_SLIDE_INDEX && window.videoHasFinished) {
+                nextIndex = (nextIndex + 1) % slides.length;
+            }
+            showSlide(nextIndex);
+        }
+        window.heroNextSlide = nextSlide;
+
+        function prevSlide() {
+            let prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+            // Skip video slide if already finished in this session
+            if (prevIndex === VIDEO_SLIDE_INDEX && window.videoHasFinished) {
+                prevIndex = (prevIndex - 1 + slides.length) % slides.length;
+            }
+            showSlide(prevIndex);
+        }
+
+        function startAutoPlay() {
+            stopAutoPlay();
+            if (isHeroVisible && currentIndex !== VIDEO_SLIDE_INDEX) {
+                autoPlayTimer = setInterval(nextSlide, 8000);
+            }
+        }
+
+        function stopAutoPlay() {
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+                autoPlayTimer = null;
+            }
+        }
+
+        function handleManualInteraction(action) {
+            if (!canInteract) return;
+            canInteract = false;
+
+            action();
+
+            // Cooldown for interaction + reset autoplay timer
+            setTimeout(() => { canInteract = true; }, 500);
+            startAutoPlay();
+        }
+
+        if (nextBtn) nextBtn.addEventListener("click", () => handleManualInteraction(nextSlide));
+        if (prevBtn) prevBtn.addEventListener("click", () => handleManualInteraction(prevSlide));
+
+        dots.forEach(dot => {
+            dot.addEventListener("click", () => handleManualInteraction(() => showSlide(parseInt(dot.dataset.index))));
+        });
+
+        // Initial Start
+        showSlide(0);
+        startAutoPlay();
+
+        // Recalculate height on window resize
+        window.addEventListener('resize', () => {
+            const carousel = document.getElementById('heroCarousel');
+            carousel.style.height = (currentIndex === VIDEO_SLIDE_INDEX ? getVideoHeight() : getNormalHeight()) + 'px';
+        });
+
+
+        // Parallax Logic
+        if (parallaxBG) {
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const scrollY = window.scrollY;
+                        // Strengthened Parallax: More noticeable motion
+                        parallaxBG.style.transform = `translateY(-${scrollY * 0.35}px)`;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+        }
     });
 </script>
 {% endblock %}

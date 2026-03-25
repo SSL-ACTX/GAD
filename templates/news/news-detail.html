@@ -2,6 +2,8 @@
 
 {% block title %}{{ article.caption[:60] }}… - GAD Corner{% endblock %}
 
+{% block breadcrumb_current %}{{ article.caption[:30].strip() }}...{% endblock %}
+
 {% block content %}
 <div class="max-w-5xl mx-auto px-6 py-12">
 

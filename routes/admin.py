@@ -15,7 +15,7 @@ PROJECTS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data',
 POLICIES_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'policies.json')
 KNOWLEDGE_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'knowledge_products.json')
 BROCHURES_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'brochures.json')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf', 'docx', 'doc'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf', 'docx', 'doc', 'mp4', 'webm', 'ogg'}
 POLICIES_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'policies')
 PROJECTS_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'projects')
 KNOWLEDGE_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'knowledge')
@@ -141,6 +141,9 @@ def save_policy_pdf(file):
 def save_knowledge_asset(file):
     return save_uploaded_file(file, KNOWLEDGE_UPLOAD_FOLDER, prefix="kp")
 
+def save_video(file):
+    return save_uploaded_file(file, POLICIES_UPLOAD_FOLDER, prefix="vid")
+
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -247,6 +250,12 @@ def add_policy_entry():
     if not file_path:
         file_path = request.form.get('file', '').strip() or '#'
 
+    # Handle Video Upload
+    uploaded_video = request.files.get('video_file')
+    video_path = save_video(uploaded_video)
+    if not video_path:
+        video_path = request.form.get('video_path', '').strip()
+
     entry = {
         'id': 'p' + str(uuid.uuid4())[:8],
         'year': year,
@@ -255,7 +264,9 @@ def add_policy_entry():
         'date': request.form.get('date', '').strip(),
         'status': request.form.get('status', '').strip() or 'Active',
         'file': file_path,
-        'url': request.form.get('url', '').strip()
+        'url': request.form.get('url', '').strip(),
+        'video_file': video_path,
+        'video_url': request.form.get('video_url', '').strip()
     }
     policies.setdefault(category, []).insert(0, entry)
     save_policies(policies)
@@ -297,6 +308,12 @@ def edit_policy_entry(entry_id):
     if not file_path:
         file_path = request.form.get('file', old_entry.get('file', '#')).strip() or '#'
 
+    # Handle Video Upload
+    uploaded_video = request.files.get('video_file')
+    video_path = save_video(uploaded_video)
+    if not video_path:
+        video_path = request.form.get('video_path', old_entry.get('video_file', '')).strip()
+
     updated_entry = {
         'id': entry_id,
         'year': year,
@@ -305,7 +322,9 @@ def edit_policy_entry(entry_id):
         'date': request.form.get('date', old_entry.get('date', '')).strip(),
         'status': request.form.get('status', old_entry.get('status', 'Active')).strip() or 'Active',
         'file': file_path,
-        'url': request.form.get('url', old_entry.get('url', '')).strip()
+        'url': request.form.get('url', old_entry.get('url', '')).strip(),
+        'video_file': video_path,
+        'video_url': request.form.get('video_url', old_entry.get('video_url', '')).strip()
     }
 
     # Remove from original category first.

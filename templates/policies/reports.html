@@ -19,8 +19,38 @@
         {% if reports %}
         {% for report in reports %}
         <div
-            class="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-green transition-all duration-500 overflow-hidden transform hover:-translate-y-2">
-            <div class="p-8">
+            class="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-green transition-all duration-500 overflow-hidden transform hover:-translate-y-2 flex flex-col">
+            
+            {# Video Section (if exists) #}
+            {% if report.video_file or report.video_url %}
+            <div class="relative w-full aspect-video bg-black overflow-hidden bg-gray-900">
+                {% if report.video_url %}
+                    {% if 'facebook.com' in report.video_url or 'fb.watch' in report.video_url %}
+                    <iframe src="https://www.facebook.com/plugins/video.php?href={{ report.video_url|urlencode }}&show_text=0&width=560" 
+                        title="{{ report.title }}"
+                        class="w-full h-full" style="border:none;overflow:hidden;" scrolling="no" frameborder="0" 
+                        allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                    {% elif 'youtube.com' in report.video_url or 'youtu.be' in report.video_url %}
+                        {% set yt_id = report.video_url.split('v=')[1] if 'v=' in report.video_url else report.video_url.split('/')[-1] %}
+                        <iframe src="https://www.youtube.com/embed/{{ yt_id }}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+                    {% else %}
+                        <a href="{{ report.video_url }}" target="_blank" class="flex items-center justify-center h-full text-white/50 text-xs gap-2">
+                            <i class="fas fa-external-link-alt"></i> External Video Linked
+                        </a>
+                    {% endif %}
+                {% elif report.video_file %}
+                    <video controls class="w-full h-full object-contain">
+                        <source src="{{ url_for('static', filename=report.video_file) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                {% endif %}
+                <div class="absolute top-4 left-4 bg-purple-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest shadow-lg z-10 flex items-center gap-2">
+                    <i class="fas fa-play"></i> Video Presentation
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="p-8 flex-1 flex flex-col">
                 <!-- Icon and Type Label -->
                 <div class="flex justify-between items-start mb-6">
                     <div
@@ -37,12 +67,20 @@
                     class="font-black text-gray-800 text-xl group-hover:text-primary-green transition-colors leading-tight mb-3">
                     {{ report.title }}
                 </h3>
-                <p class="text-sm text-gray-500 mb-8 line-clamp-2 min-h-[40px]">
-                    {{ report.description or 'Comprehensive summary of Gender and Development programs and achievements.'
-                    }}
-                </p>
+                <div class="report-description">
+                    <p id="desc-{{ report.id }}" class="text-sm text-gray-500 mb-4 line-clamp-3 transition-all duration-300">
+                        {{ report.description or 'Comprehensive summary of Gender and Development programs and achievements.' }}
+                    </p>
+                    {% if report.description and report.description|length > 150 %}
+                    <button type="button" onclick="toggleDescription('{{ report.id }}')" id="btn-{{ report.id }}"
+                        class="text-primary-green font-bold text-[10px] uppercase tracking-widest hover:underline mb-6 flex items-center gap-1.5">
+                        <span id="text-{{ report.id }}">See More</span>
+                        <i id="icon-{{ report.id }}" class="fas fa-chevron-down text-[8px] transition-transform duration-300"></i>
+                    </button>
+                    {% endif %}
+                </div>
 
-                <div class="flex items-center gap-4 mb-6">
+                <div class="flex items-center gap-4 mb-6 mt-auto">
                     <div class="flex items-center gap-1.5">
                         <i class="far fa-calendar-alt text-[10px] text-gray-400"></i>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ report.date }}</span>
@@ -57,12 +95,22 @@
                 </div>
 
                 <!-- Action Button -->
-                <a href="{% if report.url %}{{ report.url }}{% else %}{{ url_for('static', filename=report.file) }}{% endif %}"
-                    {% if report.url %}target="_blank"{% endif %}
-                    class="flex items-center justify-center gap-3 w-full py-4 bg-gray-50 text-gray-800 font-black text-xs uppercase tracking-widest rounded-2xl group-hover:bg-primary-green group-hover:text-white transition-all shadow-sm">
-                    <i class="fas fa-download"></i>
-                    Download Report
-                </a>
+                <div class="flex flex-col gap-3 mt-auto">
+                    {% if report.url and report.url != '#' %}
+                    <a href="{{ report.url }}"
+                        target="_blank"
+                        class="flex items-center justify-center gap-3 w-full py-4 bg-gray-50 text-gray-800 font-black text-xs uppercase tracking-widest rounded-2xl group-hover:bg-primary-green group-hover:text-white transition-all shadow-sm">
+                        <i class="fas fa-external-link-alt"></i>
+                        View Report
+                    </a>
+                    {% elif report.file and report.file != '#' and report.file != '' %}
+                    <a href="{{ url_for('static', filename=report.file) }}"
+                        class="flex items-center justify-center gap-3 w-full py-4 bg-gray-50 text-gray-800 font-black text-xs uppercase tracking-widest rounded-2xl group-hover:bg-primary-green group-hover:text-white transition-all shadow-sm">
+                        <i class="fas fa-download"></i>
+                        Download Report
+                    </a>
+                    {% endif %}
+                </div>
             </div>
 
             <!-- Bottom Accent Bar -->
@@ -126,4 +174,24 @@
         animation: fadeInUp 0.8s ease-out forwards;
     }
 </style>
+
+{% block extra_js %}
+<script>
+    function toggleDescription(id) {
+        const desc = document.getElementById('desc-' + id);
+        const text = document.getElementById('text-' + id);
+        const icon = document.getElementById('icon-' + id);
+        
+        if (desc.classList.contains('line-clamp-3')) {
+            desc.classList.remove('line-clamp-3');
+            if (text) text.innerText = 'See Less';
+            if (icon) icon.style.transform = 'rotate(180deg)';
+        } else {
+            desc.classList.add('line-clamp-3');
+            if (text) text.innerText = 'See More';
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        }
+    }
+</script>
+{% endblock %}
 {% endblock %}

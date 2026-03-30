@@ -9,28 +9,49 @@
         <ol class="flex items-center space-x-2">
             <li><a href="{{ url_for('main.index') }}" class="hover:text-primary-green transition-colors">Home</a></li>
             <li><i class="fas fa-chevron-right text-[8px] mx-1"></i></li>
-            <li><a href="{{ url_for('main.knowledge_products') }}" class="hover:text-primary-green transition-colors">Knowledge Products</a></li>
+            <li><a href="{{ url_for('main.knowledge_products') }}"
+                    class="hover:text-primary-green transition-colors">Knowledge Products</a></li>
             <li><i class="fas fa-chevron-right text-[8px] mx-1"></i></li>
             <li class="text-primary-green">PCW IEC Materials</li>
         </ol>
     </nav>
 
     <div class="flex flex-col lg:flex-row gap-12">
-        <!-- Sidebar Navigation (Optional/Static) -->
+        <!-- Sidebar Navigation -->
         <aside class="lg:w-1/4">
-            <div class="bg-gray-50 rounded-3xl p-8 border border-gray-100">
-                <div class="mb-6">
-                    <img src="https://pcw.gov.ph/wp-content/uploads/2021/03/PCW-Logo-Trans-1.png" alt="PCW Logo" class="h-16 mx-auto lg:mx-0 object-contain mb-4">
-                    <h4 class="text-sm font-black text-gray-800 uppercase tracking-tighter">Philippine Commission on Women</h4>
+            <div
+                class="bg-[#6a1b9a] rounded-[2.5rem] p-8 border border-purple-500/20 shadow-2xl shadow-purple-900/20 relative overflow-hidden group">
+                <div
+                    class="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all">
                 </div>
-                <nav class="space-y-2">
-                    <a href="#" class="block px-4 py-3 rounded-xl bg-white text-primary-green font-bold text-xs shadow-sm border border-gray-100">
-                        PCW IEC Materials
-                    </a>
-                    <a href="https://pcw.gov.ph" target="_blank" class="block px-4 py-3 rounded-xl text-gray-500 hover:bg-white hover:text-primary-green transition-all text-xs font-semibold">
-                        Visit Official PCW Website
-                    </a>
-                </nav>
+
+                <div class="relative z-10">
+                    <div class="mb-8">
+                        <img src="https://wsrv.nl/?url=https://i.ibb.co/zVbP4tLp/image.png&output=webp&q=70&w=720&maxage=5y"
+                            alt="PCW Logo"
+                            class="h-20 mx-auto lg:mx-0 object-contain mb-6 brightness-0 invert drop-shadow-[0_8px_16px_rgba(0,0,0,0.2)] hover:scale-105 transition-transform duration-500">
+                        <div class="space-y-1">
+                            <p class="text-[9px] font-black text-purple-200 uppercase tracking-[.2em] opacity-80">
+                                Republic of the Philippines</p>
+                            <h4 class="text-xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                                Philippine Commission on Women
+                            </h4>
+                        </div>
+                    </div>
+
+                    <nav class="space-y-3">
+                        <a href="#"
+                            class="flex items-center justify-between px-5 py-4 rounded-2xl bg-white text-purple-900 font-black text-xs shadow-lg shadow-purple-900/20 transition-all hover:-translate-y-0.5">
+                            PCW IEC Materials
+                            <i class="fas fa-check-circle text-[10px]"></i>
+                        </a>
+                        <a href="https://pcw.gov.ph" target="_blank"
+                            class="flex items-center justify-between px-5 py-4 rounded-2xl text-white hover:bg-white/10 transition-all text-xs font-bold border border-white/10 hover:border-white/20 group">
+                            Official Website
+                            <i class="fas fa-external-link-alt text-[8px] opacity-30 group-hover:opacity-100"></i>
+                        </a>
+                    </nav>
+                </div>
             </div>
         </aside>
 
@@ -42,7 +63,8 @@
                 </h2>
                 <div class="h-1.5 w-20 bg-primary-green mt-4 rounded-full"></div>
                 <p class="text-gray-500 mt-6 leading-relaxed max-w-2xl">
-                    Access and download Information, Education, and Communication (IEC) materials provided by the Philippine Commission on Women. These resources are essential for GAD mainstreaming and awareness.
+                    Access and download Information, Education, and Communication (IEC) materials provided by the
+                    Philippine Commission on Women. These resources are essential for GAD mainstreaming and awareness.
                 </p>
             </div>
 
@@ -51,31 +73,39 @@
                     <table class="w-full text-left">
                         <thead>
                             <tr class="bg-gray-50 border-b border-gray-100">
-                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Document Title</th>
-                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Action</th>
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                                    Document Title</th>
+                                <th
+                                    class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">
+                                    Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
                             {% for brochure in brochures %}
-                            <tr class="hover:bg-green-50/30 transition-colors group">
+                            <tr class="hover:bg-green-50/10 transition-colors group">
                                 <td class="px-8 py-6">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-primary-green group-hover:bg-primary-green group-hover:text-white transition-all">
-                                            <i class="fas fa-file-pdf"></i>
+                                    <div class="flex items-start gap-4">
+                                        <div
+                                            class="w-10 h-10 flex-shrink-0 bg-green-50 rounded-xl flex items-center justify-center text-primary-green group-hover:bg-primary-green group-hover:text-white transition-all">
+                                            <i class="fas fa-file-pdf text-sm"></i>
                                         </div>
-                                        <span class="font-bold text-gray-700 group-hover:text-primary-green transition-colors">{{ brochure.title }}</span>
+                                        <div class="pt-2.5">
+                                            <span
+                                                class="font-bold text-gray-700 group-hover:text-primary-green transition-colors leading-tight block">{{
+                                                brochure.title }}</span>
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 text-right">
-                                    <a href="{{ brochure.url if brochure.url else url_for('static', filename=brochure.file) }}" 
-                                       target="_blank"
-                                       class="inline-flex items-center gap-2 bg-white hover:bg-primary-green text-primary-green hover:text-white font-bold text-[10px] px-5 py-2.5 rounded-xl border border-green-100 shadow-sm transition-all uppercase tracking-widest">
+                                    <a href="{{ brochure.url if brochure.url else url_for('static', filename=brochure.file) }}"
+                                        target="_blank"
+                                        class="inline-flex items-center gap-2 bg-white hover:bg-primary-green text-primary-green hover:text-white font-bold text-[10px] px-5 py-2.5 rounded-xl border border-green-100 shadow-sm transition-all uppercase tracking-widest">
                                         View Document <i class="fas fa-external-link-alt text-[8px]"></i>
                                     </a>
                                 </td>
                             </tr>
                             {% endfor %}
-                            
+
                             {% if not brochures %}
                             <tr>
                                 <td colspan="2" class="px-8 py-20 text-center text-gray-400">
@@ -88,9 +118,10 @@
                     </table>
                 </div>
             </div>
-            
+
             <p class="mt-8 text-[11px] text-gray-400 italic text-center">
-                <i class="fas fa-info-circle mr-1"></i> These materials are sourced from the official publication of the PCW.
+                <i class="fas fa-info-circle mr-1"></i> These materials are sourced from the official publication of the
+                PCW.
             </p>
         </main>
     </div>
@@ -98,9 +129,17 @@
 
 <style>
     @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
+
     .animate-fade-in-up {
         animation: fadeInUp 0.8s ease-out forwards;
     }

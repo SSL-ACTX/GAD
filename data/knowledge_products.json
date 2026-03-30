@@ -8,7 +8,21 @@
     "image": "https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y",
     "file": "",
     "url": "",
-    "action_text": ""
+    "action_text": "",
+    "resources": [
+      {
+        "id": "",
+        "label": "Facebook Update",
+        "type": "url",
+        "value": "https://www.facebook.com/reel/1078378532017422"
+      },
+      {
+        "id": "",
+        "label": "Program Brochure",
+        "type": "url",
+        "value": ""
+      }
+    ]
   },
   {
     "id": "kp8d9319bb",

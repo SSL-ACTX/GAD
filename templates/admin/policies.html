@@ -200,10 +200,15 @@
                                     {% else %}
                                     <code class="block text-xs text-gray-600 break-all">{{ entry.file }}</code>
                                     {% endif %}
+                                    {% if entry.video_file or entry.video_url %}
+                                    <div class="mt-1 flex items-center gap-1 text-[10px] text-purple-600 font-bold uppercase">
+                                        <i class="fas fa-video"></i> Video Attached
+                                    </div>
+                                    {% endif %}
                                 </td>
                                 <td class="px-4 py-4 text-right whitespace-nowrap">
                                     <button type="button"
-                                        onclick='openEditPolicyModal({{ {"id": entry.id|default(""), "category": category, "year": entry.year|default(0), "title": entry.title|default(""), "description": entry.description|default(""), "date": entry.date|default(""), "status": entry.status|default(""), "file": entry.file|default(""), "url": entry.url|default("")} | tojson | forceescape }})'
+                                        onclick='openEditPolicyModal({{ {"id": entry.id|default(""), "category": category, "year": entry.year|default(0), "title": entry.title|default(""), "description": entry.description|default(""), "date": entry.date|default(""), "status": entry.status|default(""), "file": entry.file|default(""), "url": entry.url|default(""), "video_file": entry.video_file|default(""), "video_url": entry.video_url|default("")} | tojson | forceescape }})'
                                         class="text-xs font-bold text-blue-600 hover:text-blue-800 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors mr-1">
                                         <i class="fas fa-pencil-alt mr-1"></i>Edit
                                     </button>
@@ -314,13 +319,32 @@
             </div>
 
             <div class="md:col-span-1">
-                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">External URL
-                    (Facebook Video/Page)</label>
-                <input name="url" type="url" placeholder="https://www.facebook.com/reel/..."
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">External URL (Doc Link)</label>
+                <input name="url" type="url" placeholder="https://www.facebook.com/posts/..."
                     class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
-                <p class="text-[9px] text-gray-400 mt-1 leading-tight">
-                    <i class="fas fa-lightbulb text-amber-400 mr-1"></i> Tip: Use the URL from the browser address bar (copy from top) for better video embedding.
-                </p>
+            </div>
+
+            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                <div class="md:col-span-2">
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-purple-600 mb-2">Video Presentation (Optional - For Reports)</h4>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Upload Video File</label>
+                    <input type="file" name="video_file" accept="video/*"
+                        class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-purple-50 file:text-purple-600 hover:file:bg-purple-600 hover:file:text-white file:transition-all cursor-pointer border border-gray-100 p-1.5 rounded-xl">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Video File Path</label>
+                    <input name="video_path" type="text" placeholder="vid_filename.mp4"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">External Video URL (YouTube/Facebook Reel)</label>
+                    <input name="video_url" type="url" placeholder="https://www.facebook.com/reel/..."
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600">
+                </div>
             </div>
 
             <div class="md:col-span-2 flex justify-end gap-3 mt-2">
@@ -412,13 +436,32 @@
             </div>
 
             <div class="md:col-span-1">
-                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">External
-                    URL</label>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">External URL (Doc Link)</label>
                 <input id="edit-policy-url" name="url" type="url"
                     class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
-                <p class="text-[9px] text-gray-400 mt-1 leading-tight">
-                    <i class="fas fa-lightbulb text-amber-400 mr-1"></i> Tip: Use the URL from the browser address bar (copy from top) for better video embedding.
-                </p>
+            </div>
+
+            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                <div class="md:col-span-2">
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-purple-600 mb-2">Video Presentation (Optional - For Reports)</h4>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Replace Video File</label>
+                    <input type="file" name="video_file" accept="video/*"
+                        class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-purple-50 file:text-purple-600 hover:file:bg-purple-600 hover:file:text-white file:transition-all cursor-pointer border border-gray-100 p-1.5 rounded-xl">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Video File Path</label>
+                    <input id="edit-policy-video-file" name="video_path" type="text"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">External Video URL</label>
+                    <input id="edit-policy-video-url" name="video_url" type="url"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600">
+                </div>
             </div>
 
             <div class="md:col-span-2 flex justify-end gap-3 mt-2">
@@ -458,6 +501,8 @@
         document.getElementById('edit-policy-status').value = entry.status;
         document.getElementById('edit-policy-file').value = entry.file || '';
         document.getElementById('edit-policy-url').value = entry.url || '';
+        document.getElementById('edit-policy-video-file').value = entry.video_file || '';
+        document.getElementById('edit-policy-video-url').value = entry.video_url || '';
         document.getElementById('edit-policy-modal').classList.remove('hidden');
     }
 

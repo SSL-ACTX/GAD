@@ -53,7 +53,18 @@
                 </div>
                 <h3 class="text-xl font-bold text-gray-800 group-hover:text-primary-green transition-colors mb-3">{{
                     p.title }}</h3>
-                <p class="text-gray-600 text-sm leading-relaxed mb-6">{{ p.description }}</p>
+                <div class="project-description relative">
+                    <p id="desc-{{ p.id }}" class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4 transition-all duration-300">
+                        {{ p.description }}
+                    </p>
+                    {% if p.description|length > 200 %}
+                    <button type="button" onclick="toggleDescription('{{ p.id }}')" id="btn-{{ p.id }}"
+                        class="text-primary-green font-bold text-[10px] uppercase tracking-widest hover:underline mb-6 flex items-center gap-1.5">
+                        <span id="text-{{ p.id }}">See More</span>
+                        <i id="icon-{{ p.id }}" class="fas fa-chevron-down text-[8px] transition-transform duration-300"></i>
+                    </button>
+                    {% endif %}
+                </div>
                 <div class="flex items-center justify-between pt-6 border-t border-gray-50">
                     <a href="{{ url_for('projects.project_detail', project_id=p.id) }}"
                         class="text-primary-green font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all">
@@ -99,4 +110,24 @@
         </div>
     </div>
 </div>
+
+{% block extra_js %}
+<script>
+    function toggleDescription(projectId) {
+        const desc = document.getElementById('desc-' + projectId);
+        const text = document.getElementById('text-' + projectId);
+        const icon = document.getElementById('icon-' + projectId);
+        
+        if (desc.classList.contains('line-clamp-4')) {
+            desc.classList.remove('line-clamp-4');
+            if (text) text.innerText = 'See Less';
+            if (icon) icon.style.transform = 'rotate(180deg)';
+        } else {
+            desc.classList.add('line-clamp-4');
+            if (text) text.innerText = 'See More';
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        }
+    }
+</script>
+{% endblock %}
 {% endblock %}

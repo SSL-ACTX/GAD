@@ -4,18 +4,6 @@
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-[5%] lg:px-[10%] py-12">
-    <!-- Breadcrumbs -->
-    <nav class="flex mb-8 text-xs font-bold uppercase tracking-widest text-gray-400" aria-label="Breadcrumb">
-        <ol class="flex items-center space-x-2">
-            <li><a href="{{ url_for('main.index') }}" class="hover:text-primary-green transition-colors">Home</a></li>
-            <li><i class="fas fa-chevron-right text-[8px] mx-1"></i></li>
-            <li><a href="{{ url_for('main.knowledge_products') }}"
-                    class="hover:text-primary-green transition-colors">Knowledge Products</a></li>
-            <li><i class="fas fa-chevron-right text-[8px] mx-1"></i></li>
-            <li class="text-primary-green">PCW IEC Materials</li>
-        </ol>
-    </nav>
-
     <div class="flex flex-col lg:flex-row gap-12">
         <!-- Sidebar Navigation -->
         <aside class="lg:w-1/4">

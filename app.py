@@ -158,35 +158,9 @@ def inject_global_data():
     # 2. Site Config
     site_config = load_site_config()
 
-    # 3. Smart Breadcrumbs
-    path_parts = [p for p in request.path.split('/') if p]
-    breadcrumbs = []
-    
-    # Mapping for segments to readable titles
-    segment_titles = {
-        'about': 'About Us', 'news': 'Latest News', 'policies': 'Policies & Reports',
-        'projects': 'GAD Projects', 'calendar': 'Events Calendar', 'legal': 'Legal',
-        'knowledge-products': 'Knowledge & IEC', 'vision-mission': 'Vision & Mission',
-        'org-structure': 'Organization Structure', 'gad-committee': 'Committee',
-        'contact': 'Contact Us', 'republic-acts': 'Republic Acts', 'resolutions': 'Resolutions',
-        'memoranda': 'Memoranda', 'orders': 'Executive Orders', 'reports': 'Reports',
-        'lbp-forms': 'LBP Forms', 'archive': 'Archive', 'search': 'Search Results'
-    }
-
-    current_url = ''
-    for part in path_parts:
-        current_url += f'/{part}'
-        # Handle dynamic IDs (hex hashes) - check if looks like a hash
-        if len(part) == 8 and all(c in '0123456789abcdefABCDEF' for c in part):
-            name = "Details"
-        else:
-            name = segment_titles.get(part, part.replace('-', ' ').replace('_', ' ').title())
-        breadcrumbs.append({'name': name, 'url': current_url})
-
     return dict(
         nav_project_years=years,
         site_config=site_config,
-        breadcrumbs=breadcrumbs,
         now=datetime.now()
     )
 

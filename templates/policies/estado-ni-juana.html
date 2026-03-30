@@ -54,10 +54,18 @@
                     class="font-black text-gray-800 text-xl group-hover:text-primary-green transition-colors leading-tight mb-3">
                     {{ report.title }}
                 </h3>
-                <p class="text-sm text-gray-500 mb-8 line-clamp-2 min-h-[40px]">
-                    {{ report.description or 'Official report on the status and welfare of women in the municipality.'
-                    }}
-                </p>
+                <div class="report-description">
+                    <p id="desc-{{ report.id }}" class="text-sm text-gray-500 mb-4 line-clamp-3 transition-all duration-300">
+                        {{ report.description or 'Official report on the status and welfare of women in the municipality.' }}
+                    </p>
+                    {% if report.description and report.description|length > 150 %}
+                    <button type="button" onclick="toggleDescription('{{ report.id }}')" id="btn-{{ report.id }}"
+                        class="text-primary-green font-bold text-[10px] uppercase tracking-widest hover:underline mb-6 flex items-center gap-1.5">
+                        <span id="text-{{ report.id }}">See More</span>
+                        <i id="icon-{{ report.id }}" class="fas fa-chevron-down text-[8px] transition-transform duration-300"></i>
+                    </button>
+                    {% endif %}
+                </div>
 
                 <div class="flex items-center gap-4 mb-6">
                     <div class="flex items-center gap-1.5">
@@ -74,12 +82,20 @@
                 </div>
 
                 <!-- Action Button -->
-                <a href="{% if report.url %}{{ report.url }}{% else %}{{ url_for('static', filename=report.file) }}{% endif %}"
-                    {% if report.url %}target="_blank"{% endif %}
+                {% if report.url and report.url != '#' %}
+                <a href="{{ report.url }}"
+                    target="_blank"
                     class="flex items-center justify-center gap-3 w-full py-4 bg-gray-50 text-gray-800 font-black text-xs uppercase tracking-widest rounded-2xl group-hover:bg-primary-green group-hover:text-white transition-all shadow-sm">
-                    <i class="fas {% if is_video %}fa-external-link-alt{% else %}fa-download{% endif %}"></i>
-                    {% if is_video %}Watch Video{% else %}Download Report{% endif %}
+                    <i class="fas {% if is_video %}fa-play-circle{% else %}fa-external-link-alt{% endif %}"></i>
+                    {% if is_video %}Watch Video{% else %}View Report{% endif %}
                 </a>
+                {% elif report.file and report.file != '#' %}
+                <a href="{{ url_for('static', filename=report.file) }}"
+                    class="flex items-center justify-center gap-3 w-full py-4 bg-gray-50 text-gray-800 font-black text-xs uppercase tracking-widest rounded-2xl group-hover:bg-primary-green group-hover:text-white transition-all shadow-sm">
+                    <i class="fas fa-download"></i>
+                    Download Report
+                </a>
+                {% endif %}
             </div>
 
             <!-- Bottom Accent Bar -->
@@ -141,4 +157,24 @@
         animation: fadeInUp 0.8s ease-out forwards;
     }
 </style>
+
+{% block extra_js %}
+<script>
+    function toggleDescription(id) {
+        const desc = document.getElementById('desc-' + id);
+        const text = document.getElementById('text-' + id);
+        const icon = document.getElementById('icon-' + id);
+        
+        if (desc.classList.contains('line-clamp-3')) {
+            desc.classList.remove('line-clamp-3');
+            if (text) text.innerText = 'See Less';
+            if (icon) icon.style.transform = 'rotate(180deg)';
+        } else {
+            desc.classList.add('line-clamp-3');
+            if (text) text.innerText = 'See More';
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        }
+    }
+</script>
+{% endblock %}
 {% endblock %}

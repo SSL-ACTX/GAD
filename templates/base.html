@@ -407,30 +407,6 @@
     </nav>
 
     <main class="min-h-[60vh]">
-        <!-- Smart Breadcrumbs (Automatic detection) -->
-        {% block breadcrumbs %}
-        {% if breadcrumbs %}
-        <div class="bg-white border-b border-gray-100">
-            <div
-                class="px-[5%] lg:px-[10%] py-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gray-400 overflow-x-auto whitespace-nowrap lg:overflow-visible">
-                <a href="{{ url_for('main.index') }}" title="Go to Home"
-                    class="hover:text-primary-green transition-colors flex-shrink-0"><i class="fas fa-home"></i></a>
-
-                {% for crumb in breadcrumbs %}
-                <i class="fas fa-chevron-right text-[8px] opacity-30 flex-shrink-0"></i>
-                {% if not loop.last %}
-                <a href="{{ crumb.url }}" class="hover:text-primary-green transition-colors flex-shrink-0">{{ crumb.name
-                    }}</a>
-                {% else %}
-                <span class="text-gray-600 truncate">{% block breadcrumb_current %}{{ breadcrumbs[-1].name }}{% endblock
-                    %}</span>
-                {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-        {% endblock %}
-
         {% block content %}{% endblock %}
     </main>
 

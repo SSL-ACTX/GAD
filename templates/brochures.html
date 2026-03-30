@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}PCW IEC Materials - GAD Corner{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-[5%] lg:px-[10%] py-12">
+    <!-- Breadcrumbs -->
+    <nav class="flex mb-8 text-xs font-bold uppercase tracking-widest text-gray-400" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2">
+            <li><a href="{{ url_for('main.index') }}" class="hover:text-primary-green transition-colors">Home</a></li>
+            <li><i class="fas fa-chevron-right text-[8px] mx-1"></i></li>
+            <li><a href="{{ url_for('main.knowledge_products') }}" class="hover:text-primary-green transition-colors">Knowledge Products</a></li>
+            <li><i class="fas fa-chevron-right text-[8px] mx-1"></i></li>
+            <li class="text-primary-green">PCW IEC Materials</li>
+        </ol>
+    </nav>
+
+    <div class="flex flex-col lg:flex-row gap-12">
+        <!-- Sidebar Navigation (Optional/Static) -->
+        <aside class="lg:w-1/4">
+            <div class="bg-gray-50 rounded-3xl p-8 border border-gray-100">
+                <div class="mb-6">
+                    <img src="https://pcw.gov.ph/wp-content/uploads/2021/03/PCW-Logo-Trans-1.png" alt="PCW Logo" class="h-16 mx-auto lg:mx-0 object-contain mb-4">
+                    <h4 class="text-sm font-black text-gray-800 uppercase tracking-tighter">Philippine Commission on Women</h4>
+                </div>
+                <nav class="space-y-2">
+                    <a href="#" class="block px-4 py-3 rounded-xl bg-white text-primary-green font-bold text-xs shadow-sm border border-gray-100">
+                        PCW IEC Materials
+                    </a>
+                    <a href="https://pcw.gov.ph" target="_blank" class="block px-4 py-3 rounded-xl text-gray-500 hover:bg-white hover:text-primary-green transition-all text-xs font-semibold">
+                        Visit Official PCW Website
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lg:w-3/4">
+            <div class="mb-10">
+                <h2 class="text-3xl md:text-4xl font-black text-gray-800 tracking-tight uppercase">
+                    PCW IEC <span class="text-primary-green">Materials</span>
+                </h2>
+                <div class="h-1.5 w-20 bg-primary-green mt-4 rounded-full"></div>
+                <p class="text-gray-500 mt-6 leading-relaxed max-w-2xl">
+                    Access and download Information, Education, and Communication (IEC) materials provided by the Philippine Commission on Women. These resources are essential for GAD mainstreaming and awareness.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden animate-fade-in-up">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-100">
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400">Document Title</th>
+                                <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50">
+                            {% for brochure in brochures %}
+                            <tr class="hover:bg-green-50/30 transition-colors group">
+                                <td class="px-8 py-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-primary-green group-hover:bg-primary-green group-hover:text-white transition-all">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </div>
+                                        <span class="font-bold text-gray-700 group-hover:text-primary-green transition-colors">{{ brochure.title }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-6 text-right">
+                                    <a href="{{ brochure.url if brochure.url else url_for('static', filename=brochure.file) }}" 
+                                       target="_blank"
+                                       class="inline-flex items-center gap-2 bg-white hover:bg-primary-green text-primary-green hover:text-white font-bold text-[10px] px-5 py-2.5 rounded-xl border border-green-100 shadow-sm transition-all uppercase tracking-widest">
+                                        View Document <i class="fas fa-external-link-alt text-[8px]"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% if not brochures %}
+                            <tr>
+                                <td colspan="2" class="px-8 py-20 text-center text-gray-400">
+                                    <i class="fas fa-folder-open text-4xl mb-4 opacity-20 block"></i>
+                                    No materials available at this time.
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <p class="mt-8 text-[11px] text-gray-400 italic text-center">
+                <i class="fas fa-info-circle mr-1"></i> These materials are sourced from the official publication of the PCW.
+            </p>
+        </main>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+</style>
+{% endblock %}

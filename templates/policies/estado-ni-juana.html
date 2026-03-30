@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}GAD Accomplishment Reports - GAD Corner{% endblock %}
+{% block title %}Estado ni Juana Report - GAD Corner{% endblock %}
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-6 py-12">
@@ -8,28 +8,45 @@
     <div class="mb-10 animate-fade-in-up">
         <h2
             class="text-2xl md:text-3xl font-extrabold text-gray-800 border-l-8 border-primary-green pl-4 uppercase tracking-tight">
-            Accomplishment <span class="text-primary-green">Reports</span>
+            Estado ni <span class="text-primary-green">Juana</span>
         </h2>
-        <p class="text-gray-500 mt-2 ml-6 italic text-sm">Official GAD Accomplishment Reports (GAR) documenting our
-            milestones and impact.</p>
+        <p class="text-gray-500 mt-2 ml-6 italic text-sm">State of Women (Estado ni Juana) Reports documenting the status and progress of women in our municipality.</p>
     </div>
 
     <!-- Reports Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% if reports %}
         {% for report in reports %}
+        {% set is_video = report.url and ('facebook.com' in report.url or 'fb.watch' in report.url or 'youtube.com' in report.url) %}
         <div
             class="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-green transition-all duration-500 overflow-hidden transform hover:-translate-y-2">
+            
+            {% if is_video and 'facebook.com' in report.url %}
+            <div class="relative w-full aspect-video bg-black overflow-hidden group-hover:opacity-90 transition-opacity">
+                <iframe src="https://www.facebook.com/plugins/video.php?href={{ report.url|urlencode }}&show_text=0&width=560" 
+                    title="{{ report.title }}"
+                    height="315" style="border:none;overflow:hidden;width:100%;height:100%;" scrolling="no" frameborder="0" 
+                    allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    class="absolute inset-0"></iframe>
+                <div class="absolute bottom-3 right-3 z-20">
+                    <a href="{{ report.url }}" target="_blank" class="bg-black/60 hover:bg-black/80 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl backdrop-blur-sm transition-all border border-white/20 flex items-center gap-2">
+                        <i class="fab fa-facebook-f"></i> Open in FB
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="p-8">
                 <!-- Icon and Type Label -->
                 <div class="flex justify-between items-start mb-6">
                     <div
                         class="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center text-primary-green group-hover:bg-primary-green group-hover:text-white transition-all duration-500 shadow-inner">
-                        <i class="fas fa-file-invoice text-2xl"></i>
+                        <i class="fas {% if is_video %}fa-play-circle{% else %}fa-female{% endif %} text-2xl"></i>
                     </div>
                     <span
-                        class="bg-primary-green/10 text-primary-green text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">ANNUAL
-                        REPORT</span>
+                        class="bg-primary-green/10 text-primary-green text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                        {% if is_video %}VIDEO REPORT{% else %}STATE OF WOMEN{% endif %}
+                    </span>
                 </div>
 
                 <!-- Text Content -->
@@ -38,7 +55,7 @@
                     {{ report.title }}
                 </h3>
                 <p class="text-sm text-gray-500 mb-8 line-clamp-2 min-h-[40px]">
-                    {{ report.description or 'Comprehensive summary of Gender and Development programs and achievements.'
+                    {{ report.description or 'Official report on the status and welfare of women in the municipality.'
                     }}
                 </p>
 
@@ -60,8 +77,8 @@
                 <a href="{% if report.url %}{{ report.url }}{% else %}{{ url_for('static', filename=report.file) }}{% endif %}"
                     {% if report.url %}target="_blank"{% endif %}
                     class="flex items-center justify-center gap-3 w-full py-4 bg-gray-50 text-gray-800 font-black text-xs uppercase tracking-widest rounded-2xl group-hover:bg-primary-green group-hover:text-white transition-all shadow-sm">
-                    <i class="fas fa-download"></i>
-                    Download Report
+                    <i class="fas {% if is_video %}fa-external-link-alt{% else %}fa-download{% endif %}"></i>
+                    {% if is_video %}Watch Video{% else %}Download Report{% endif %}
                 </a>
             </div>
 
@@ -73,10 +90,10 @@
         <!-- Empty State -->
         <div class="col-span-1 md:col-span-2 lg:col-span-3 py-20 text-center">
             <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-folder-open text-gray-200 text-3xl"></i>
+                <i class="fas fa-female text-gray-200 text-3xl"></i>
             </div>
             <h3 class="text-lg font-bold text-gray-700">No reports available</h3>
-            <p class="text-sm text-gray-400">Please check back later or contact the GAD office.</p>
+            <p class="text-sm text-gray-400">Please check back later for the latest Estado ni Juana updates.</p>
         </div>
         {% endif %}
     </div>
@@ -95,14 +112,12 @@
             <div>
                 <h4 class="font-black text-primary-green text-lg uppercase tracking-tight">Transparency Notice</h4>
                 <p class="text-sm text-gray-600 mt-2 max-w-2xl leading-relaxed">
-                    In compliance with the Full Disclosure Policy, all GAD Accomplishment Reports are made available for
-                    public viewing. Older archives (pre-2020) can be requested at the <strong>Municipal GAD
-                        Office</strong>.
+                    The Estado ni Juana Report is part of our commitment to documenting gender-responsive governance. For inquiries regarding specific data points, please contact the <strong>Municipal GAD Office</strong>.
                 </p>
             </div>
             <a href="{{ url_for('main.contact') }}"
                 class="ml-auto bg-white hover:bg-primary-green hover:text-white text-primary-green font-bold px-8 py-4 rounded-2xl shadow-sm transition-all border border-green-100 whitespace-nowrap">
-                Request Archives
+                Contact Office
             </a>
         </div>
     </div>

@@ -52,7 +52,14 @@
                     {% for item in policies %}
                     <tr class="order-row hover:bg-green-50/40 transition-colors group" data-year="{{ item.year }}"
                         data-content="{{ item.title }}">
-                        <td class="px-6 py-5 font-bold text-gray-700 group-hover:text-primary-green">{{ item.title }}
+                        <td class="px-6 py-5 font-bold text-gray-700 group-hover:text-primary-green">
+                            {% if item.url %}
+                            <a href="{{ item.url }}" target="_blank" class="flex items-center gap-2">
+                                {{ item.title }} <i class="fas fa-external-link-alt text-[10px] opacity-70"></i>
+                            </a>
+                            {% else %}
+                            {{ item.title }}
+                            {% endif %}
                         </td>
                         <td class="px-6 py-5">
                             <div class="text-gray-800 font-medium leading-tight">{{ item.description }}</div>
@@ -65,9 +72,10 @@
                             </span>
                         </td>
                         <td class="px-6 py-5 text-center">
-                            <a href="{{ url_for('static', filename=item.file) }}"
+                            <a href="{{ item.url if item.url else url_for('static', filename=item.file) }}" target="_blank"
+                                title="{{ 'View External Source' if item.url else 'View PDF' }}"
                                 class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all duration-300 font-bold text-xs uppercase shadow-sm">
-                                <i class="fas fa-file-pdf"></i> View PDF
+                                <i class="fas {{ 'fa-external-link-alt' if item.url else 'fa-file-pdf' }}"></i> {{ 'External' if item.url else 'View PDF' }}
                             </a>
                         </td>
                     </tr>

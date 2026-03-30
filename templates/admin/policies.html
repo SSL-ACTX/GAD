@@ -66,6 +66,21 @@
         background: #d1fae5;
         color: #065f46;
     }
+
+    .pill-cat-lbp_forms {
+        background: #faf5ff;
+        color: #6b21a8;
+    }
+
+    .pill-cat-reports {
+        background: #fff7ed;
+        color: #9a3412;
+    }
+
+    .pill-cat-estado_ni_juana {
+        background: #fdf2f8;
+        color: #9d174d;
+    }
 </style>
 {% endblock %}
 
@@ -110,6 +125,9 @@
                         <option value="resolutions">Resolutions</option>
                         <option value="memoranda">Memoranda</option>
                         <option value="orders">Office Orders</option>
+                        <option value="lbp_forms">GAD Plan & Budget (LBP Forms)</option>
+                        <option value="reports">Accomplishment Reports</option>
+                        <option value="estado_ni_juana">Estado ni Juana Reports</option>
                     </select>
                 </div>
             </div>
@@ -153,8 +171,9 @@
                         </thead>
                         <tbody id="policiesTableBody" class="divide-y divide-gray-100 bg-white">
                             {% set category_labels = {'republic_acts':'Republic Acts', 'resolutions':'Resolutions',
-                            'memoranda':'Memoranda', 'orders':'Office Orders'} %}
-                            {% for category in ['republic_acts', 'resolutions', 'memoranda', 'orders'] %}
+                            'memoranda':'Memoranda', 'orders':'Office Orders', 'lbp_forms':'LBP Forms', 
+                            'reports':'Reports', 'estado_ni_juana':'Estado ni Juana'} %}
+                            {% for category in ['republic_acts', 'resolutions', 'memoranda', 'orders', 'lbp_forms', 'reports', 'estado_ni_juana'] %}
                             {% for entry in policies.get(category, []) %}
                             <tr class="policy-row hover:bg-gray-50 transition-colors" data-category="{{ category }}"
                                 data-search="{{ category_labels[category] }} {{ entry.year }} {{ entry.title }} {{ entry.date }} {{ entry.status }} {{ entry.file }}">
@@ -231,7 +250,7 @@
             </button>
         </div>
 
-        <form action="{{ url_for('admin.add_policy_entry') }}" method="POST"
+        <form action="{{ url_for('admin.add_policy_entry') }}" method="POST" enctype="multipart/form-data"
             class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Category
@@ -242,6 +261,9 @@
                     <option value="resolutions">Resolutions</option>
                     <option value="memoranda">Memoranda</option>
                     <option value="orders">Office Orders</option>
+                    <option value="lbp_forms">GAD Plan & Budget (LBP Forms)</option>
+                    <option value="reports">Accomplishment Reports</option>
+                    <option value="estado_ni_juana">Estado ni Juana Reports</option>
                 </select>
             </div>
 
@@ -277,6 +299,13 @@
                     class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
             </div>
 
+            <div class="md:col-span-2">
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Upload Official
+                    File <span class="normal-case font-normal text-gray-300">(optional)</span></label>
+                <input type="file" name="policy_file" accept=".pdf,.doc,.docx"
+                    class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-green-50 file:text-primary-green hover:file:bg-primary-green hover:file:text-white file:transition-all cursor-pointer border border-gray-100 p-1.5 rounded-xl">
+            </div>
+
             <div class="md:col-span-1">
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">File
                     path</label>
@@ -286,9 +315,12 @@
 
             <div class="md:col-span-1">
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">External URL
-                    (Directs to PCW)</label>
-                <input name="url" type="url" placeholder="https://pcw.gov.ph/..."
+                    (Facebook Video/Page)</label>
+                <input name="url" type="url" placeholder="https://www.facebook.com/reel/..."
                     class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
+                <p class="text-[9px] text-gray-400 mt-1 leading-tight">
+                    <i class="fas fa-lightbulb text-amber-400 mr-1"></i> Tip: Use the URL from the browser address bar (copy from top) for better video embedding.
+                </p>
             </div>
 
             <div class="md:col-span-2 flex justify-end gap-3 mt-2">
@@ -318,7 +350,7 @@
             </button>
         </div>
 
-        <form id="edit-policy-form" method="POST" action="" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form id="edit-policy-form" method="POST" action="" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Category
                     *</label>
@@ -328,6 +360,9 @@
                     <option value="resolutions">Resolutions</option>
                     <option value="memoranda">Memoranda</option>
                     <option value="orders">Office Orders</option>
+                    <option value="lbp_forms">GAD Plan & Budget (LBP Forms)</option>
+                    <option value="reports">Accomplishment Reports</option>
+                    <option value="estado_ni_juana">Estado ni Juana Reports</option>
                 </select>
             </div>
 
@@ -362,6 +397,13 @@
                     class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
             </div>
 
+            <div class="md:col-span-2">
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Replace Official
+                    File <span class="normal-case font-normal text-gray-300">(optional)</span></label>
+                <input type="file" name="policy_file" accept=".pdf,.doc,.docx"
+                    class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-600 hover:file:text-white file:transition-all cursor-pointer border border-gray-100 p-1.5 rounded-xl">
+            </div>
+
             <div class="md:col-span-1">
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">File
                     path</label>
@@ -374,6 +416,9 @@
                     URL</label>
                 <input id="edit-policy-url" name="url" type="url"
                     class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
+                <p class="text-[9px] text-gray-400 mt-1 leading-tight">
+                    <i class="fas fa-lightbulb text-amber-400 mr-1"></i> Tip: Use the URL from the browser address bar (copy from top) for better video embedding.
+                </p>
             </div>
 
             <div class="md:col-span-2 flex justify-end gap-3 mt-2">

@@ -16,7 +16,10 @@ def load_policies():
             'republic_acts': [],
             'memoranda': [],
             'resolutions': [],
-            'orders': []
+            'orders': [],
+            'lbp_forms': [],
+            'reports': [],
+            'estado_ni_juana': []
         }
 
 
@@ -48,7 +51,9 @@ def policies_hub(category):
 
 @policies_bp.route('/reports')
 def reports():
-    return render_template('policies/reports.html')
+    policies = load_policies()
+    report_list = policies.get('reports', [])
+    return render_template('policies/reports.html', reports=report_list)
 
 @policies_bp.route("/policies")
 def policies_index():
@@ -62,4 +67,12 @@ def policies_placeholder():
 
 @policies_bp.route('/lbp-forms')
 def lbp_forms():
-    return render_template('policies/lbp-forms.html')
+    policies = load_policies()
+    form_list = policies.get('lbp_forms', [])
+    return render_template('policies/lbp-forms.html', forms=form_list)
+
+@policies_bp.route('/estado-ni-juana')
+def estado_ni_juana():
+    policies = load_policies()
+    report_list = policies.get('estado_ni_juana', [])
+    return render_template('policies/estado-ni-juana.html', reports=report_list)

@@ -1,0 +1,57 @@
+[
+  {
+    "id": "kpe11adc88",
+    "title": "Livelihood Program",
+    "description": "lorem ipsum",
+    "type": "Report",
+    "date": "",
+    "image": "https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y",
+    "file": "",
+    "url": "",
+    "action_text": ""
+  },
+  {
+    "id": "kp8d9319bb",
+    "title": "Gender Responsive Learning Tool (GeRL Tool)",
+    "description": "The GeRL Assessment Tool evaluates the gender responsiveness of local government units in the Philippines by assessing governance aspects such as policies, programs, and services. It identifies improvement areas and aids in developing strategies for gender mainstreaming, aligning with the Magna Carta of Women and supporting Sustainable Development Goals.",
+    "type": "Manual",
+    "date": "",
+    "image": "https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y",
+    "file": "",
+    "url": "",
+    "action_text": ""
+  },
+  {
+    "id": "kp001",
+    "title": "PCW IEC Materials Brochure",
+    "description": "lorem ipsum",
+    "type": "Brochure",
+    "date": "",
+    "image": "https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y",
+    "file": "",
+    "url": "",
+    "action_text": "View Brochures"
+  },
+  {
+    "id": "kp002",
+    "title": "GAD Planning Manual",
+    "description": "Step-by-step toolkit for barangay officials to effectively integrate gender perspectives into local planning.",
+    "type": "Manual",
+    "date": "Published 2023",
+    "image": "https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y",
+    "file": "#",
+    "url": "",
+    "action_text": "VIEW BOOKLET"
+  },
+  {
+    "id": "kp004",
+    "title": "2024 Gender Leadership Statistics",
+    "description": "Annual tracking of women's representation in leadership and decision-making positions (Department Heads, Barangay Captains, and Local Councilors).",
+    "type": "Statistics",
+    "date": "Updated FY 2024",
+    "image": "https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y",
+    "file": "#",
+    "url": "https://pcw.gov.ph/gender-and-statistics/",
+    "action_text": "VIEW STATISTICS"
+  }
+]

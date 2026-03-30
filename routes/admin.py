@@ -13,8 +13,13 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 DATA_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'events.json')
 PROJECTS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'projects.json')
 POLICIES_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'policies.json')
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'projects')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+KNOWLEDGE_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'knowledge_products.json')
+BROCHURES_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'brochures.json')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf', 'docx', 'doc'}
+POLICIES_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'policies')
+PROJECTS_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'projects')
+KNOWLEDGE_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'knowledge')
+BROCHURES_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'brochures')
 
 # ── Site Config ───────────────────────────────────────────────────────────────
 SITE_CONFIG_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'site_config.json')
@@ -59,7 +64,7 @@ def load_policies():
         with open(POLICIES_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
-        return {'circulars': [], 'memoranda': [], 'resolutions': [], 'orders': []}
+        return {'republic_acts': [], 'memoranda': [], 'resolutions': [], 'orders': [], 'lbp_forms': [], 'reports': []}
 
 
 def save_policies(policies):
@@ -84,18 +89,57 @@ def save_projects(projects):
     with open(PROJECTS_FILE, 'w', encoding='utf-8') as f:
         json.dump(projects, f, indent=2, ensure_ascii=False)
 
+def load_knowledge_products():
+    try:
+        with open(KNOWLEDGE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def save_knowledge_products(products):
+    os.makedirs(os.path.dirname(KNOWLEDGE_FILE), exist_ok=True)
+    with open(KNOWLEDGE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(products, f, indent=2, ensure_ascii=False)
+
+def load_brochures():
+    try:
+        with open(BROCHURES_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def save_brochures(brochures):
+    os.makedirs(os.path.dirname(BROCHURES_FILE), exist_ok=True)
+    with open(BROCHURES_FILE, 'w', encoding='utf-8') as f:
+        json.dump(brochures, f, indent=2, ensure_ascii=False)
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def save_uploaded_image(file):
-    """Save uploaded image and return its URL path, or None."""
+def save_uploaded_file(file, folder_path, prefix="p"):
+    """Generic helper to save an uploaded file."""
     if file and file.filename and allowed_file(file.filename):
-        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+        os.makedirs(folder_path, exist_ok=True)
         ext = file.filename.rsplit('.', 1)[1].lower()
-        filename = str(uuid.uuid4())[:8] + '.' + ext
-        file.save(os.path.join(UPLOAD_FOLDER, filename))
-        return 'uploads/projects/' + filename
+        filename = f"{prefix}_{str(uuid.uuid4())[:8]}.{ext}"
+        file.save(os.path.join(folder_path, filename))
+        
+        # Determine the web-accessible path fragments
+        # For simplicity, we assume everything is under 'static/'
+        parts = folder_path.replace('\\', '/').split('/')
+        if 'static' in parts:
+            static_idx = parts.index('static')
+            return '/'.join(parts[static_idx+1:]) + '/' + filename
     return None
+
+def save_uploaded_image(file):
+    return save_uploaded_file(file, PROJECTS_UPLOAD_FOLDER, prefix="proj")
+
+def save_policy_pdf(file):
+    return save_uploaded_file(file, POLICIES_UPLOAD_FOLDER, prefix="memo")
+
+def save_knowledge_asset(file):
+    return save_uploaded_file(file, KNOWLEDGE_UPLOAD_FOLDER, prefix="kp")
 
 def login_required(f):
     @wraps(f)
@@ -197,6 +241,12 @@ def add_policy_entry():
     except ValueError:
         year = year_default
 
+    # Handle File Upload
+    uploaded_file = request.files.get('policy_file')
+    file_path = save_policy_pdf(uploaded_file)
+    if not file_path:
+        file_path = request.form.get('file', '').strip() or '#'
+
     entry = {
         'id': 'p' + str(uuid.uuid4())[:8],
         'year': year,
@@ -204,7 +254,7 @@ def add_policy_entry():
         'description': request.form.get('description', '').strip(),
         'date': request.form.get('date', '').strip(),
         'status': request.form.get('status', '').strip() or 'Active',
-        'file': request.form.get('file', '').strip() or '#',
+        'file': file_path,
         'url': request.form.get('url', '').strip()
     }
     policies.setdefault(category, []).insert(0, entry)
@@ -241,6 +291,12 @@ def edit_policy_entry(entry_id):
     except ValueError:
         year = old_entry.get('year', datetime.now().year)
 
+    # Handle File Upload
+    uploaded_file = request.files.get('policy_file')
+    file_path = save_policy_pdf(uploaded_file)
+    if not file_path:
+        file_path = request.form.get('file', old_entry.get('file', '#')).strip() or '#'
+
     updated_entry = {
         'id': entry_id,
         'year': year,
@@ -248,7 +304,7 @@ def edit_policy_entry(entry_id):
         'description': request.form.get('description', old_entry.get('description', '')).strip(),
         'date': request.form.get('date', old_entry.get('date', '')).strip(),
         'status': request.form.get('status', old_entry.get('status', 'Active')).strip() or 'Active',
-        'file': request.form.get('file', old_entry.get('file', '#')).strip() or '#',
+        'file': file_path,
         'url': request.form.get('url', old_entry.get('url', '')).strip()
     }
 
@@ -511,3 +567,142 @@ def delete_project(project_id):
     save_projects(all_projects)
     flash('Project deleted.', 'success')
     return redirect(url_for('admin.projects'))
+
+# ── Knowledge Products Management ───────────────────────────────────────────
+@admin_bp.route('/knowledge')
+@login_required
+def knowledge():
+    items = load_knowledge_products()
+    return render_template('admin/knowledge.html', items=items)
+
+@admin_bp.route('/knowledge/add', methods=['POST'])
+@login_required
+def add_knowledge_entry():
+    items = load_knowledge_products()
+    image_path = save_knowledge_asset(request.files.get('image'))
+    file_path = save_knowledge_asset(request.files.get('file'))
+    
+    new_item = {
+        'id': 'kp' + str(uuid.uuid4())[:8],
+        'title': request.form.get('title', '').strip(),
+        'description': request.form.get('description', '').strip(),
+        'type': request.form.get('type', 'Material').strip(),
+        'date': request.form.get('date', '').strip(),
+        'image': image_path or request.form.get('image_url', ''),
+        'file': file_path or request.form.get('file_url', '#'),
+        'url': request.form.get('url', '').strip(),
+        'action_text': request.form.get('action_text', 'View Document').strip()
+    }
+    
+    if new_item['title']:
+        items.insert(0, new_item)
+        save_knowledge_products(items)
+        flash('Knowledge Product added successfully.', 'success')
+    return redirect(url_for('admin.knowledge'))
+
+@admin_bp.route('/knowledge/edit/<item_id>', methods=['POST'])
+@login_required
+def edit_knowledge_entry(item_id):
+    items = load_knowledge_products()
+    for item in items:
+        if item['id'] == item_id:
+            item['title'] = request.form.get('title', item['title']).strip()
+            item['description'] = request.form.get('description', item.get('description', '')).strip()
+            item['type'] = request.form.get('type', item.get('type', 'Material')).strip()
+            item['date'] = request.form.get('date', item.get('date', '')).strip()
+            item['action_text'] = request.form.get('action_text', item.get('action_text', 'View Document')).strip()
+            item['url'] = request.form.get('url', item.get('url', '')).strip()
+            
+            new_image = save_knowledge_asset(request.files.get('image'))
+            if new_image:
+                item['image'] = new_image
+            else:
+                item['image'] = request.form.get('image_url', item.get('image', ''))
+
+            new_file = save_knowledge_asset(request.files.get('file'))
+            if new_file:
+                item['file'] = new_file
+            else:
+                item['file'] = request.form.get('file_url', item.get('file', '#'))
+            break
+            
+    save_knowledge_products(items)
+    flash('Knowledge Product updated.', 'success')
+    return redirect(url_for('admin.knowledge'))
+
+@admin_bp.route('/knowledge/delete/<item_id>', methods=['POST'])
+@login_required
+def delete_knowledge_entry(item_id):
+    all_items = [i for i in load_knowledge_products() if i['id'] != item_id]
+    save_knowledge_products(all_items)
+    flash('Knowledge Product deleted.', 'success')
+    return redirect(url_for('admin.knowledge'))
+
+# ── Brochures Management ──────────────────────────────────────────────────
+@admin_bp.route('/brochures')
+@login_required
+def brochures():
+    items = load_brochures()
+    return render_template('admin/brochures.html', items=items)
+
+@admin_bp.route('/brochures/add', methods=['POST'])
+@login_required
+def add_brochure():
+    items = load_brochures()
+    file_path = ""
+    
+    # Handle file upload if present
+    if 'file' in request.files:
+        file = request.files['file']
+        if file and file.filename != '':
+            filename = secure_filename(file.filename)
+            unique_name = f"{str(uuid.uuid4())[:8]}_{filename}"
+            os.makedirs(BROCHURES_UPLOAD_FOLDER, exist_ok=True)
+            file.save(os.path.join(BROCHURES_UPLOAD_FOLDER, unique_name))
+            file_path = f"uploads/brochures/{unique_name}"
+            
+    new_item = {
+        'id': 'br' + str(uuid.uuid4())[:8],
+        'title': request.form.get('title', '').strip(),
+        'url': request.form.get('url', '').strip(),
+        'file': file_path or request.form.get('file_url', '#')
+    }
+    
+    if new_item['title']:
+        items.append(new_item)
+        save_brochures(items)
+        flash('Brochure added successfully.', 'success')
+    return redirect(url_for('admin.brochures'))
+
+@admin_bp.route('/brochures/edit/<item_id>', methods=['POST'])
+@login_required
+def edit_brochure(item_id):
+    items = load_brochures()
+    for item in items:
+        if item['id'] == item_id:
+            item['title'] = request.form.get('title', item['title']).strip()
+            item['url'] = request.form.get('url', item.get('url', '')).strip()
+            
+            if 'file' in request.files:
+                file = request.files['file']
+                if file and file.filename != '':
+                    filename = secure_filename(file.filename)
+                    unique_name = f"{str(uuid.uuid4())[:8]}_{filename}"
+                    os.makedirs(BROCHURES_UPLOAD_FOLDER, exist_ok=True)
+                    file.save(os.path.join(BROCHURES_UPLOAD_FOLDER, unique_name))
+                    item['file'] = f"uploads/brochures/{unique_name}"
+                else:
+                    item['file'] = request.form.get('file_url', item.get('file', '#'))
+            break
+            
+    save_brochures(items)
+    flash('Brochure updated.', 'success')
+    return redirect(url_for('admin.brochures'))
+
+@admin_bp.route('/brochures/delete/<item_id>', methods=['POST'])
+@login_required
+def delete_brochure(item_id):
+    items = [i for i in load_brochures() if i['id'] != item_id]
+    save_brochures(items)
+    flash('Brochure deleted.', 'success')
+    return redirect(url_for('admin.brochures'))

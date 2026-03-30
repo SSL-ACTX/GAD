@@ -1,0 +1,295 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Knowledge Products & IEC{% endblock %}
+{% block page_title %}Knowledge Products & IEC{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div>
+        <h3 class="font-extrabold text-gray-800 text-xl tracking-tight">IEC Materials & Statistics</h3>
+        <p class="text-sm text-gray-500 mt-1">Manage brochures, manuals, and gender-related statistics shown on the public site.</p>
+    </div>
+    <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+        class="flex items-center justify-center gap-3 bg-primary-green text-white text-sm font-bold px-6 py-3 rounded-2xl hover:bg-primary-hover transition-all shadow-lg hover:shadow-primary-green/20 whitespace-nowrap">
+        <i class="fas fa-plus"></i> Add Material
+    </button>
+</div>
+
+<!-- Knowledge Products Table -->
+<div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden overflow-x-auto">
+    {% if items %}
+    <table class="w-full text-left border-collapse text-sm">
+        <thead class="bg-gray-50/80 text-gray-400 text-[10px] uppercase tracking-widest font-black border-b border-gray-100">
+            <tr>
+                <th class="px-8 py-5">Product Info</th>
+                <th class="px-6 py-5">Type</th>
+                <th class="px-6 py-5">Publication</th>
+                <th class="px-6 py-5 text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+            {% for item in items %}
+            <tr class="hover:bg-gray-50/50 transition-colors group">
+                <td class="px-8 py-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-12 rounded-xl overflow-hidden border border-gray-100 shrink-0 bg-gray-50 flex items-center justify-center">
+                            {% if item.image %}
+                            <img src="{{ item.image if item.image.startswith('http') else url_for('static', filename=item.image) }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <i class="fas fa-file-alt text-gray-200 text-xl"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800 text-base mb-1">{{ item.title }}</p>
+                            <p class="text-xs text-gray-400 line-clamp-1 max-w-sm">{{ item.description }}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-6">
+                    <span class="inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider 
+                        {% if item.type == 'Statistics' %}bg-purple-50 text-purple-600
+                        {% elif item.type == 'Brochure' %}bg-blue-50 text-blue-600
+                        {% elif item.type == 'Manual' %}bg-amber-50 text-amber-600
+                        {% else %}bg-green-50 text-green-600{% endif %}">
+                        {{ item.type }}
+                    </span>
+                </td>
+                <td class="px-6 py-6">
+                    <span class="text-gray-500 font-medium">{{ item.date }}</span>
+                </td>
+                <td class="px-6 py-6 text-center">
+                    <div class="flex items-center justify-center gap-3">
+                        <button onclick='openEdit({{ item | tojson | forceescape }})'
+                            class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center shadow-sm" title="Edit Item">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button onclick="openDelete('{{ item.id }}', '{{ item.title | replace('\'', '\\\'') | replace('\"', '\\\"') }}')"
+                            class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center shadow-sm" title="Delete Item">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="py-24 text-center">
+        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-book-open text-gray-200 text-3xl"></i>
+        </div>
+        <h3 class="text-lg font-extrabold text-gray-700">No products uploaded yet</h3>
+        <p class="text-sm text-gray-400 max-w-xs mx-auto mb-8">Start adding IEC materials or gender statistics to showcase them on the public site.</p>
+        <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+            class="text-primary-green text-sm font-black hover:underline">Add your first material →</button>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Modal -->
+<div id="addModal" class="hidden fixed inset-0 modal-backdrop z-[6000] flex items-center justify-center p-4">
+    <div class="modal-box bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="font-black text-gray-800 text-xl tracking-tight">Add New Material</h3>
+            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 w-10 h-10 rounded-full flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form action="{{ url_for('admin.add_knowledge_entry') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Title *</label>
+                    <input type="text" name="title" placeholder="e.g. Women in Leadership Statistics" required title="Product Title"
+                        class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Type / Category</label>
+                    <select name="type" title="Product Category" class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green focus:bg-white transition-all appearance-none">
+                        <option value="Brochure">Brochure</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Posters">Posters</option>
+                        <option value="Statistics">Statistics (Representation)</option>
+                        <option value="Report">Official Report</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Description *</label>
+                <textarea name="description" rows="3" placeholder="Brief summary of what this material contains..." required title="Product Description"
+                    class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green focus:bg-white transition-all resize-none"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Publication Date / Text</label>
+                    <input type="text" name="date" placeholder="e.g. Published 2025"
+                        class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Button Text</label>
+                    <input type="text" name="action_text" placeholder="e.g. DOWNLOAD PDF"
+                        class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green focus:bg-white transition-all">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-4 border-y border-gray-50">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">Thumbnail Image</label>
+                    <div class="flex flex-col gap-3">
+                        <input type="file" name="image" accept="image/*" class="text-xs file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:bg-green-50 file:text-primary-green hover:file:bg-primary-green hover:file:text-white transition-all cursor-pointer">
+                        <div class="flex items-center gap-2">
+                             <div class="h-px bg-gray-100 flex-1"></div>
+                             <span class="text-[8px] font-bold text-gray-300 uppercase">OR URL</span>
+                             <div class="h-px bg-gray-100 flex-1"></div>
+                        </div>
+                        <input type="url" name="image_url" placeholder="https://..." class="w-full border border-gray-100 bg-gray-50/10 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-primary-green">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">Official File / PDF</label>
+                    <div class="flex flex-col gap-3">
+                        <input type="file" name="file" accept=".pdf,.doc,.docx,.zip" class="text-xs file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-600 hover:file:text-white transition-all cursor-pointer">
+                        <div class="flex items-center gap-2">
+                             <div class="h-px bg-gray-100 flex-1"></div>
+                             <span class="text-[8px] font-bold text-gray-300 uppercase">OR URL</span>
+                             <div class="h-px bg-gray-100 flex-1"></div>
+                        </div>
+                        <input type="url" name="file_url" placeholder="https://..." class="w-full border border-gray-100 bg-gray-50/10 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 pt-4">
+                <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')"
+                    class="flex-1 py-4 bg-gray-50 text-gray-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">Cancel</button>
+                <button type="submit"
+                    class="flex-1 py-4 bg-primary-green text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary-hover transition-all shadow-lg shadow-primary-green/20">Add Product</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="hidden fixed inset-0 modal-backdrop z-[6000] flex items-center justify-center p-4">
+    <div class="modal-box bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="font-black text-gray-800 text-xl tracking-tight">Edit Material</h3>
+            <button onclick="document.getElementById('editModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 w-10 h-10 rounded-full flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Title *</label>
+                    <input type="text" id="editTitle" name="title" required title="Product Title" placeholder="Enter title"
+                        class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Type / Category</label>
+                    <select id="editType" name="type" title="Product Category" class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none appearance-none">
+                        <option value="Brochure">Brochure</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Posters">Posters</option>
+                        <option value="Statistics">Statistics (Representation)</option>
+                        <option value="Report">Official Report</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Description *</label>
+                <textarea id="editDescription" name="description" rows="3" required title="Product Description" placeholder="Enter description"
+                    class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-4 text-sm focus:outline-none resize-none"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Publication Date</label>
+                    <input type="text" id="editDate" name="date" 
+                        class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Button Text</label>
+                    <input type="text" id="editActionText" name="action_text"
+                        class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-4 border-y border-gray-50">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">Replace Thumbnail</label>
+                    <div class="flex flex-col gap-3">
+                        <input type="file" name="image" accept="image/*" class="text-xs">
+                        <input type="url" id="editImageUrl" name="image_url" placeholder="Current or custom Image URL" class="w-full border border-gray-100 bg-gray-50/10 rounded-xl px-4 py-2 text-xs">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">Replace File</label>
+                    <div class="flex flex-col gap-3">
+                        <input type="file" name="file" accept=".pdf,.doc,.docx,.zip" class="text-xs">
+                        <input type="url" id="editFileUrl" name="file_url" placeholder="Current or custom File URL" class="w-full border border-gray-100 bg-gray-50/10 rounded-xl px-4 py-2 text-xs">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 pt-4">
+                <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')"
+                    class="flex-1 py-4 bg-gray-50 text-gray-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">Cancel</button>
+                <button type="submit"
+                    class="flex-1 py-4 bg-primary-green text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary-hover transition-all shadow-lg shadow-primary-green/20">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="hidden fixed inset-0 modal-backdrop z-[6000] flex items-center justify-center p-4">
+    <div class="modal-box bg-white rounded-[2rem] shadow-2xl w-full max-w-sm p-8 text-center">
+        <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-trash-alt text-red-500 text-2xl"></i>
+        </div>
+        <h3 class="font-black text-gray-800 text-lg mb-2 tracking-tight">Delete this material?</h3>
+        <p class="text-sm text-gray-400 mb-8">This action will permanently remove <br><strong id="deleteItemName" class="text-gray-700"></strong></p>
+        <form id="deleteForm" method="POST" class="flex gap-3">
+            <button type="button" onclick="document.getElementById('deleteModal').classList.add('hidden')"
+                class="flex-1 py-3 bg-gray-50 text-gray-500 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">Cancel</button>
+            <button type="submit"
+                class="flex-1 py-3 bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-lg shadow-red-500/20">Delete</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openEdit(item) {
+    document.getElementById('editForm').action = '/admin/knowledge/edit/' + item.id;
+    document.getElementById('editTitle').value = item.title || '';
+    document.getElementById('editDescription').value = item.description || '';
+    document.getElementById('editDate').value = item.date || '';
+    document.getElementById('editActionText').value = item.action_text || '';
+    document.getElementById('editImageUrl').value = item.image || '';
+    document.getElementById('editFileUrl').value = item.file || '';
+    
+    const typeEl = document.getElementById('editType');
+    for (let opt of typeEl.options) {
+        opt.selected = opt.value === item.type;
+    }
+    document.getElementById('editModal').classList.remove('hidden');
+}
+
+function openDelete(id, name) {
+    document.getElementById('deleteForm').action = '/admin/knowledge/delete/' + id;
+    document.getElementById('deleteItemName').textContent = name;
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+// Close modals on backdrop click
+['addModal', 'editModal', 'deleteModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+        if (e.target === this) this.classList.add('hidden');
+    });
+});
+</script>
+{% endblock %}

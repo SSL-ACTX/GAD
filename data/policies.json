@@ -1,5 +1,33 @@
 {
-  "republic_acts": [],
+  "republic_acts": [
+    {
+      "id": "ra_9710",
+      "year": 2009,
+      "title": "Republic Act No. 9710 (Magna Carta of Women)",
+      "description": "An Act Providing for the Magna Carta of Women.",
+      "date": "2009-08-14",
+      "status": "Active",
+      "url": "https://pcw.gov.ph/magna-carta-of-women/"
+    },
+    {
+      "id": "ra_11313",
+      "year": 2019,
+      "title": "Republic Act No. 11313 (Safe Spaces Act)",
+      "description": "An Act Defining Gender-Based Sexual Harassment in Streets, Public Spaces, Online, Workplaces, and Educational or Training Institutions.",
+      "date": "2019-04-17",
+      "status": "Active",
+      "url": "https://pcw.gov.ph/faq-republic-act-no-11313/"
+    },
+    {
+      "id": "ra_9262",
+      "year": 2004,
+      "title": "Republic Act No. 9262 (Anti-VAWC Act)",
+      "description": "Anti-Violence Against Women and Their Children Act of 2004.",
+      "date": "2004-03-08",
+      "status": "Active",
+      "url": "https://pcw.gov.ph/republic-act-9262-anti-violence-against-women-and-their-children-act-of-2004/"
+    }
+  ],
   "memoranda": [
     {
       "id": "c_2026_02",
@@ -175,6 +203,58 @@
       "date": "2024-01-10",
       "status": "Active",
       "file": "uploads/policies/order-2024-02.pdf"
+    }
+  ],
+  "estado_ni_juana": [
+    {
+      "id": "p7f34bada",
+      "year": 2026,
+      "title": "KUMIKITANG KABABAIHAN | BREAD AND PASTRY PRODUCTION TRAINING",
+      "description": "Sa huli at espesyal na episode ng Kumikitang Kababaihan ngayong Women’s Month 2026, tunghayan ang makukulay na paglalakbay ng tatlong kababaihang Montalbeño—mula sa livelihood training hanggang sa kanilang tagumpay—matapos sumailalim sa Bread and Pastry Training na handog ng magkatuwang na programa ng Pamahalaang Bayan ng Montalban, sa pamumuno ni Mayor General Ronnie S. Evangelista (Ret.), iTech Technical Vocational Institute, Corp., at Eastern Star Institute of Science & Technology (ESIST), Inc. Abangan ang buong episode ng kanilang kwento ng determinasyon, pag-asa, at tagumpay ngayong Sabado, Marso 28, 2026, sa Kumikitang Kababaihan.",
+      "date": "2026-03-28",
+      "status": "Active",
+      "file": "#",
+      "url": "https://www.facebook.com/reel/2227484758061814"
+    },
+    {
+      "id": "p25947280",
+      "year": 2026,
+      "title": "KUMIKITANG KABABAIHAN | HAIR-DRESSING TRAINING",
+      "description": "Alamin ang kuwento ng pamilya Blanco sa ikalawang episode ng Kumikitang Kababaihan ngayong Women’s Month 2026, at kung paano nakatulong sa kanilang kabuhayan at pamilya ang kanilang natapos na Hair Dressing Training na handog ng magkatuwang na programa ng Pamahalaang Bayan ng Montalban, sa pamumuno ni Mayor General Ronnie S. Evangelista (Ret.), at ng Good Neighbors Philippines. Panoorin ang buong episode ngayong Sabado, Marso 14, 2026, sa Kumikitang Kababaihan.",
+      "date": "2026-03-14",
+      "status": "Active",
+      "file": "#",
+      "url": "https://www.facebook.com/reel/2755439637959920"
+    },
+    {
+      "id": "p9d1d2fbb",
+      "year": 2026,
+      "title": "KUMIKITANG KABABAIHAN | BAYONG-MAKING TRAINING",
+      "description": "Ngayong Buwan ng Kababaihan 2026, ating kilalanin ang mga nagtapos ng iba’t ibang livelihood training na handog ng Pamahalaang Bayan ng Montalban, sa pamumuno ni Mayor General Ronnie S. Evangelista (Ret.). Sa unang episode, tunghayan natin ang kwento ng mga nanay na bahagi ng Life in the Light Christian Fellowship at kung paano nakatulong sa kanilang pamilya at church ang kanilang natapos na Bayong Making Training.",
+      "date": "2026-03-28",
+      "status": "Active",
+      "file": "#",
+      "url": "https://www.facebook.com/reel/1411427893511274"
+    },
+    {
+      "id": "p0904f53a",
+      "year": 2026,
+      "title": "KUMIKITANG KABABAIHAN | MUSHROOM PRODUCTION TRAINING",
+      "description": "Sa ikatlong episode ng Kumikitang Kababaihan, tampok ang isinagawang Mushroom Production Training para sa Ligtas Farmers Gold SLP Association mula sa Sitio Ligtas, Brgy. San Rafael—isang komunidad sa liblib na bahagi ng bayan. Sa tulong ng award-winning small business na Hiyas Urban Mushroom, naibahagi ang kaalaman at praktikal na kasanayan sa pagtatanim at pagnenegosyo ng kabute bilang alternatibong pagkakakitaan ng mga kalahok.",
+      "date": "2026-03-21",
+      "status": "Active",
+      "file": "#",
+      "url": "https://www.facebook.com/reel/927800116517540"
+    },
+    {
+      "id": "pe965a356",
+      "year": 2026,
+      "title": "KUMIKITANG KABABAIHAN: BAYONG-MAKING TRAINING",
+      "description": "Sa unang episode ng Kumikitang Kababaihan ngayong Women’s Month 2026, at bilang pagkilala sa kakayahan ng mga Montalbeñong kababaihan, ating tunghayan ang kwento ng mga nanay na bahagi ng Life in the Light Christian Fellowship at kung paano nakatulong sa kanilang kabuhayan, pamilya at church ang kanilang natapos na Bayong Making Training. Tara’t panoorin natin ang buong episode ngayong darating na Sabado, March 7, 2026, sa Kumikitang Kababaihan.",
+      "date": "2026-03-07",
+      "status": "Active",
+      "file": "#",
+      "url": "https://www.facebook.com/reel/940947578684112"
     }
   ]
 }

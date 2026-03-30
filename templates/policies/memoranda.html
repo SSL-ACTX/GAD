@@ -12,7 +12,7 @@
         <div>
             <h2
                 class="text-3xl font-extrabold text-gray-800 border-l-8 border-primary-green pl-4 uppercase tracking-tight">
-                Office <span class="text-primary-green">Memoranda</span>
+                Memorandum <span class="text-primary-green">Circulars</span>
             </h2>
             <p class="mt-2 text-gray-600 ml-6 max-w-2xl">
                 Internal directives, PCW Circulars, training calls, and announcements regarding GAD mainstreaming and
@@ -63,8 +63,14 @@
                             </div>
                         </td>
                         <td class="px-6 py-5">
+                            {% if item.url %}
+                            <a href="{{ item.url }}" target="_blank"
+                                class="text-gray-800 font-bold group-hover:text-primary-green transition-colors">{{
+                                item.title }} <i class="fas fa-external-link-alt text-[10px] ml-1 opacity-50"></i></a>
+                            {% else %}
                             <div class="text-gray-800 font-bold group-hover:text-primary-green transition-colors">{{
                                 item.title }}</div>
+                            {% endif %}
                             <div class="flex gap-2 mt-1">
                                 <span
                                     class="text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded font-bold uppercase">{{
@@ -76,9 +82,10 @@
                         </td>
                         <td class="px-6 py-5 text-sm text-gray-500 font-mono">{{ item.id }}</td>
                         <td class="px-6 py-5 text-center">
-                            <a href="{{ url_for('static', filename=item.file) }}" target="_blank"
+                            <a href="{{ item.url if item.url else url_for('static', filename=item.file) }}"
+                                target="_blank" title="{{ 'View External Source' if item.url else 'View Document' }}"
                                 class="inline-flex items-center gap-2 px-5 py-2 bg-primary-green/10 text-primary-green font-black text-xs rounded-lg hover:bg-primary-green hover:text-white transition-all shadow-sm">
-                                <i class="far fa-eye"></i> VIEW
+                                <i class="{{ 'fas fa-external-link-alt' if item.url else 'far fa-eye' }}"></i> VIEW
                             </a>
                         </td>
                     </tr>

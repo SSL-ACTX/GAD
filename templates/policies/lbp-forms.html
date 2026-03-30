@@ -16,16 +16,7 @@
 
     <!-- Forms Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% set forms = [
-        {'title': 'LBP Form No. 1', 'desc': 'Budget of Expenditures and Sources of Financing', 'year': '2024'},
-        {'title': 'LBP Form No. 2', 'desc': 'Programmed Appropriation and Obligation by Object of Expenditure', 'year':
-        '2024'},
-        {'title': 'LBP Form No. 3', 'desc': 'Plantilla of Personnel', 'year': '2024'},
-        {'title': 'LBP Form No. 4', 'desc': 'Mandate, Vision/Mission, Major Final Outputs', 'year': '2024'},
-        {'title': 'LBP Form No. 6', 'desc': 'Statement of Indebtedness', 'year': '2024'},
-        {'title': 'LBP Form No. 7', 'desc': 'Statement of Statutory and Contractual Obligations', 'year': '2024'}
-        ] %}
-
+        {% if forms %}
         {% for form in forms %}
         <div
             class="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary-green transition-all duration-500 overflow-hidden transform hover:-translate-y-2">
@@ -47,7 +38,7 @@
                     {{ form.title }}
                 </h3>
                 <p class="text-sm text-gray-500 mb-8 line-clamp-2 min-h-[40px]">
-                    {{ form.desc }}
+                    {{ form.description or 'Official Local Budget Preparation form for GAD Plan and Budget.' }}
                 </p>
 
                 <div class="flex items-center gap-2 mb-6">
@@ -57,7 +48,8 @@
                 </div>
 
                 <!-- Action Button -->
-                <a href="#"
+                <a href="{% if form.url %}{{ form.url }}{% else %}{{ url_for('static', filename=form.file) }}{% endif %}"
+                    {% if form.url %}target="_blank"{% endif %}
                     class="flex items-center justify-center gap-3 w-full py-4 bg-gray-50 text-gray-800 font-black text-xs uppercase tracking-widest rounded-2xl group-hover:bg-primary-green group-hover:text-white transition-all shadow-sm">
                     <i class="fas fa-file-pdf"></i>
                     View Document
@@ -68,6 +60,16 @@
             <div class="h-1.5 bg-gray-50 group-hover:bg-primary-green transition-all duration-500 w-full"></div>
         </div>
         {% endfor %}
+        {% else %}
+        <!-- Empty State -->
+        <div class="col-span-1 md:col-span-2 lg:col-span-3 py-20 text-center">
+            <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-file-invoice text-gray-200 text-3xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-700">No forms available</h3>
+            <p class="text-sm text-gray-400">Official GAD budget forms will be posted here once finalized.</p>
+        </div>
+        {% endif %}
     </div>
 
     <!-- Help Notice -->

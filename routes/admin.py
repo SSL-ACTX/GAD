@@ -18,6 +18,7 @@ BROCHURES_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data'
 LIVELIHOOD_FEEDS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'livelihood_feeds.json')
 ORG_STRUCTURE_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'org_structure.json')
 COMMITTEE_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'committee.json')
+TRACKING_MATRIX_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'tracking_matrix.json')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf', 'docx', 'doc', 'mp4', 'webm', 'ogg'}
 POLICIES_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'policies')
 PROJECTS_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'projects')
@@ -168,6 +169,49 @@ def save_committee(committee):
     os.makedirs(os.path.dirname(COMMITTEE_FILE), exist_ok=True)
     with open(COMMITTEE_FILE, 'w', encoding='utf-8') as f:
         json.dump(committee, f, indent=2, ensure_ascii=False)
+
+def load_tracking_matrix():
+    try:
+        with open(TRACKING_MATRIX_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def save_tracking_matrix(data):
+    os.makedirs(os.path.dirname(TRACKING_MATRIX_FILE), exist_ok=True)
+    with open(TRACKING_MATRIX_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+def log_tracking(corner, entry_type, description, technical_officer=None):
+    from datetime import datetime
+    try:
+        from flask import request, session
+        if not technical_officer and request and request.form:
+            technical_officer = request.form.get('technical_officer', '').strip()
+    except Exception:
+        pass
+        
+    now = datetime.now()
+    
+    # Simple am/pm formatting logic to remove leading zero
+    hour_12 = now.strftime('%I').lstrip('0') or '12'
+    time_str = f"{hour_12}:{now.strftime('%M %p')}"
+    
+    date_str = now.strftime('%B %d, %Y')
+    
+    entries = load_tracking_matrix()
+    entries.insert(0, {
+        'id': 'trk' + str(uuid.uuid4())[:8],
+        'corner': corner,
+        'date': date_str,
+        'time_started': time_str,
+        'time_completed': time_str,
+        'type': entry_type,
+        'description': description,
+        'updates_posted': f"{date_str}, {time_str}",
+        'technical_officer': technical_officer or session.get('admin_user', 'System')
+    })
+    save_tracking_matrix(entries)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -326,6 +370,7 @@ def add_policy_entry():
     }
     policies.setdefault(category, []).insert(0, entry)
     save_policies(policies)
+    log_tracking("Digital", "Policy", f"Added new policy: {entry['title']}")
     flash('Policy entry added.', 'success')
     return redirect(url_for('admin.policies_settings'))
 
@@ -394,6 +439,7 @@ def edit_policy_entry(entry_id):
         policies[new_category].insert(0, updated_entry)
 
     save_policies(policies)
+    log_tracking("Digital", "Policy", f"Updated policy: {updated_entry['title']}")
     flash('Policy entry updated.', 'success')
     return redirect(url_for('admin.policies_settings'))
 
@@ -410,6 +456,7 @@ def delete_policy_entry(entry_id):
             changed = True
     if changed:
         save_policies(policies)
+        log_tracking("Digital", "Policy", "Deleted a policy entry")
         flash('Policy entry deleted.', 'success')
     else:
         flash('Policy entry not found.', 'error')
@@ -546,6 +593,7 @@ def add_event():
     if new_event['date'] and new_event['title']:
         events.append(new_event)
         save_events(events)
+        log_tracking("Digital", "Event", f"Added new event: {new_event['title']}")
         flash('Event added successfully.', 'success')
     else:
         flash('Title and date are required.', 'error')
@@ -563,6 +611,7 @@ def edit_event(event_id):
             ev['desc']     = request.form.get('desc', ev.get('desc', '')).strip()
             break
     save_events(events)
+    log_tracking("Digital", "Event", "Updated an event")
     flash('Event updated.', 'success')
     return redirect(url_for('admin.events'))
 
@@ -571,6 +620,7 @@ def edit_event(event_id):
 def delete_event(event_id):
     events = [e for e in load_events() if e['id'] != event_id]
     save_events(events)
+    log_tracking("Digital", "Event", "Deleted an event")
     flash('Event deleted.', 'success')
     return redirect(url_for('admin.events'))
 
@@ -600,6 +650,7 @@ def add_project():
     if new_project['title'] and new_project['year']:
         all_projects.append(new_project)
         save_projects(all_projects)
+        log_tracking("Digital", "Project Archive", f"Added project: {new_project['title']}")
         flash('Project added successfully.', 'success')
     else:
         flash('Title and year are required.', 'error')
@@ -626,6 +677,7 @@ def edit_project(project_id):
                 p['image'] = new_image
             break
     save_projects(all_projects)
+    log_tracking("Digital", "Project Archive", "Updated a project in the archives")
     flash('Project updated.', 'success')
     return redirect(url_for('admin.projects'))
 
@@ -640,6 +692,7 @@ def delete_project(project_id):
             os.remove(old_path)
     all_projects = [p for p in all_projects if p['id'] != project_id]
     save_projects(all_projects)
+    log_tracking("Digital", "Project Archive", "Deleted a project from the archives")
     flash('Project deleted.', 'success')
     return redirect(url_for('admin.projects'))
 
@@ -672,6 +725,7 @@ def add_knowledge_entry():
     if new_item['title']:
         items.insert(0, new_item)
         save_knowledge_products(items)
+        log_tracking("Digital", "Knowledge Product", f"Added new knowledge product: {new_item['title']}")
         flash('Knowledge Product added successfully.', 'success')
     return redirect(url_for('admin.knowledge'))
 
@@ -702,6 +756,7 @@ def edit_knowledge_entry(item_id):
             break
             
     save_knowledge_products(items)
+    log_tracking("Digital", "Knowledge Product", "Updated a knowledge product")
     flash('Knowledge Product updated.', 'success')
     return redirect(url_for('admin.knowledge'))
 
@@ -710,6 +765,7 @@ def edit_knowledge_entry(item_id):
 def delete_knowledge_entry(item_id):
     all_items = [i for i in load_knowledge_products() if i['id'] != item_id]
     save_knowledge_products(all_items)
+    log_tracking("Digital", "Knowledge Product", "Deleted a knowledge product")
     flash('Knowledge Product deleted.', 'success')
     return redirect(url_for('admin.knowledge'))
 
@@ -746,6 +802,7 @@ def add_brochure():
     if new_item['title']:
         items.append(new_item)
         save_brochures(items)
+        log_tracking("Digital", "Brochure", f"Added new brochure: {new_item['title']}")
         flash('Brochure added successfully.', 'success')
     return redirect(url_for('admin.brochures'))
 
@@ -771,6 +828,7 @@ def edit_brochure(item_id):
             break
             
     save_brochures(items)
+    log_tracking("Digital", "Brochure", "Updated a brochure")
     flash('Brochure updated.', 'success')
     return redirect(url_for('admin.brochures'))
 
@@ -779,6 +837,7 @@ def edit_brochure(item_id):
 def delete_brochure(item_id):
     items = [i for i in load_brochures() if i['id'] != item_id]
     save_brochures(items)
+    log_tracking("Digital", "Brochure", "Deleted a brochure")
     flash('Brochure deleted.', 'success')
     return redirect(url_for('admin.brochures'))
 
@@ -813,6 +872,7 @@ def add_livelihood_feed():
     if new_item['title'] or new_item['url'] or new_item['file']:
         items.insert(0, new_item)
         save_livelihood_feeds(items)
+        log_tracking("Digital", "Livelihood Feed", f"Added livelihood feed: {new_item.get('title', 'Unknown')}")
         flash('Livelihood Feed added successfully.', 'success')
     return redirect(url_for('admin.livelihood_feeds'))
 
@@ -837,6 +897,7 @@ def edit_livelihood_feed(feed_id):
             break
             
     save_livelihood_feeds(items)
+    log_tracking("Digital", "Livelihood Feed", "Updated a livelihood feed")
     flash('Livelihood Feed updated.', 'success')
     return redirect(url_for('admin.livelihood_feeds'))
 
@@ -845,6 +906,7 @@ def edit_livelihood_feed(feed_id):
 def delete_livelihood_feed(feed_id):
     items = [i for i in load_livelihood_feeds() if i['id'] != feed_id]
     save_livelihood_feeds(items)
+    log_tracking("Digital", "Livelihood Feed", "Deleted a livelihood feed")
     flash('Feed deleted.', 'success')
     return redirect(url_for('admin.livelihood_feeds'))
 
@@ -893,6 +955,7 @@ def update_org_structure():
     data['components'] = components
             
     save_org_structure(data)
+    log_tracking("Digital", "Organization Structure", "Updated the Organizational chart of the GFPS")
     flash('Organization structure updated.', 'success')
     return redirect(url_for('admin.org_structure'))
 
@@ -925,6 +988,7 @@ def add_committee_member():
     }
     members.append(new_member)
     save_committee(members)
+    log_tracking("Digital", "Committee Member", f"Added committee member: {new_member['name']}")
     flash('Member added successfully.', 'success')
     return redirect(url_for('admin.committee'))
 
@@ -948,6 +1012,7 @@ def edit_committee_member(member_id):
             break
             
     save_committee(members)
+    log_tracking("Digital", "Committee Member", "Updated a committee member")
     flash('Member updated.', 'success')
     return redirect(url_for('admin.committee'))
 
@@ -956,5 +1021,64 @@ def edit_committee_member(member_id):
 def delete_committee_member(member_id):
     members = [m for m in load_committee() if m['id'] != member_id]
     save_committee(members)
+    log_tracking("Digital", "Committee Member", "Removed a committee member")
     flash('Member removed.', 'success')
     return redirect(url_for('admin.committee'))
+
+# ── Tracking Matrix Management ─────────────────────────────────────────
+@admin_bp.route('/tracking-matrix')
+@login_required
+def tracking_matrix():
+    entries = load_tracking_matrix()
+    return render_template('admin/tracking_matrix.html', entries=entries)
+
+@admin_bp.route('/tracking-matrix/add', methods=['POST'])
+@login_required
+def add_tracking_matrix():
+    entries = load_tracking_matrix()
+    
+    # Manual form date to friendly format
+    try:
+        from datetime import datetime
+        dt = datetime.strptime(request.form.get('date', '').strip(), '%Y-%m-%d')
+        date_str = dt.strftime('%B %d, %Y')
+    except:
+        date_str = request.form.get('date', '').strip()
+        
+    try:
+        t_start = datetime.strptime(request.form.get('time_started', '').strip(), '%H:%M')
+        h1 = t_start.strftime('%I').lstrip('0') or '12'
+        start_str = f"{h1}:{t_start.strftime('%M %p')}"
+    except:
+        start_str = request.form.get('time_started', '').strip()
+        
+    try:
+        t_end = datetime.strptime(request.form.get('time_completed', '').strip(), '%H:%M')
+        h2 = t_end.strftime('%I').lstrip('0') or '12'
+        end_str = f"{h2}:{t_end.strftime('%M %p')}"
+    except:
+        end_str = request.form.get('time_completed', '').strip()
+        
+    try:
+        u_posted = datetime.strptime(request.form.get('updates_posted', '').strip(), '%Y-%m-%dT%H:%M')
+        h3 = u_posted.strftime('%I').lstrip('0') or '12'
+        posted_str = f"{u_posted.strftime('%B %d, %Y')}, {h3}:{u_posted.strftime('%M %p')}"
+    except:
+        posted_str = request.form.get('updates_posted', '').strip()
+
+    new_entry = {
+        'id': 'trk' + str(uuid.uuid4())[:8],
+        'corner': request.form.get('corner', 'Physical').strip(),
+        'date': date_str,
+        'time_started': start_str,
+        'time_completed': end_str,
+        'type': request.form.get('type', 'Content').strip(),
+        'description': request.form.get('description', '').strip(),
+        'updates_posted': posted_str,
+        'technical_officer': request.form.get('technical_officer', session.get('admin_user', 'System')).strip()
+    }
+    
+    entries.insert(0, new_entry)
+    save_tracking_matrix(entries)
+    flash('Physical Corner entry added successfully.', 'success')
+    return redirect(url_for('admin.tracking_matrix'))

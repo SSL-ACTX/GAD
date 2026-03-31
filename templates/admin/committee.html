@@ -121,6 +121,10 @@
             <div class="flex gap-4 pt-4">
                 <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')"
                     class="flex-1 py-4 bg-gray-50 text-gray-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">Cancel</button>
+<div class="mb-4">
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Technical Officer *</label>
+                                <input name="technical_officer" type="text" value="{{ session.get('admin_user', '') }}" required placeholder="e.g. Juan Dela Cruz" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
+                            </div>
                 <button type="submit"
                     class="flex-1 py-4 bg-primary-green text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary-hover transition-all shadow-lg">Save Member</button>
             </div>
@@ -173,6 +177,10 @@
             <div class="flex gap-4 pt-4">
                 <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')"
                     class="flex-1 py-4 bg-gray-50 text-gray-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">Cancel</button>
+<div class="mb-4">
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Technical Officer *</label>
+                                <input name="technical_officer" type="text" value="{{ session.get('admin_user', '') }}" required placeholder="e.g. Juan Dela Cruz" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-green/30 focus:border-primary-green">
+                            </div>
                 <button type="submit"
                     class="flex-1 py-4 bg-primary-green text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary-hover transition-all shadow-lg">Save Changes</button>
             </div>

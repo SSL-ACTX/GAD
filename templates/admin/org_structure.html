@@ -110,10 +110,17 @@
             </div>
         </div>
 
-        <div class="pt-10 border-t border-gray-50 flex justify-end">
-            <button type="submit" class="bg-primary-green text-white text-xs font-black uppercase tracking-widest px-10 py-4 rounded-2xl hover:bg-primary-hover transition-all shadow-lg shadow-primary-green/20">
-                Update GFPS Structure
-            </button>
+        <div class="pt-10 border-t border-gray-50">
+            <div class="max-w-xs ml-auto">
+                <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Technical Officer *</label>
+                <input name="technical_officer" type="text" value="{{ session.get('admin_user', '') }}" required placeholder="e.g. Juan Dela Cruz" 
+                    class="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green transition-all mb-6">
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-primary-green text-white text-xs font-black uppercase tracking-widest px-10 py-4 rounded-2xl hover:bg-primary-hover transition-all shadow-lg shadow-primary-green/20">
+                    Update GFPS Structure
+                </button>
+            </div>
         </div>
     </form>
 </div>

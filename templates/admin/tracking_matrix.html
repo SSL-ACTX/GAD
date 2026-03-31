@@ -1,0 +1,191 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Tracking Matrix{% endblock %}
+{% block page_title %}Tracking Matrix{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+    <div>
+        <h2 class="text-2xl font-bold text-gray-800 tracking-tight">Physical and Digital GAD Corner Tracking Matrix</h2>
+        <p class="text-sm text-gray-500 mt-1">Monitor digital platform updates and manually log physical corner updates.</p>
+    </div>
+    <button onclick="document.getElementById('addEntryModal').classList.remove('hidden')"
+        class="bg-primary-green hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors shadow-sm shadow-green-900/10 flex items-center gap-2 shrink-0">
+        <i class="fas fa-plus"></i> Add Physical Entry
+    </button>
+</div>
+
+<!-- Table Container -->
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hidden md:block">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-primary-green text-white divide-x divide-white/20">
+                    <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 border-primary-hover w-16 text-center">No.</th>
+                    <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 border-primary-hover">GAD Corner</th>
+                    <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 border-primary-hover">Date</th>
+                    <th class="px-5 py-3 border-b-2 border-primary-hover">
+                        <div class="text-xs font-semibold uppercase tracking-wider text-center border-b border-white/20 pb-1 mb-1">Timeframe</div>
+                        <div class="flex justify-between text-[10px] font-medium tracking-wide">
+                            <span class="w-1/2 text-center border-r border-white/20">Started</span>
+                            <span class="w-1/2 text-center">Completed</span>
+                        </div>
+                    </th>
+                    <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 border-primary-hover">Type</th>
+                    <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 border-primary-hover w-64 text-center">Description</th>
+                    <th class="px-5 py-3 border-b-2 border-primary-hover w-40 text-center">
+                        <div class="text-xs font-semibold uppercase tracking-wider text-center border-b border-white/20 pb-1 mb-1">Updates</div>
+                        <div class="text-[10px] font-medium tracking-wide text-center">Date and Time Posted</div>
+                    </th>
+                    <th class="px-5 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 border-primary-hover">Technical Officer</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50 text-sm">
+                {% for entry in entries %}
+                <tr class="hover:bg-gray-50/50 transition-colors divide-x divide-gray-50">
+                    <td class="px-5 py-4 font-medium text-gray-500 text-center">{{ loop.index }}</td>
+                    <td class="px-5 py-4 font-semibold {% if entry.corner|lower == 'digital' %}text-blue-600{% else %}text-orange-600{% endif %}">
+                        {{ entry.corner }}
+                    </td>
+                    <td class="px-5 py-4 text-gray-700 whitespace-nowrap">{{ entry.date }}</td>
+                    <td class="px-0 py-0">
+                        <div class="flex h-full min-h-[50px] items-center text-gray-600">
+                            <div class="w-1/2 px-2 text-center border-r border-gray-50 flex items-center justify-center">{{ entry.time_started }}</div>
+                            <div class="w-1/2 px-2 text-center flex items-center justify-center">{{ entry.time_completed }}</div>
+                        </div>
+                    </td>
+                    <td class="px-5 py-4 text-gray-700">{{ entry.type }}</td>
+                    <td class="px-5 py-4 text-gray-800 text-xs text-center"><p class="line-clamp-3">{{ entry.description }}</p></td>
+                    <td class="px-5 py-4 text-gray-500 text-xs whitespace-nowrap text-center">{{ entry.updates_posted }}</td>
+                    <td class="px-5 py-4 font-medium text-gray-700">{{ entry.technical_officer }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="px-5 py-12 text-center text-gray-400">
+                        <i class="fas fa-table text-3xl mb-3 opacity-40"></i>
+                        <p class="text-sm">No tracking entries found.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Mobile Cards view -->
+<div class="md:hidden space-y-4">
+    {% for entry in entries %}
+    <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3 border-b border-gray-50 pb-3">
+            <span class="font-bold text-sm {% if entry.corner|lower == 'digital' %}text-blue-600{% else %}text-orange-600{% endif %}">
+                <i class="fas {% if entry.corner|lower == 'digital' %}fa-globe{% else %}fa-thumbtack{% endif %} mr-1"></i> {{ entry.corner }} Corner
+            </span>
+            <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded font-medium">{{ entry.date }}</span>
+        </div>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{{ entry.type }}</p>
+        <p class="text-sm text-gray-800 font-semibold mb-4 leading-relaxed">{{ entry.description }}</p>
+        
+        <div class="bg-gray-50 rounded-xl p-3 mb-4 grid grid-cols-2 gap-2 text-xs">
+            <div>
+                <p class="text-gray-400 mb-0.5">Time Started</p>
+                <p class="font-medium text-gray-700">{{ entry.time_started }}</p>
+            </div>
+            <div>
+                <p class="text-gray-400 mb-0.5">Time Completed</p>
+                <p class="font-medium text-gray-700">{{ entry.time_completed }}</p>
+            </div>
+        </div>
+        
+        <div class="flex justify-between items-end border-t border-gray-50 pt-3">
+            <div>
+                <p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Updates Posted</p>
+                <p class="text-xs font-medium text-gray-600"><i class="far fa-clock mr-1"></i> {{ entry.updates_posted }}</p>
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Officer</p>
+                <p class="text-xs font-semibold text-gray-800">{{ entry.technical_officer }}</p>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl border border-gray-100 p-8 text-center text-gray-400 shadow-sm">
+        <i class="fas fa-table text-3xl mb-3 opacity-40"></i>
+        <p class="text-sm">No tracking entries found.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Add Manual Entry Modal -->
+<div id="addEntryModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-backdrop absolute inset-0" onclick="document.getElementById('addEntryModal').classList.add('hidden')"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4 py-8 overflow-y-auto pointer-events-none">
+        <div class="modal-box bg-white w-full max-w-lg rounded-2xl shadow-xl flex flex-col max-h-[90vh] pointer-events-auto">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
+                <h3 class="font-bold text-gray-800 text-lg">Add Physical Corner Tracking</h3>
+                <button type="button" onclick="document.getElementById('addEntryModal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-gray-600 p-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form action="{{ url_for('admin.add_tracking_matrix') }}" method="POST" class="overflow-y-auto p-6 space-y-4">
+                <input type="hidden" name="corner" value="Physical">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Date</label>
+                        <input type="date" name="date" required
+                            class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Type</label>
+                        <input type="text" name="type" value="Content" required placeholder="e.g. Content, Materials"
+                            class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Time Started</label>
+                        <input type="time" name="time_started" required
+                            class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Time Completed</label>
+                        <input type="time" name="time_completed" required
+                            class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Description</label>
+                    <textarea name="description" rows="3" required placeholder="e.g. Posted the Policy on the Use of Gender-Fair Language..."
+                        class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all resize-none"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Date and Time Posted <span class="text-gray-400 font-normal normal-case">(Updates)</span></label>
+                    <input type="datetime-local" name="updates_posted" required
+                        class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all" />
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Technical Officer</label>
+                    <input type="text" name="technical_officer" value="{{ session.get('admin_user', 'Admin') }}" required placeholder="e.g. Juan Dela Cruz"
+                        class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green transition-all" />
+                </div>
+
+                <div class="pt-4 mt-2 border-t border-gray-100 flex justify-end gap-3 shrink-0">
+                    <button type="button" onclick="document.getElementById('addEntryModal').classList.add('hidden')"
+                        class="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="bg-primary-green hover:bg-primary-hover text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-colors">
+                        Add Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

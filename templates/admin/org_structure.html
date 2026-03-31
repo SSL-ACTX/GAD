@@ -29,7 +29,7 @@
                     </div>
                     <input type="file" name="chart_image" class="absolute inset-0 opacity-0 cursor-pointer">
                 </div>
-                <p class="text-[10px] text-gray-400 mt-4 leading-relaxed italic">Upload PNG or JPG. Recommended size: 1920x1080.</p>
+                <p class="text-[10px] text-gray-400 mt-4 leading-relaxed italic">Upload PNG or JPG.</p>
             </div>
 
             <div class="space-y-8">
@@ -72,6 +72,43 @@
                 </div>
             </div>
         </div>
+        
+        <!-- GFPS Component Descriptions -->
+        <div class="pt-10 border-t border-gray-50">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400">GFPS Components</label>
+                    <p class="text-[10px] text-gray-400 leading-relaxed italic">Add sections like Executive Committee, TWG, Secretariat, etc.</p>
+                </div>
+                <button type="button" onclick="addComponent()" class="text-[10px] font-black uppercase tracking-widest text-primary-green hover:text-primary-hover flex items-center gap-2">
+                    <i class="fas fa-plus-circle"></i> Add Component
+                </button>
+            </div>
+
+            <div id="components-container" class="space-y-6">
+                {% for component in data.components %}
+                <div class="component-row bg-gray-50/50 p-6 rounded-[1.5rem] border border-gray-100 relative group/row">
+                    <button type="button" onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] opacity-0 group-hover/row:opacity-100 transition-opacity shadow-lg">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-1">
+                            <label class="block text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2">Title</label>
+                            <input type="text" name="component_titles[]" value="{{ component.title }}" 
+                                class="w-full border border-gray-100 bg-white rounded-xl px-4 py-3 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green transition-all"
+                                placeholder="e.g., Executive Committee">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2">Description</label>
+                            <textarea name="component_descs[]" rows="2" 
+                                class="w-full border border-gray-100 bg-white rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green transition-all leading-relaxed"
+                                placeholder="Describe this component's role...">{{ component.description }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
 
         <div class="pt-10 border-t border-gray-50 flex justify-end">
             <button type="submit" class="bg-primary-green text-white text-xs font-black uppercase tracking-widest px-10 py-4 rounded-2xl hover:bg-primary-hover transition-all shadow-lg shadow-primary-green/20">
@@ -80,4 +117,32 @@
         </div>
     </form>
 </div>
+
+<script>
+function addComponent() {
+    const container = document.getElementById('components-container');
+    const newRow = document.createElement('div');
+    newRow.className = 'component-row bg-gray-50/50 p-6 rounded-[1.5rem] border border-gray-100 relative group/row';
+    newRow.innerHTML = `
+        <button type="button" onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] opacity-0 group-hover/row:opacity-100 transition-opacity shadow-lg">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-1">
+                <label class="block text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2">Title</label>
+                <input type="text" name="component_titles[]" 
+                    class="w-full border border-gray-100 bg-white rounded-xl px-4 py-3 text-xs font-bold focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green transition-all"
+                    placeholder="e.g., 03 Secretariat">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-[9px] font-black uppercase tracking-widest text-gray-400 mb-2">Description</label>
+                <textarea name="component_descs[]" rows="2" 
+                    class="w-full border border-gray-100 bg-white rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green transition-all leading-relaxed"
+                    placeholder="Describe this component's role..."></textarea>
+            </div>
+        </div>
+    `;
+    container.appendChild(newRow);
+}
+</script>
 {% endblock %}

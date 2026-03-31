@@ -46,21 +46,17 @@
 
         <!-- Description text -->
         <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-10">
+            {% for component in data.components %}
             <div class="bg-gray-50 p-10 rounded-3xl border border-gray-100 hover:border-primary-green/30 nav-transition">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="w-10 h-10 bg-primary-green text-white rounded-lg flex items-center justify-center font-bold">01</div>
-                    <h4 class="font-black text-gray-800 uppercase text-sm tracking-widest">Executive Committee</h4>
+                    <div class="w-10 h-10 bg-primary-green text-white rounded-lg flex items-center justify-center font-bold">
+                        {{ "%02d" % loop.index }}
+                    </div>
+                    <h4 class="font-black text-gray-800 uppercase text-sm tracking-widest">{{ component.title }}</h4>
                 </div>
-                <p class="text-gray-600 text-[0.95rem] leading-relaxed">Chaired by the Local Chief Executive, this body is responsible for policy direction and high-level strategic planning of all GAD initiatives within the municipality.</p>
+                <p class="text-gray-600 text-[0.95rem] leading-relaxed">{{ component.description }}</p>
             </div>
-
-            <div class="bg-gray-50 p-10 rounded-3xl border border-gray-100 hover:border-primary-green/30 nav-transition">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-10 h-10 bg-primary-green text-white rounded-lg flex items-center justify-center font-bold">02</div>
-                    <h4 class="font-black text-gray-800 uppercase text-sm tracking-widest">Technical Working Group</h4>
-                </div>
-                <p class="text-gray-600 text-[0.95rem] leading-relaxed">The TWG translates policies into action, assisting in the preparation of the GAD Plan and Budget, and managing day-to-day implementation.</p>
-            </div>
+            {% endfor %}
         </div>
     </div>
 

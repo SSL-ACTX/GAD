@@ -44,6 +44,33 @@ def load_brochures():
     except (FileNotFoundError, json.JSONDecodeError):
         return []
 
+def load_livelihood_feeds():
+    """Load all livelihood feeds from data/livelihood_feeds.json."""
+    feeds_file = os.path.join(current_app.root_path, 'data', 'livelihood_feeds.json')
+    try:
+        with open(feeds_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def load_org_structure():
+    """Load GFPS structure config."""
+    org_file = os.path.join(current_app.root_path, 'data', 'org_structure.json')
+    try:
+        with open(org_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {"chart_image": "", "pdf_url": "", "manual_url": ""}
+
+def load_committee():
+    """Load GFPS committee members."""
+    committee_file = os.path.join(current_app.root_path, 'data', 'committee.json')
+    try:
+        with open(committee_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
 # --- Mock Database of Searchable Content ---
 # This list is used by both the search results page and the live suggestion API.
 searchable_content = [
@@ -64,6 +91,7 @@ searchable_content = [
     {'title': 'System Developers Team', 'url': 'legal.developers', 'category': 'Team'},
     {'title': 'GAD Events Calendar', 'url': 'calendar.calendar_view', 'category': 'Calendar'},
     {'title': 'GAD Knowledge Products and IEC', 'url': 'main.knowledge_products', 'category': 'Resources'},
+    {'title': 'Livelihood Program', 'url': 'main.livelihood_program', 'category': 'Resources'},
 ]
 
 # --- Core Routes ---
@@ -87,6 +115,12 @@ def brochures():
     brochures_list = load_brochures()
     return render_template('brochures.html', brochures=brochures_list)
 
+
+@main_bp.route('/livelihood-program')
+def livelihood_program():
+    feeds = load_livelihood_feeds()
+    return render_template('livelihood-program.html', feeds=feeds)
+
 # --- About Section Routes ---
 
 @main_bp.route('/about')
@@ -99,11 +133,13 @@ def vision_mission():
 
 @main_bp.route('/about/org-structure')
 def org_structure():
-    return render_template('about/org-structure.html')
+    data = load_org_structure()
+    return render_template('about/org-structure.html', data=data)
 
 @main_bp.route('/about/gad-committee')
 def gad_committee():
-    return render_template('about/gad-committee.html')
+    members = load_committee()
+    return render_template('about/gad-committee.html', members=members)
 
 @main_bp.route('/about/contact')
 def contact():

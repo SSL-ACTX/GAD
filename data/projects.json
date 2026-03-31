@@ -1,23 +1,5 @@
 [
   {
-    "id": "p1a2b3c4",
-    "year": "2025",
-    "title": "Buntis Congress 2025",
-    "category": "Health & Wellness",
-    "description": "Providing essential maternal health services, prenatal checkups, and educational seminars for expectant mothers across various barangays.",
-    "status": "Completed",
-    "image": null
-  },
-  {
-    "id": "p5d6e7f8",
-    "year": "2025",
-    "title": "Women's Livelihood Training",
-    "category": "Economic Empowerment",
-    "description": "A series of skills development workshops including digital literacy, tailoring, and small business management for local women entrepreneurs.",
-    "status": "Ongoing",
-    "image": null
-  },
-  {
     "id": "p60b84a4d",
     "year": "2026",
     "title": "Kick Off Tree Planting",
@@ -25,5 +7,14 @@
     "description": "\"Kick-Off Tree Planting Activity | National Women’s Month 2026 🌿\"\r\nThe Municipality of Rodriguez successfully conducted the *Kick-Off Tree Planting Activity today as part of the National Women’s Month 2026 celebration, promoting environmental stewardship and collective action for a more sustainable and gender-responsive community.\r\nThe activity recognized the continued support of Hon. Mayor Gen. Ronnie S. Evangelista (Ret.), Hon. Vice Mayor Edgardo \"Umpek\" Sison, and the Sangguniang Bayan, particularly Hon. Coun. Arnel De Vera, Chairperson of the Committee on Gender and Development, and Hon Coun. Anne Cuerpo, Vice Chairperson, for their continued support of Gender and Development initiatives in the municipality.\r\nThe activity was spearheaded by the Municipal Gender and Development Office (MGADO) under the leadership of Ms. Priscilla M. San Pascual, OIC–MGADO, together with the dedicated *MGADO Team*, serving as the lead office in organizing this meaningful initiative.\r\nThe office also extends its appreciation to partner departments and offices, including MENRO, Clean and Green, Municipal Security Division (MSD), Engineering Department, Municipal Transport and Management Development Office (MTMDO), General Services Office (GSO), Human Resource Management Office (HRMO), and other participating departments for their support and cooperation in making the activity possible.\r\nThrough this initiative, the Municipality of Rodriguez continues to promote environmental protection, gender equality, and community participation, reminding everyone that caring for the environment is also caring for the future of the community.",
     "status": "Completed",
     "image": "uploads/projects/proj_7a034f92.jpg"
+  },
+  {
+    "id": "pbd945f5c",
+    "year": "2026",
+    "title": "GAD Orientation on Women’s Rights, Gender Sensitivity, and Empowerment for PDL of Montalban",
+    "category": "Community",
+    "description": "The Municipal Gender and Development Office (MGADO) successfully conducted the GAD Orientation on Women’s Rights, Gender Sensitivity, and Empowerment for the Female Persons Deprived of Liberty (PDL) at the Rodriguez Municipal Jail – Female Dormitory.\r\nThe activity aimed to strengthen awareness on women’s rights, promote gender sensitivity, and empower PDLs by equipping them with knowledge that supports dignity, self-worth, and reintegration into society.\r\nThis initiative was made possible through the continued support of Municipal Mayor, Hon. Ronnie S. Evangelista (Ret. Gen.), Municipal Vice Mayor, Hon. Edgardo \"Umpek\" Sison, and the Sangguniang Bayan, reaffirming the municipality’s commitment to inclusive and gender-responsive programs for all sectors.\r\nThe activity was spearheaded by the Municipal Gender and Development Office (MGADO) under the leadership of Ms. Priscilla M. San Pascual, OIC–MGADO, together with the dedicated MGADO Team.\r\nThe discussion was enriched by Ms. Eleanor C. Mortiz, SAO, who served as the Resource Speaker and shared valuable insights on women’s rights and empowerment.\r\nThe office also extends its appreciation to Ms. Marjorie Engaño-Azcune, Jail Inspector and Acting Municipal Jail Warden, for her support and assistance in facilitating this meaningful activity.\r\nThrough this initiative, the Municipality of Rodriguez continues to uphold women’s rights, empowerment, and inclusive development, ensuring that no one is left behind.",
+    "status": "Completed",
+    "image": "uploads/projects/proj_d3769906.jpg"
   }
 ]

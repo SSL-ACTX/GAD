@@ -18,58 +18,48 @@
     <!-- Committee Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         
-        <!-- Chairperson Card -->
-        <div class="group bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-2xl transition-all duration-500 text-center relative overflow-hidden lg:col-span-1">
-            <!-- Decorative Accent -->
-            <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-bl-[5rem] -mr-10 -mt-10 group-hover:bg-primary-green nav-transition opacity-50 group-hover:opacity-10"></div>
-            
-            <div class="relative z-10">
-                <!-- Member Photo -->
-                <div class="relative w-36 h-36 mx-auto mb-8">
-                    <div class="w-full h-full bg-gray-50 rounded-full border-4 border-white shadow-xl overflow-hidden flex items-center justify-center group-hover:border-primary-green nav-transition">
-                        <i class="fas fa-user text-5xl text-gray-200 group-hover:text-primary-green nav-transition"></i>
-                    </div>
-                    <!-- Chairperson Badge -->
-                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary-green text-white text-[9px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-lg">
-                        Chairperson
-                    </div>
-                </div>
-
-                <h3 class="font-black text-gray-800 text-2xl leading-tight mb-2">Hon. Mayor Name</h3>
-                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-6">Local Chief Executive</p>
+        {% if members %}
+            {% for member in members %}
+            <div class="group bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-2xl transition-all duration-500 text-center relative overflow-hidden">
+                <!-- Decorative Accent -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-bl-[5rem] -mr-10 -mt-10 group-hover:bg-primary-green nav-transition opacity-50 group-hover:opacity-10"></div>
                 
-                <div class="pt-6 border-t border-gray-50 flex justify-center gap-4">
-                    <a href="#" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white nav-transition"><i class="fab fa-facebook-f text-xs"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white nav-transition"><i class="fas fa-envelope text-xs"></i></a>
+                <div class="relative z-10">
+                    <!-- Member Photo -->
+                    <div class="relative w-36 h-36 mx-auto mb-8">
+                        <div class="w-full h-full bg-gray-50 rounded-full border-4 border-white shadow-xl overflow-hidden flex items-center justify-center group-hover:border-primary-green nav-transition">
+                            {% if member.image %}
+                                <img src="{{ url_for('static', filename=member.image) }}" alt="{{ member.name }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <i class="fas fa-user text-5xl text-gray-200 group-hover:text-primary-green nav-transition"></i>
+                            {% endif %}
+                        </div>
+                        <!-- Role Badge -->
+                        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary-green text-white text-[9px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-lg">
+                            {{ member.role }}
+                        </div>
+                    </div>
+
+                    <h3 class="font-black text-gray-800 text-2xl leading-tight mb-2 uppercase">{{ member.name }}</h3>
+                    <p class="text-[10px] text-primary-green font-black uppercase tracking-[0.2em] mb-1 italic">{{ member.title }}</p>
+                    
+                    <div class="pt-6 border-t border-gray-50 flex justify-center gap-4">
+                        {% if member.facebook %}
+                            <a href="{{ member.facebook }}" target="_blank" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white nav-transition"><i class="fab fa-facebook-f text-xs"></i></a>
+                        {% endif %}
+                        {% if member.email %}
+                            <a href="mailto:{{ member.email }}" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-primary-green hover:text-white nav-transition"><i class="fas fa-envelope text-xs"></i></a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Vice-Chairperson & Members -->
-        {% set members = [
-            {'name': 'Official Name', 'role': 'Vice-Chairperson', 'title': 'Municipal Administrator'},
-            {'name': 'Official Name', 'role': 'Member', 'title': 'Dept. Head / Budget Officer'},
-            {'name': 'Official Name', 'role': 'Member', 'title': 'Planning & Dev. Coordinator'},
-            {'name': 'Official Name', 'role': 'Member', 'title': 'HR Management Officer'},
-            {'name': 'Official Name', 'role': 'Focal Person', 'title': 'GAD Coordinator'}
-        ] %}
-
-        {% for member in members %}
-        <div class="group bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:border-primary-green hover:shadow-2xl transition-all duration-500 text-center">
-            <div class="relative w-32 h-32 mx-auto mb-8">
-                <div class="w-full h-full bg-gray-50 rounded-full border-4 border-white shadow-lg overflow-hidden flex items-center justify-center group-hover:border-primary-green nav-transition">
-                    <i class="fas fa-user text-4xl text-gray-200 group-hover:text-primary-green nav-transition"></i>
-                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-span-full py-20 text-center bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-100">
+                <i class="fas fa-users text-5xl text-gray-200 mb-4"></i>
+                <p class="text-gray-400 font-bold uppercase tracking-widest">No members listed yet.</p>
             </div>
-            <h3 class="font-black text-gray-800 text-xl leading-tight mb-2">{{ member.name }}</h3>
-            <p class="text-[10px] text-primary-green font-black uppercase tracking-[0.2em] mb-1">{{ member.role }}</p>
-            <p class="text-xs text-gray-400 font-medium mb-6 italic">{{ member.title }}</p>
-            
-            <div class="pt-6 border-t border-gray-50 flex justify-center">
-                <a href="#" class="text-gray-300 hover:text-primary-green nav-transition"><i class="fas fa-envelope text-sm"></i></a>
-            </div>
-        </div>
-        {% endfor %}
+        {% endif %}
 
     </div>
 </div>

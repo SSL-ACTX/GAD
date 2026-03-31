@@ -61,5 +61,47 @@
     "title": "ICW",
     "category": "women",
     "desc": ""
+  },
+  {
+    "id": "ecf2f617f",
+    "date": "2026-04-07",
+    "title": "BGFPS @Brgy Balite",
+    "category": "seminar",
+    "desc": ""
+  },
+  {
+    "id": "e14d242f6",
+    "date": "2026-04-14",
+    "title": "Her Wellbeing Matters @Montalban Gymnassium",
+    "category": "seminar",
+    "desc": ""
+  },
+  {
+    "id": "e3afa5dca",
+    "date": "2026-04-21",
+    "title": "Katarungang Pambarangay",
+    "category": "community",
+    "desc": ""
+  },
+  {
+    "id": "efeaadd24",
+    "date": "2026-04-22",
+    "title": "Katarungang Pambarangay",
+    "category": "community",
+    "desc": ""
+  },
+  {
+    "id": "efc469c74",
+    "date": "2026-04-23",
+    "title": "Benchmarking @Baras, Rizal",
+    "category": "seminar",
+    "desc": ""
+  },
+  {
+    "id": "e19c8709b",
+    "date": "2026-03-30",
+    "title": "1st Quarterly Meeting MGFPS @Predy's Hall",
+    "category": "seminar",
+    "desc": ""
   }
 ]

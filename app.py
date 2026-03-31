@@ -1,6 +1,7 @@
 import os
 import json
 import subprocess
+import urllib.parse
 from datetime import datetime
 from flask import Flask, render_template, request, abort
 from flask_limiter import Limiter
@@ -61,7 +62,9 @@ csp = {
     'frame-src': [
         '\'self\'',
         'https://www.facebook.com',
-        'https://web.facebook.com'
+        'https://web.facebook.com',
+        'https://connect.facebook.net',
+        'https://facebook.com'
     ]
 }
 
@@ -166,7 +169,32 @@ def inject_global_data():
 
 
 # ---------------------------------------------------------
-# 5. GLOBAL ERROR HANDLERS
+# 5. CUSTOM JINJA FILTERS
+# ---------------------------------------------------------
+
+@app.template_filter('fb_embed')
+def fb_embed_filter(url):
+    """Converts a standard Facebook post/video/reel URL into a frame-ready embed URL."""
+    if not url or url == '#':
+        return '#'
+    
+    # Clean the URL (remove trailing hashes, spaces, or query params that might break it)
+    url = url.strip().split('?')[0].rstrip('/')
+    
+    if 'facebook.com' in url and '/plugins/' not in url:
+        encoded = urllib.parse.quote(url)
+        
+        # Reels and Videos often prefer video.php for better aspect ratio handling
+        if '/reel/' in url or '/videos/' in url:
+            return f"https://www.facebook.com/plugins/video.php?href={encoded}&show_text=true&width=500"
+        
+        # Standard posts
+        return f"https://www.facebook.com/plugins/post.php?href={encoded}&show_text=true&width=500"
+    return url
+
+
+# ---------------------------------------------------------
+# 6. GLOBAL ERROR HANDLERS
 # ---------------------------------------------------------
 @app.errorhandler(404)
 def page_not_found(e):

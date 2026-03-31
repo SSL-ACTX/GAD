@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}GAD Livelihood Program Feeds - GAD Corner{% endblock %}
+
+{% block extra_css %}
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    
+    .aurora-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        background: 
+            radial-gradient(circle at 0% 0%, rgba(0, 104, 55, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 100% 100%, rgba(0, 104, 55, 0.05) 0%, transparent 50%);
+    }
+
+    .feed-container {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fb-post-wrapper {
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="aurora-bg"></div>
+
+<!-- Hero Section -->
+<section class="relative h-[300px] md:h-[400px] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+        <img src="https://wsrv.nl/?url=https://i.ibb.co/Ngws7Tkg/image.png&output=webp&q=70&maxage=10y" alt="Banner"
+            class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-b from-primary-green/90 via-primary-green/70 to-transparent"></div>
+    </div>
+
+    <div class="relative z-10 text-center px-4 max-w-4xl">
+        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-white/90 text-[10px] font-black uppercase tracking-[0.3em] mb-6 border border-white/20">
+            <i class="fas fa-bullhorn text-xs"></i> Livelihood Updates
+        </div>
+        <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter uppercase leading-none">
+            Livelihood <span class="text-green-300">Program</span> Feeds
+        </h1>
+        <p class="text-white/80 text-sm md:text-xl font-light leading-relaxed">
+            Witness the transformation. Stay updated with our latest initiatives, workshops, and community success stories.
+        </p>
+    </div>
+    
+    <!-- Decorative bottom wave -->
+    <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-50 to-transparent"></div>
+</section>
+
+<!-- Content area -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20 pb-24">
+    <div class="flex flex-col gap-16 feed-container">
+        {% if feeds %}
+            {% for feed in feeds %}
+            <article class="bg-white rounded-[3rem] overflow-hidden shadow-2xl shadow-green-900/5 border border-gray-100 flex flex-col lg:flex-row group transition-all duration-700 hover:shadow-green-900/10">
+                <!-- Highlight Sidebar (Desktop) -->
+                <div class="w-2 lg:w-3 bg-primary-green shrink-0"></div>
+                
+                <div class="flex-1 flex flex-col lg:flex-row">
+                    <!-- Text Side -->
+                    <div class="p-8 md:p-12 lg:w-2/3 flex flex-col border-b lg:border-b-0 lg:border-r border-gray-50">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center text-primary-green font-black text-lg">
+                                <i class="fas fa-quote-left opacity-20"></i>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ feed.date }}</span>
+                                <span class="inline-flex items-center gap-2 text-[10px] font-black text-primary-green uppercase tracking-wider">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-primary-green animate-pulse"></span>
+                                    LIVE UPDATES
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <h2 class="text-2xl md:text-4xl font-black text-gray-900 mb-8 leading-[1.1] tracking-tight group-hover:text-primary-green transition-colors">
+                            {{ feed.title }}
+                        </h2>
+                        
+                        <div class="prose prose-sm md:prose-lg text-gray-500 font-medium leading-relaxed mb-10 max-w-none">
+                            {{ feed.description | replace('\r\n', '<br>') | safe }}
+                        </div>
+
+                        <div class="mt-auto pt-8 border-t border-gray-50 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <img src="https://ui-avatars.com/api/?name=GAD+Office&background=006837&color=fff" class="w-10 h-10 rounded-xl" alt="Office Avatar">
+                                <div>
+                                    <p class="text-xs font-black text-gray-800 tracking-tight">GAD Office</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Administrator</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="w-10 h-10 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-primary-green hover:text-white transition-all shadow-sm" title="Share Update">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Embed Side -->
+                    <div class="lg:w-1/3 bg-gray-50/50 p-8 md:p-12 flex items-center justify-center relative">
+                        <!-- Decorative corners -->
+                        <div class="absolute top-8 left-8 w-8 h-8 border-t-2 border-l-2 border-primary-green/10"></div>
+                        <div class="absolute bottom-8 right-8 w-8 h-8 border-b-2 border-r-2 border-primary-green/10"></div>
+
+                        <div class="w-full fb-post-wrapper rounded-[2rem] overflow-hidden bg-white">
+                            {% if feed.file %}
+                                <div class="bg-primary-green px-6 py-3 flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas {% if feed.type == 'video' %}fa-play-circle{% else %}fa-image{% endif %} text-white text-lg"></i>
+                                        <span class="text-white text-[10px] font-black uppercase tracking-widest text-opacity-90">Local Update</span>
+                                    </div>
+                                    <span class="text-white/50 text-[10px] uppercase font-black">{{ feed.type }}</span>
+                                </div>
+                                <div class="p-2 overflow-hidden flex items-center justify-center min-h-[300px]">
+                                    {% if feed.type == 'video' %}
+                                        <video controls class="w-full rounded-xl">
+                                            <source src="{{ url_for('static', filename=feed.file) }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    {% else %}
+                                        <img src="{{ url_for('static', filename=feed.file) }}" 
+                                             alt="{{ feed.title }}" 
+                                             class="w-full h-auto rounded-xl object-cover hover:scale-105 transition-transform duration-700">
+                                    {% endif %}
+                                </div>
+                            {% elif feed.type == 'facebook' %}
+                                <a href="{{ feed.url }}" target="_blank" class="bg-[#1877F2] px-6 py-3 flex items-center justify-between hover:bg-[#166fe5] transition-colors group/fb">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fab fa-facebook text-white text-lg"></i>
+                                        <span class="text-white text-[10px] font-black uppercase tracking-widest text-opacity-90">View on Facebook</span>
+                                    </div>
+                                    <i class="fas fa-external-link-alt text-white/50 text-[10px] group-hover/fb:text-white transition-colors"></i>
+                                </a>
+                                <div class="p-2">
+                                    <iframe src="{{ feed.url | fb_embed }}" 
+                                            title="{{ feed.title }}"
+                                            width="100%" height="auto" style="border:none;overflow:hidden;min-height:500px;" 
+                                            scrolling="no" frameborder="0" allowfullscreen="true" 
+                                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                                </div>
+                            {% else %}
+                                <div class="p-12 text-center">
+                                    <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <i class="fas fa-link text-primary-green text-3xl"></i>
+                                    </div>
+                                    <p class="text-gray-500 text-sm font-bold mb-6">See full update on external platform</p>
+                                    <a href="{{ feed.url }}" target="_blank" class="inline-flex items-center gap-2 bg-primary-green text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform">
+                                        Visit Link <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        {% else %}
+            <!-- Empty state (same as before but styled) -->
+            <div class="bg-white rounded-[3rem] p-24 text-center shadow-xl border border-gray-100 mt-12">
+                <div class="w-32 h-32 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8">
+                    <i class="fas fa-wind text-primary-green text-5xl opacity-20"></i>
+                </div>
+                <h3 class="text-3xl font-black text-gray-800 mb-4 tracking-tight">The feed is quiet for now</h3>
+                <p class="text-gray-400 max-w-md mx-auto leading-relaxed">We're busy working on the next big update. Check back soon for more livelihood program highlights!</p>
+                <div class="mt-12">
+                    <a href="{{ url_for('main.knowledge_products') }}" class="bg-primary-green text-white px-10 py-5 rounded-full font-black text-xs uppercase tracking-widest hover:bg-primary-hover transition-all shadow-lg shadow-green-900/20">
+                        View Other Resources
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Navigation Breadcrumbs/Back -->
+    <div class="mt-20 flex justify-center">
+        <a href="{{ url_for('main.knowledge_products') }}" class="inline-flex items-center gap-4 bg-white px-8 py-4 rounded-2xl text-gray-400 hover:text-primary-green shadow-sm border border-gray-100 font-black text-xs uppercase tracking-[0.2em] transition-all hover:shadow-xl hover:-translate-y-1">
+            <i class="fas fa-chevron-left text-[10px]"></i> Back to Knowledge Products
+        </a>
+    </div>
+</div>
+
+{% endblock %}

@@ -15,7 +15,9 @@
             <p class="text-gray-500 mt-4 leading-relaxed italic">The GAD Focal Point System (GFPS) hierarchy of the Municipality of Montalban.</p>
         </div>
         
-        <a href="#" class="inline-flex items-center px-6 py-3 bg-white text-primary-green border-2 border-primary-green rounded-xl font-bold text-sm hover:bg-primary-green hover:text-white nav-transition shadow-sm">
+        <a href="{{ url_for('static', filename=data.pdf_url) if data.pdf_url else '#' }}" 
+           class="inline-flex items-center px-6 py-3 bg-white text-primary-green border-2 border-primary-green rounded-xl font-bold text-sm hover:bg-primary-green hover:text-white nav-transition shadow-sm"
+           {% if not data.pdf_url %}onclick="alert('High-res chart not yet uploaded.'); return false;"{% endif %}>
             <i class="fas fa-download mr-3"></i> Download High-Res PDF
         </a>
     </div>
@@ -27,14 +29,20 @@
             <span class="text-xs font-black uppercase tracking-widest text-gray-500">Official Hierarchy Chart</span>
         </div>
 
-        <!-- Placeholder for Chart -->
-        <div class="bg-green-50/50 border-4 border-dashed border-green-100 rounded-[2rem] py-40 flex flex-col items-center justify-center text-center px-8 group">
-            <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-lg mb-6 group-hover:scale-110 nav-transition">
-                <i class="fas fa-project-diagram text-4xl text-primary-green opacity-40"></i>
+        {% if data.chart_image %}
+            <div class="rounded-[2rem] overflow-hidden shadow-inner bg-gray-50 p-4">
+                <img src="{{ url_for('static', filename=data.chart_image) }}" alt="GFPS Organizational Structure" class="w-full h-auto rounded-xl">
             </div>
-            <p class="text-gray-800 font-extrabold text-xl mb-2">Structure Visualization</p>
-            <p class="text-gray-500 text-sm max-w-sm leading-relaxed">Please upload the official GFPS Organizational image file to this container.</p>
-        </div>
+        {% else %}
+            <!-- Placeholder for Chart -->
+            <div class="bg-green-50/50 border-4 border-dashed border-green-100 rounded-[2rem] py-40 flex flex-col items-center justify-center text-center px-8 group">
+                <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-lg mb-6 group-hover:scale-110 nav-transition">
+                    <i class="fas fa-project-diagram text-4xl text-primary-green opacity-40"></i>
+                </div>
+                <p class="text-gray-800 font-extrabold text-xl mb-2">Structure Visualization</p>
+                <p class="text-gray-500 text-sm max-w-sm leading-relaxed">Please upload the official GFPS Organizational image file via Admin Dashboard.</p>
+            </div>
+        {% endif %}
 
         <!-- Description text -->
         <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -62,7 +70,11 @@
             <h3 class="text-2xl font-bold mb-2">Want to learn more about GFPS?</h3>
             <p class="text-white/70 text-sm">Download our detailed manual on GAD Focal Point System roles and responsibilities.</p>
         </div>
-        <a href="#" class="bg-white text-primary-green px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-100 nav-transition">Download Manual</a>
+        <a href="{{ url_for('static', filename=data.manual_url) if data.manual_url else '#' }}" 
+           class="bg-white text-primary-green px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-100 nav-transition"
+           {% if not data.manual_url %}onclick="alert('Manual not yet uploaded.'); return false;"{% endif %}>
+            Download Manual
+        </a>
     </div>
 </div>
 {% endblock %}

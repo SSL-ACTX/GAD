@@ -49,6 +49,8 @@
                     
                     {% if product.title == "PCW IEC Materials Brochure" %}
                         {% set doc_url = url_for('main.brochures') %}
+                    {% elif product.title == "Livelihood Program" %}
+                        {% set doc_url = url_for('main.livelihood_program') %}
                     {% endif %}
                     
                     <p class="text-gray-500 text-sm mb-6 leading-relaxed">

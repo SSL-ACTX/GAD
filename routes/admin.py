@@ -15,11 +15,17 @@ PROJECTS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data',
 POLICIES_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'policies.json')
 KNOWLEDGE_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'knowledge_products.json')
 BROCHURES_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'brochures.json')
+LIVELIHOOD_FEEDS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'livelihood_feeds.json')
+ORG_STRUCTURE_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'org_structure.json')
+COMMITTEE_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'committee.json')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf', 'docx', 'doc', 'mp4', 'webm', 'ogg'}
 POLICIES_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'policies')
 PROJECTS_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'projects')
 KNOWLEDGE_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'knowledge')
 BROCHURES_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'brochures')
+LIVELIHOOD_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'livelihood')
+COMMITTEE_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'committee')
+ORG_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'org')
 
 # ── Site Config ───────────────────────────────────────────────────────────────
 SITE_CONFIG_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'site_config.json')
@@ -112,6 +118,42 @@ def save_brochures(brochures):
     os.makedirs(os.path.dirname(BROCHURES_FILE), exist_ok=True)
     with open(BROCHURES_FILE, 'w', encoding='utf-8') as f:
         json.dump(brochures, f, indent=2, ensure_ascii=False)
+
+def load_livelihood_feeds():
+    try:
+        with open(LIVELIHOOD_FEEDS_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def save_livelihood_feeds(feeds):
+    os.makedirs(os.path.dirname(LIVELIHOOD_FEEDS_FILE), exist_ok=True)
+    with open(LIVELIHOOD_FEEDS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(feeds, f, indent=2, ensure_ascii=False)
+
+def load_org_structure():
+    try:
+        with open(ORG_STRUCTURE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {"chart_image": "", "pdf_url": "", "manual_url": ""}
+
+def save_org_structure(data):
+    os.makedirs(os.path.dirname(ORG_STRUCTURE_FILE), exist_ok=True)
+    with open(ORG_STRUCTURE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+def load_committee():
+    try:
+        with open(COMMITTEE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def save_committee(committee):
+    os.makedirs(os.path.dirname(COMMITTEE_FILE), exist_ok=True)
+    with open(COMMITTEE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(committee, f, indent=2, ensure_ascii=False)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -725,3 +767,166 @@ def delete_brochure(item_id):
     save_brochures(items)
     flash('Brochure deleted.', 'success')
     return redirect(url_for('admin.brochures'))
+
+# ── Livelihood Feeds Management ──────────────────────────────────────────
+@admin_bp.route('/livelihood-feeds')
+@login_required
+def livelihood_feeds():
+    items = load_livelihood_feeds()
+    return render_template('admin/livelihood_feeds.html', items=items)
+
+@admin_bp.route('/livelihood-feeds/add', methods=['POST'])
+@login_required
+def add_livelihood_feed():
+    items = load_livelihood_feeds()
+    
+    file_path = ""
+    if 'file' in request.files:
+        file = request.files['file']
+        if file and file.filename:
+            file_path = save_uploaded_file(file, LIVELIHOOD_UPLOAD_FOLDER, prefix="lf")
+
+    new_item = {
+        'id': 'lf' + str(uuid.uuid4())[:8],
+        'title': request.form.get('title', '').strip(),
+        'description': request.form.get('description', '').strip(),
+        'type': request.form.get('type', 'facebook').strip(),
+        'url': request.form.get('url', '').strip(),
+        'file': file_path,
+        'date': request.form.get('date', '').strip() or date.today().isoformat()
+    }
+    
+    if new_item['title'] or new_item['url'] or new_item['file']:
+        items.insert(0, new_item)
+        save_livelihood_feeds(items)
+        flash('Livelihood Feed added successfully.', 'success')
+    return redirect(url_for('admin.livelihood_feeds'))
+
+@admin_bp.route('/livelihood-feeds/edit/<feed_id>', methods=['POST'])
+@login_required
+def edit_livelihood_feed(feed_id):
+    items = load_livelihood_feeds()
+    for item in items:
+        if item['id'] == feed_id:
+            item['title'] = request.form.get('title', item.get('title', '')).strip()
+            item['description'] = request.form.get('description', item.get('description', '')).strip()
+            item['type'] = request.form.get('type', item.get('type', 'facebook')).strip()
+            item['url'] = request.form.get('url', item.get('url', '')).strip()
+            item['date'] = request.form.get('date', item.get('date', '')).strip()
+            
+            if 'file' in request.files:
+                file = request.files['file']
+                if file and file.filename:
+                    new_file = save_uploaded_file(file, LIVELIHOOD_UPLOAD_FOLDER, prefix="lf")
+                    if new_file:
+                        item['file'] = new_file
+            break
+            
+    save_livelihood_feeds(items)
+    flash('Livelihood Feed updated.', 'success')
+    return redirect(url_for('admin.livelihood_feeds'))
+
+@admin_bp.route('/livelihood-feeds/delete/<feed_id>', methods=['POST'])
+@login_required
+def delete_livelihood_feed(feed_id):
+    items = [i for i in load_livelihood_feeds() if i['id'] != feed_id]
+    save_livelihood_feeds(items)
+    flash('Feed deleted.', 'success')
+    return redirect(url_for('admin.livelihood_feeds'))
+
+# ── GFPS Structure Management ─────────────────────────────────────────
+@admin_bp.route('/org-structure', endpoint='org_structure')
+@login_required
+def gfps_structure():
+    data = load_org_structure()
+    return render_template('admin/org_structure.html', data=data)
+
+@admin_bp.route('/org-structure/update', methods=['POST'])
+@login_required
+def update_org_structure():
+    data = load_org_structure()
+    
+    if 'chart_image' in request.files:
+        file = request.files['chart_image']
+        if file and file.filename:
+            path = save_uploaded_file(file, ORG_UPLOAD_FOLDER, prefix="chart")
+            if path: data['chart_image'] = path
+            
+    if 'pdf' in request.files:
+        file = request.files['pdf']
+        if file and file.filename:
+            path = save_uploaded_file(file, ORG_UPLOAD_FOLDER, prefix="pdf")
+            if path: data['pdf_url'] = path
+            
+    if 'manual' in request.files:
+        file = request.files['manual']
+        if file and file.filename:
+            path = save_uploaded_file(file, ORG_UPLOAD_FOLDER, prefix="manual")
+            if path: data['manual_url'] = path
+            
+    save_org_structure(data)
+    flash('Organization structure updated.', 'success')
+    return redirect(url_for('admin.org_structure'))
+
+# ── GFPS Committee Management ─────────────────────────────────────────
+@admin_bp.route('/committee', endpoint='committee')
+@login_required
+def gfps_committee():
+    members = load_committee()
+    return render_template('admin/committee.html', members=members)
+
+@admin_bp.route('/committee/add', methods=['POST'])
+@login_required
+def add_committee_member():
+    members = load_committee()
+    
+    image_path = ""
+    if 'image' in request.files:
+        file = request.files['image']
+        if file and file.filename:
+            image_path = save_uploaded_file(file, COMMITTEE_UPLOAD_FOLDER, prefix="member")
+            
+    new_member = {
+        'id': 'mem' + str(uuid.uuid4())[:8],
+        'name': request.form.get('name', '').strip(),
+        'role': request.form.get('role', 'Member').strip(),
+        'title': request.form.get('title', '').strip(),
+        'email': request.form.get('email', '').strip(),
+        'facebook': request.form.get('facebook', '').strip(),
+        'image': image_path
+    }
+    members.append(new_member)
+    save_committee(members)
+    flash('Member added successfully.', 'success')
+    return redirect(url_for('admin.committee'))
+
+@admin_bp.route('/committee/edit/<member_id>', methods=['POST'])
+@login_required
+def edit_committee_member(member_id):
+    members = load_committee()
+    for mem in members:
+        if mem['id'] == member_id:
+            mem['name'] = request.form.get('name', mem.get('name', '')).strip()
+            mem['role'] = request.form.get('role', mem.get('role', 'Member')).strip()
+            mem['title'] = request.form.get('title', mem.get('title', '')).strip()
+            mem['email'] = request.form.get('email', mem.get('email', '')).strip()
+            mem['facebook'] = request.form.get('facebook', mem.get('facebook', '')).strip()
+            
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and file.filename:
+                    path = save_uploaded_file(file, COMMITTEE_UPLOAD_FOLDER, prefix="member")
+                    if path: mem['image'] = path
+            break
+            
+    save_committee(members)
+    flash('Member updated.', 'success')
+    return redirect(url_for('admin.committee'))
+
+@admin_bp.route('/committee/delete/<member_id>', methods=['POST'])
+@login_required
+def delete_committee_member(member_id):
+    members = [m for m in load_committee() if m['id'] != member_id]
+    save_committee(members)
+    flash('Member removed.', 'success')
+    return redirect(url_for('admin.committee'))

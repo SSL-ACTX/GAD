@@ -1,0 +1,226 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}GFPS Committee Management{% endblock %}
+{% block page_title %}GFPS Committee Management{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div>
+        <h3 class="font-extrabold text-gray-800 text-xl tracking-tight uppercase">Committee Members</h3>
+        <p class="text-sm text-gray-500 mt-1">Manage the GFPS leadership team, including chairperson, vice-chair, and members.</p>
+    </div>
+    <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+        class="flex items-center justify-center gap-3 bg-primary-green text-white text-sm font-bold px-6 py-3 rounded-2xl hover:bg-primary-hover transition-all shadow-lg">
+        <i class="fas fa-plus"></i> Add Member
+    </button>
+</div>
+
+<!-- Committee Table -->
+<div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden overflow-x-auto">
+    {% if members %}
+    <table class="w-full text-left border-collapse text-sm">
+        <thead class="bg-gray-50/80 text-gray-400 text-[10px] uppercase tracking-widest font-black border-b border-gray-100">
+            <tr>
+                <th class="px-8 py-5">Member Info</th>
+                <th class="px-6 py-5 text-center">Committee Role</th>
+                <th class="px-6 py-5 text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+            {% for member in members %}
+            <tr class="hover:bg-gray-50/50 transition-colors group">
+                <td class="px-8 py-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm flex items-center justify-center bg-gray-50">
+                            {% if member.image %}
+                                <img src="{{ url_for('static', filename=member.image) }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <i class="fas fa-user text-gray-200"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <p class="font-black text-gray-800 text-base leading-tight uppercase">{{ member.name }}</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">{{ member.title }}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-6 text-center">
+                    <span class="inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider 
+                        {% if 'Chairperson' in member.role %}bg-primary-green/10 text-primary-green{% else %}bg-gray-50 text-gray-400{% endif %}">
+                        {{ member.role }}
+                    </span>
+                </td>
+                <td class="px-6 py-6 text-center">
+                    <div class="flex items-center justify-center gap-3">
+                        <button onclick='openEdit({{ member | tojson | forceescape }})'
+                            class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button onclick="openDelete('{{ member.id }}', '{{ member.name | replace('\'', '\\\'') | replace('\"', '\\\"') }}')"
+                            class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="py-24 text-center">
+        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-users text-gray-200 text-3xl"></i>
+        </div>
+        <h3 class="text-lg font-extrabold text-gray-700">No members added yet</h3>
+        <p class="text-sm text-gray-400 max-w-xs mx-auto mb-8">Start populating the GFPS committee leadership.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Modal -->
+<div id="addModal" class="hidden fixed inset-0 modal-backdrop z-[6000] flex items-center justify-center p-4">
+    <div class="modal-box bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="font-black text-gray-800 text-xl tracking-tight uppercase">Add Member</h3>
+            <button onclick="document.getElementById('addModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 w-10 h-10 rounded-full flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form action="{{ url_for('admin.add_committee_member') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Member Name *</label>
+                    <input type="text" name="name" required class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green focus:bg-white transition-all">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Committee Role *</label>
+                    <input type="text" name="role" placeholder="e.g., Chairperson, Member" required class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-primary-green/10 focus:border-primary-green focus:bg-white transition-all">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Official Title / Position</label>
+                    <input type="text" name="title" placeholder="e.g., Local Chief Executive" class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Contact Email</label>
+                    <input type="email" name="email" class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Facebook URL</label>
+                <input type="url" name="facebook" placeholder="https://facebook.com/..." class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Profile Photo</label>
+                <input type="file" name="image" class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-2 text-[10px] focus:outline-none file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-primary-green file:text-white">
+            </div>
+
+            <div class="flex gap-4 pt-4">
+                <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')"
+                    class="flex-1 py-4 bg-gray-50 text-gray-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">Cancel</button>
+                <button type="submit"
+                    class="flex-1 py-4 bg-primary-green text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary-hover transition-all shadow-lg">Save Member</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="hidden fixed inset-0 modal-backdrop z-[6000] flex items-center justify-center p-4">
+    <div class="modal-box bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="font-black text-gray-800 text-xl tracking-tight uppercase">Edit Member</h3>
+            <button onclick="document.getElementById('editModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors bg-gray-50 w-10 h-10 rounded-full flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Member Name *</label>
+                    <input type="text" id="editName" name="name" required class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Committee Role *</label>
+                    <input type="text" id="editRole" name="role" required class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Official Title</label>
+                    <input type="text" id="editTitle" name="title" class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Email</label>
+                    <input type="email" id="editEmail" name="email" class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Facebook URL</label>
+                <input type="url" id="editFacebook" name="facebook" class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-3 text-sm focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Replace Photo (Optional)</label>
+                <input type="file" name="image" class="w-full border border-gray-100 bg-gray-50/50 rounded-2xl px-5 py-2 text-[10px] focus:outline-none file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-primary-green file:text-white">
+            </div>
+
+            <div class="flex gap-4 pt-4">
+                <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')"
+                    class="flex-1 py-4 bg-gray-50 text-gray-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">Cancel</button>
+                <button type="submit"
+                    class="flex-1 py-4 bg-primary-green text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-primary-hover transition-all shadow-lg">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="hidden fixed inset-0 modal-backdrop z-[6000] flex items-center justify-center p-4">
+    <div class="modal-box bg-white rounded-[2rem] shadow-2xl w-full max-w-sm p-8 text-center">
+        <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-trash-alt text-red-500 text-2xl"></i>
+        </div>
+        <h3 class="font-black text-gray-800 text-lg mb-2 tracking-tight uppercase">Remove Member?</h3>
+        <p class="text-sm text-gray-400 mb-8">This will delete <strong id="deleteMemberName" class="text-gray-700"></strong> from the official GFPS committee list.</p>
+        <form id="deleteForm" method="POST" class="flex gap-3">
+            <button type="button" onclick="document.getElementById('deleteModal').classList.add('hidden')"
+                class="flex-1 py-3 bg-gray-50 text-gray-500 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">Cancel</button>
+            <button type="submit"
+                class="flex-1 py-3 bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-lg shadow-red-500/20">Delete</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openEdit(member) {
+    document.getElementById('editForm').action = '/admin/committee/edit/' + member.id;
+    document.getElementById('editName').value = member.name || '';
+    document.getElementById('editRole').value = member.role || '';
+    document.getElementById('editTitle').value = member.title || '';
+    document.getElementById('editEmail').value = member.email || '';
+    document.getElementById('editFacebook').value = member.facebook || '';
+    document.getElementById('editModal').classList.remove('hidden');
+}
+
+function openDelete(id, name) {
+    document.getElementById('deleteForm').action = '/admin/committee/delete/' + id;
+    document.getElementById('deleteMemberName').textContent = name;
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+// Close modals on backdrop click
+['addModal', 'editModal', 'deleteModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+        if (e.target === this) this.classList.add('hidden');
+    });
+});
+</script>
+{% endblock %}

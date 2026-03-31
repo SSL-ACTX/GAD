@@ -1,0 +1,83 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}GFPS Structure Management{% endblock %}
+{% block page_title %}GFPS Structure Management{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl">
+    <div class="mb-8">
+        <h3 class="font-extrabold text-gray-800 text-xl tracking-tight uppercase">Organizational Structure</h3>
+        <p class="text-sm text-gray-500 mt-1">Upload the hierarchy chart image and core GFPS documents.</p>
+    </div>
+
+    <form action="{{ url_for('admin.update_org_structure') }}" method="POST" enctype="multipart/form-data" class="space-y-8 bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm">
+        
+        <!-- High-Res Chart Image -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+            <div>
+                <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4">Structure Chart Image</label>
+                <div class="relative group">
+                    <div class="aspect-video bg-gray-50 rounded-3xl border-2 border-dashed border-gray-100 flex flex-col items-center justify-center p-6 text-center overflow-hidden">
+                        {% if data.chart_image %}
+                            <img src="{{ url_for('static', filename=data.chart_image) }}" class="absolute inset-0 w-full h-full object-contain p-2">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span class="text-white text-[10px] font-black uppercase tracking-widest">Change Image</span>
+                            </div>
+                        {% else %}
+                            <i class="fas fa-sitemap text-3xl text-gray-200 mb-3"></i>
+                            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">No Image Uploaded</span>
+                        {% endif %}
+                    </div>
+                    <input type="file" name="chart_image" class="absolute inset-0 opacity-0 cursor-pointer">
+                </div>
+                <p class="text-[10px] text-gray-400 mt-4 leading-relaxed italic">Upload PNG or JPG. Recommended size: 1920x1080.</p>
+            </div>
+
+            <div class="space-y-8">
+                <!-- High-Res PDF -->
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">High-Res PDF Chart</label>
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-red-500 shadow-sm">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            {% if data.pdf_url %}
+                                <p class="text-[10px] font-black text-gray-800 uppercase truncate">{{ data.pdf_url.split('/')[-1] }}</p>
+                                <p class="text-[9px] text-green-500 font-bold uppercase">Linked Successfully</p>
+                            {% else %}
+                                <p class="text-[10px] font-bold text-gray-400 uppercase">No PDF Linked</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <input type="file" name="pdf" class="mt-4 text-[10px] file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-primary-green file:text-white">
+                </div>
+
+                <!-- Manual PDF -->
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">GFPS Manual (Roles & Respon.)</label>
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-blue-500 shadow-sm">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            {% if data.manual_url %}
+                                <p class="text-[10px] font-black text-gray-800 uppercase truncate">{{ data.manual_url.split('/')[-1] }}</p>
+                                <p class="text-[9px] text-green-500 font-bold uppercase">Linked Successfully</p>
+                            {% else %}
+                                <p class="text-[10px] font-bold text-gray-400 uppercase">No Manual Linked</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <input type="file" name="manual" class="mt-4 text-[10px] file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-primary-green file:text-white">
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-10 border-t border-gray-50 flex justify-end">
+            <button type="submit" class="bg-primary-green text-white text-xs font-black uppercase tracking-widest px-10 py-4 rounded-2xl hover:bg-primary-hover transition-all shadow-lg shadow-primary-green/20">
+                Update GFPS Structure
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

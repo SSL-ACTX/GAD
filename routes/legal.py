@@ -10,6 +10,7 @@ def privacy_policy():
 def terms_conditions():
     return render_template('legal/terms-conditions.html')
 
+@legal_bp.route('/team')
 @legal_bp.route('/team/developers')
 def developers():
     return render_template('team/developers.html')

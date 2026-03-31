@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GAD Corner - Bagong Montalban{% endblock %}</title>
 
+    <!-- Website Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/GAD-logo.png') }}">
+
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -477,6 +480,8 @@
                         <li><a href="{{ url_for('legal.privacy_policy') }}" class="hover:text-white">Privacy Policy</a>
                         </li>
                         <li><a href="{{ url_for('legal.terms_conditions') }}" class="hover:text-white">Terms of Use</a>
+                        </li>
+                        <li><a href="{{ url_for('legal.developers') }}" class="hover:text-white">The Team</a>
                         </li>
                     </ul>
                 </div>

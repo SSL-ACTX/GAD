@@ -136,7 +136,21 @@ def load_org_structure():
         with open(ORG_STRUCTURE_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
-        return {"chart_image": "", "pdf_url": "", "manual_url": ""}
+        return {
+            "chart_image": "", 
+            "pdf_url": "", 
+            "manual_url": "",
+            "components": [
+                {
+                    "title": "Executive Committee",
+                    "description": "Chaired by the Local Chief Executive, this body is responsible for policy direction and high-level strategic planning of all GAD initiatives within the municipality."
+                },
+                {
+                    "title": "Technical Working Group",
+                    "description": "The TWG translates policies into action, assisting in the preparation of the GAD Plan and Budget, and managing day-to-day implementation."
+                }
+            ]
+        }
 
 def save_org_structure(data):
     os.makedirs(os.path.dirname(ORG_STRUCTURE_FILE), exist_ok=True)
@@ -863,6 +877,20 @@ def update_org_structure():
         if file and file.filename:
             path = save_uploaded_file(file, ORG_UPLOAD_FOLDER, prefix="manual")
             if path: data['manual_url'] = path
+            
+    # Dynamic GFPS Components
+    component_titles = request.form.getlist('component_titles[]')
+    component_descs = request.form.getlist('component_descs[]')
+    
+    components = []
+    for title, desc in zip(component_titles, component_descs):
+        if title.strip() or desc.strip():
+            components.append({
+                "title": title.strip(),
+                "description": desc.strip()
+            })
+    
+    data['components'] = components
             
     save_org_structure(data)
     flash('Organization structure updated.', 'success')

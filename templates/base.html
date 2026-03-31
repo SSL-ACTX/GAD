@@ -498,8 +498,9 @@
                                 class="hover:text-white flex items-center gap-3"><i
                                     class="fab fa-facebook-f w-4 text-center"></i> Montalban GAD Office</a></li>
                         <!-- GAD QR Code Support -->
+                        {% set gad_qr_url = url_for('static', filename='assets/GAD-qr.svg') %}
                         <li class="flex items-start gap-4 p-4 bg-gray-800/50 rounded-2xl border border-gray-700/50 mt-4 group hover:bg-gray-800 transition-all duration-300 cursor-pointer"
-                            onclick="openGlobalLightbox('{{ url_for('static', filename='assets/GAD-qr.svg') }}')">
+                            onclick="openGlobalLightbox('{{ gad_qr_url }}')">
                             <div
                                 class="shrink-0 w-14 h-14 bg-white p-1.5 rounded-xl shadow-lg group-hover:scale-105 transition-transform">
                                 <img src="{{ url_for('static', filename='assets/GAD-qr.svg') }}" alt="GAD QR Support"
